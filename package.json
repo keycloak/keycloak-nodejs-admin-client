@@ -1,0 +1,38 @@
+{
+  "name": "keycloak-admin",
+  "version": "1.0.0",
+  "description": "keycloak admin client",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
+    "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
+    "test": "mocha --compilers ts:ts-node/register --recursive \"test/**/*.spec.ts\"",
+    "coverage": "nyc npm run test",
+    "watch": "npm run build -- --watch",
+    "watch:test": "npm run test -- --watch"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
+    "camelize": "^1.0.0",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/bluebird": "^3.5.20",
+    "@types/chai": "^4.1.2",
+    "@types/lodash": "^4.14.108",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "9.4.6",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^11.6.0",
+    "rimraf": "^2.5.4",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  },
+  "author": "wwwy3y3",
+  "license": "ISC"
+}
