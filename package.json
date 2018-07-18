@@ -7,16 +7,19 @@
     "clean": "rimraf lib",
     "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
     "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
-    "test": "mocha --compilers ts:ts-node/register --recursive \"test/**/*.spec.ts\"",
+    "test": "DEBUG=kc-admin mocha --compilers ts:ts-node/register --recursive \"test/**/*.spec.ts\"",
     "coverage": "nyc npm run test",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
+    "@types/debug": "^0.0.30",
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
     "camelize": "^1.0.0",
-    "lodash": "^4.17.10"
+    "debug": "^3.1.0",
+    "lodash": "^4.17.10",
+    "url-template": "^2.0.8"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -25,6 +28,7 @@
     "@types/lodash": "^4.14.108",
     "@types/mocha": "^2.2.48",
     "@types/node": "9.4.6",
+    "@types/url-template": "^2.0.28",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "nyc": "^11.6.0",

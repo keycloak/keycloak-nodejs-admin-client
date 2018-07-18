@@ -1,5 +1,6 @@
 import { getToken, Credential } from './utils/auth';
 import { defaultBaseUrl, defaultRealm } from './utils/contants';
+import { Users } from './resources/users';
 
 export interface ClientArgs {
   baseUrl?: string;
@@ -7,13 +8,19 @@ export interface ClientArgs {
 }
 
 export class KeycloakAdminClient {
-  private baseUrl: string;
-  private realmName: string;
-  private accessToken: string;
+  // resources
+  public users: Users;
+  // members
+  public baseUrl: string;
+  public realmName: string;
+  public accessToken: string;
 
-  constructor(args: ClientArgs) {
-    this.baseUrl = args.baseUrl || defaultBaseUrl;
-    this.realmName = args.realmName || defaultRealm;
+  constructor(args?: ClientArgs) {
+    this.baseUrl = args && args.baseUrl || defaultBaseUrl;
+    this.realmName = args && args.realmName || defaultRealm;
+
+    // initialize resources
+    this.users = new Users(this);
   }
 
   public async auth(credential: Credential) {
@@ -21,5 +28,9 @@ export class KeycloakAdminClient {
       credential
     });
     this.accessToken = accessToken;
+  }
+
+  public getAccessToken() {
+    return this.accessToken;
   }
 }
