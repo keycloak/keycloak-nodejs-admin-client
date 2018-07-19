@@ -3,6 +3,7 @@ import { defaultBaseUrl, defaultRealm } from './utils/contants';
 import { Users } from './resources/users';
 import { Groups } from './resources/groups';
 import { Roles } from './resources/roles';
+import { Clients } from './resources/clients';
 
 export interface ClientArgs {
   baseUrl?: string;
@@ -14,6 +15,7 @@ export class KeycloakAdminClient {
   public users: Users;
   public groups: Groups;
   public roles: Roles;
+  public clients: Clients;
 
   // members
   public baseUrl: string;
@@ -28,6 +30,7 @@ export class KeycloakAdminClient {
     this.users = new Users(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
+    this.clients = new Clients(this);
   }
 
   public async auth(credential: Credential) {

@@ -5,7 +5,6 @@ import { cred } from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
 import GroupRepresentation from '../src/defs/groupRepresentation';
-import { TIMEOUT } from 'dns';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 
 const expect = chai.expect;
