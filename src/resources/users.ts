@@ -13,11 +13,11 @@ export interface UserQuery {
 }
 
 export class Users extends Resource {
-  public getUsers = this.makeRequest<UserQuery, UserRepresentation[]>({
+  public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET'
   });
 
-  public createUser = this.makeRequest<UserRepresentation, void>({
+  public create = this.makeRequest<UserRepresentation, void>({
     method: 'POST'
   });
 
@@ -25,20 +25,20 @@ export class Users extends Resource {
    * Single user
    */
 
-  public getUser = this.makeRequest<{id: string}, UserRepresentation>({
+  public findOne = this.makeRequest<{id: string}, UserRepresentation>({
     method: 'GET',
     path: '/{id}',
     params: ['id'],
     catchNotFound: true
   });
 
-  public updateUser = this.makeRequest<UserRepresentation, void>({
+  public update = this.makeRequest<UserRepresentation, void>({
     method: 'PUT',
     path: '/{id}',
     params: ['id']
   });
 
-  public deleteUser = this.makeRequest<{id: string}, void>({
+  public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
     params: ['id']

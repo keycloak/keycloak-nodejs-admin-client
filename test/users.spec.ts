@@ -21,23 +21,23 @@ describe('Users', function() {
   });
 
   it('list users', async () => {
-    const users = await this.client.users.getUsers();
+    const users = await this.client.users.find();
     expect(users).to.be.ok;
   });
 
   it('create users', async () => {
-    await this.client.users.createUser({
+    await this.client.users.create({
       username: 'wwwy3y32'
     });
 
-    const users = await this.client.users.getUsers({username: 'wwwy3y32'});
+    const users = await this.client.users.find({username: 'wwwy3y32'});
     expect(users[0]).to.be.ok;
     this.currentUser = users[0];
   });
 
   it('get single users', async () => {
     const userId = this.currentUser.id;
-    const user = await this.client.users.getUser({
+    const user = await this.client.users.findOne({
       id: userId
     });
     expect(user).to.be.eql(this.currentUser);
@@ -45,13 +45,13 @@ describe('Users', function() {
 
   it('update single users', async () => {
     const userId = this.currentUser.id;
-    await this.client.users.updateUser({
+    await this.client.users.update({
       id: userId,
       firstName: 'william',
       lastName: 'chang'
     });
 
-    const user = await this.client.users.getUser({
+    const user = await this.client.users.findOne({
       id: userId
     });
     expect(user).to.include({
@@ -62,11 +62,11 @@ describe('Users', function() {
 
   it('delete single users', async () => {
     const userId = this.currentUser.id;
-    await this.client.users.deleteUser({
+    await this.client.users.del({
       id: userId
     });
 
-    const user = await this.client.users.getUser({
+    const user = await this.client.users.findOne({
       id: userId
     });
     expect(user).to.be.null;
