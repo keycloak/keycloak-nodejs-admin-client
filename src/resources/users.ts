@@ -32,7 +32,7 @@ export class Users extends Resource {
     catchNotFound: true
   });
 
-  public update = this.makeRequest<UserRepresentation, void>({
+  public update = this.makeUpdateRequest<{id: string}, UserRepresentation, void>({
     method: 'PUT',
     path: '/{id}',
     params: ['id']

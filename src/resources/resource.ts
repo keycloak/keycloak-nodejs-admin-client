@@ -14,4 +14,12 @@ export default class Resource {
     <PayloadType = any, ResponseType = any>(args: RequestArgs): (payload?: PayloadType) => Promise<ResponseType> => {
     return this.agent.request(args);
   }
+
+  // update request will take three types: query, payload and response
+  public makeUpdateRequest =
+    < QueryType = any,
+      PayloadType = any,
+      ResponseType = any>(args: RequestArgs): (query: QueryType, payload: PayloadType) => Promise<ResponseType> => {
+    return this.agent.updateRequest(args);
+  }
 }

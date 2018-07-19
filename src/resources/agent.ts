@@ -1,4 +1,3 @@
-import {URL} from 'url';
 import {join} from 'path';
 import template from 'url-template';
 import axios, { AxiosRequestConfig } from 'axios';
@@ -31,37 +30,63 @@ export class Agent {
   public request({method, path = '', params, catchNotFound = false}: RequestArgs) {
     return async (payload: any = {}) => {
       const mergedParams = {...this.baseParams, ...pick(payload, params)};
-      const newPath = join(this.basePath, path);
-
-      // parse
-      const temp = template.parse(newPath);
-      const parsedPath = temp.expand(mergedParams);
-      const url = `${this.baseUrl}${parsedPath}`;
-
       // omit payload
       payload = omit(payload, params);
-      const requestConfig: AxiosRequestConfig = {
+      return this.requestWithParams({
         method,
-        url,
-        headers: {
-          Authorization: `bearer ${this.client.getAccessToken()}`
-        }
-      };
-      if (method === 'GET') {
-        requestConfig.params = payload;
-      } else {
-        requestConfig.data = payload;
-      }
+        path,
+        payload,
+        params: mergedParams,
+        catchNotFound
+      });
+    };
+  }
 
-      try {
-        const res = await axios(requestConfig);
-        return res.data;
-      } catch (err) {
-        if (err.response && err.response.status === 404 && catchNotFound) {
-          return null;
-        }
-        throw err;
+  public updateRequest({method, path = '', params, catchNotFound = false}: RequestArgs) {
+    return async (query: any = {}, payload: any = {}) => {
+      // pick params from query
+      const mergedParams = {...this.baseParams, ...pick(query, params)};
+      return this.requestWithParams({
+        method,
+        path,
+        payload,
+        params: mergedParams,
+        catchNotFound
+      });
+    };
+  }
+
+  private async requestWithParams(
+    {method, path, payload, params, catchNotFound}:
+    {method: string, path: string, payload: any, params: any, catchNotFound: boolean}) {
+    const newPath = join(this.basePath, path);
+
+    // parse
+    const temp = template.parse(newPath);
+    const parsedPath = temp.expand(params);
+    const url = `${this.baseUrl}${parsedPath}`;
+
+    const requestConfig: AxiosRequestConfig = {
+      method,
+      url,
+      headers: {
+        Authorization: `bearer ${this.client.getAccessToken()}`
       }
     };
+    if (method === 'GET') {
+      requestConfig.params = payload;
+    } else {
+      requestConfig.data = payload;
+    }
+
+    try {
+      const res = await axios(requestConfig);
+      return res.data;
+    } catch (err) {
+      if (err.response && err.response.status === 404 && catchNotFound) {
+        return null;
+      }
+      throw err;
+    }
   }
 }

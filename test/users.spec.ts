@@ -45,8 +45,7 @@ describe('Users', function() {
 
   it('update single users', async () => {
     const userId = this.currentUser.id;
-    await this.client.users.update({
-      id: userId,
+    await this.client.users.update({id: userId}, {
       firstName: 'william',
       lastName: 'chang'
     });

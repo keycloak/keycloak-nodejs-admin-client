@@ -47,10 +47,7 @@ describe('Groups', function() {
 
   it('update single groups', async () => {
     const groupId = this.currentGroup.id;
-    await this.client.groups.update({
-      id: groupId,
-      name: 'another-group-name'
-    });
+    await this.client.groups.update({id: groupId}, {name: 'another-group-name'});
 
     const group = await this.client.groups.findOne({
       id: groupId
