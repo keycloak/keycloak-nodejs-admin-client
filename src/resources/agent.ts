@@ -10,6 +10,9 @@ export interface RequestArgs {
   params?: string[];
   // if respond with 404, catch it and return null instead
   catchNotFound?: boolean;
+  // the exact key we extract to payload of request
+  // only works for POST, PUT
+  payloadKey?: string;
 }
 
 export class Agent {
@@ -27,7 +30,7 @@ export class Agent {
     this.basePath = path;
   }
 
-  public request({method, path = '', params, catchNotFound = false}: RequestArgs) {
+  public request({method, path = '', params, catchNotFound = false, payloadKey}: RequestArgs) {
     return async (payload: any = {}) => {
       const mergedParams = {...this.baseParams, ...pick(payload, params)};
       // omit payload
@@ -37,12 +40,13 @@ export class Agent {
         path,
         payload,
         params: mergedParams,
-        catchNotFound
+        catchNotFound,
+        payloadKey
       });
     };
   }
 
-  public updateRequest({method, path = '', params, catchNotFound = false}: RequestArgs) {
+  public updateRequest({method, path = '', params, catchNotFound = false, payloadKey}: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
       // pick params from query
       const mergedParams = {...this.baseParams, ...pick(query, params)};
@@ -51,14 +55,15 @@ export class Agent {
         path,
         payload,
         params: mergedParams,
-        catchNotFound
+        catchNotFound,
+        payloadKey
       });
     };
   }
 
   private async requestWithParams(
-    {method, path, payload, params, catchNotFound}:
-    {method: string, path: string, payload: any, params: any, catchNotFound: boolean}) {
+    {method, path, payload, params, catchNotFound, payloadKey}:
+    {method: string, path: string, payload: any, params: any, catchNotFound: boolean, payloadKey?: string}) {
     const newPath = join(this.basePath, path);
 
     // parse
@@ -66,6 +71,7 @@ export class Agent {
     const parsedPath = temp.expand(params);
     const url = `${this.baseUrl}${parsedPath}`;
 
+    // prepare request configs
     const requestConfig: AxiosRequestConfig = {
       method,
       url,
@@ -73,10 +79,13 @@ export class Agent {
         Authorization: `bearer ${this.client.getAccessToken()}`
       }
     };
+
+    // put payload into querystring if method is GET
     if (method === 'GET') {
       requestConfig.params = payload;
     } else {
-      requestConfig.data = payload;
+      // consider payloadKey here
+      requestConfig.data = payloadKey ? payload[payloadKey] : payload;
     }
 
     try {
