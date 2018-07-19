@@ -1,5 +1,5 @@
 import {KeycloakAdminClient} from '../client';
-import {Agent} from './agent';
+import {Agent, RequestArgs} from './agent';
 
 export default class Resource {
   private agent: Agent;
@@ -10,7 +10,8 @@ export default class Resource {
     });
   }
 
-  public makeRequest = <T, R = any>(params: any): (payload?: R) => Promise<T> => {
-    return this.agent.request(params);
+  public makeRequest =
+    <PayloadType = any, ResponseType = any>(args: RequestArgs): (payload?: PayloadType) => Promise<ResponseType> => {
+    return this.agent.request(args);
   }
 }

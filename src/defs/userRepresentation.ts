@@ -3,18 +3,18 @@ import CredentialRepresentation from './credentialRepresentation';
 import FederatedIdentityRepresentation from './federatedIdentityRepresentation';
 
 export default interface UserRepresentation {
-  id: string;
-  createdTimestamp: number;
-  username: string;
-  enabled: boolean;
-  totp: boolean;
-  emailVerified: boolean;
-  disableableCredentialTypes: string[];
-  requiredActions: string[];
-  notBefore: number;
-  access: Record<string, boolean>;
+  id?: string;
+  createdTimestamp?: number;
+  username?: string;
+  enabled?: boolean;
+  totp?: boolean;
+  emailVerified?: boolean;
+  disableableCredentialTypes?: string[];
+  requiredActions?: string[];
+  notBefore?: number;
+  access?: Record<string, boolean>;
 
-  // optional
+  // optional from response
   attributes?: Record<string, any>;
   clientConsents?: UserConsentRepresentation[];
   clientRoles?: Record<string, any>;
