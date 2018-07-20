@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
 import { cred } from './constants';
-import UserRepresentation from '../src/defs/userRepresentation';
+import UserRepresentation, {RequiredAction} from '../src/defs/userRepresentation';
 
 const expect = chai.expect;
 
@@ -40,22 +40,26 @@ describe('Users', function() {
     const user = await this.client.users.findOne({
       id: userId
     });
-    expect(user).to.be.eql(this.currentUser);
+    expect(user).to.be.deep.include(this.currentUser);
   });
 
   it('update single users', async () => {
     const userId = this.currentUser.id;
     await this.client.users.update({id: userId}, {
       firstName: 'william',
-      lastName: 'chang'
+      lastName: 'chang',
+      requiredActions: [RequiredAction.UPDATE_PASSWORD],
+      emailVerified: true
     });
 
     const user = await this.client.users.findOne({
       id: userId
     });
-    expect(user).to.include({
+    expect(user).to.deep.include({
       firstName: 'william',
-      lastName: 'chang'
+      lastName: 'chang',
+      requiredActions: [RequiredAction.UPDATE_PASSWORD],
+      emailVerified: true
     });
   });
 
