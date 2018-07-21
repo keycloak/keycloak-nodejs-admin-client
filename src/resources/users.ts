@@ -1,6 +1,8 @@
 import Resource from './resource';
 import UserRepresentation from '../defs/userRepresentation';
 import { KeycloakAdminClient } from '../client';
+import MappingsRepresentation from '../defs/mappingsRepresentation';
+import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
 
 export interface UserQuery {
   email?: string;
@@ -41,6 +43,42 @@ export class Users extends Resource {
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
+    params: ['id']
+  });
+
+  /**
+   * role mappings
+   */
+
+  public listRoleMappings = this.makeRequest<{id: string}, MappingsRepresentation>({
+    method: 'GET',
+    path: '/{id}/role-mappings',
+    params: ['id']
+  });
+
+  public addRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+    method: 'POST',
+    path: '/{id}/role-mappings/realm',
+    params: ['id'],
+    payloadKey: 'roles'
+  });
+
+  public listRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/role-mappings/realm',
+    params: ['id']
+  });
+
+  public delRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+    method: 'DELETE',
+    path: '/{id}/role-mappings/realm',
+    params: ['id'],
+    payloadKey: 'roles'
+  });
+
+  public listAvailableRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/role-mappings/realm/available',
     params: ['id']
   });
 

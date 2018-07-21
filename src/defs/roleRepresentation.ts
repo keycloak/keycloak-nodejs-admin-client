@@ -14,3 +14,9 @@ export default interface RoleRepresentation {
   id?: string;
   name?: string;
 }
+
+// when requesting to role-mapping api (create, delete), id and name are required
+export interface RoleMappingPayload extends RoleRepresentation {
+  id: string;
+  name: string;
+}
