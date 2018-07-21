@@ -5,13 +5,15 @@ import { cred } from './constants';
 import faker from 'faker';
 import UserRepresentation, {RequiredAction} from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
+import ClientRepresentation from '../src/defs/ClientRepresentation';
 
 const expect = chai.expect;
 
 declare module 'mocha' {
   // tslint:disable-next-line:interface-name
   interface ISuiteCallbackContext {
-    client?: KeycloakAdminClient;
+    kcAdminClient?: KeycloakAdminClient;
+    currentClient?: ClientRepresentation;
     currentUser?: UserRepresentation;
     currentRole?: RoleRepresentation;
   }
@@ -19,38 +21,38 @@ declare module 'mocha' {
 
 describe('Users', function() {
   before(async () => {
-    this.client = new KeycloakAdminClient();
-    await this.client.auth(cred);
+    this.kcAdminClient = new KeycloakAdminClient();
+    await this.kcAdminClient.auth(cred);
     // initialize user
     const username = faker.internet.userName();
-    await this.client.users.create({
+    await this.kcAdminClient.users.create({
       username
     });
-    const users = await this.client.users.find({username});
+    const users = await this.kcAdminClient.users.find({username});
     expect(users[0]).to.be.ok;
     this.currentUser = users[0];
   });
 
   after(async () => {
     const userId = this.currentUser.id;
-    await this.client.users.del({
+    await this.kcAdminClient.users.del({
       id: userId
     });
 
-    const user = await this.client.users.findOne({
+    const user = await this.kcAdminClient.users.findOne({
       id: userId
     });
     expect(user).to.be.null;
   });
 
   it('list users', async () => {
-    const users = await this.client.users.find();
+    const users = await this.kcAdminClient.users.find();
     expect(users).to.be.ok;
   });
 
   it('get single users', async () => {
     const userId = this.currentUser.id;
-    const user = await this.client.users.findOne({
+    const user = await this.kcAdminClient.users.findOne({
       id: userId
     });
     expect(user).to.be.deep.include(this.currentUser);
@@ -58,14 +60,14 @@ describe('Users', function() {
 
   it('update single users', async () => {
     const userId = this.currentUser.id;
-    await this.client.users.update({id: userId}, {
+    await this.kcAdminClient.users.update({id: userId}, {
       firstName: 'william',
       lastName: 'chang',
       requiredActions: [RequiredAction.UPDATE_PASSWORD],
       emailVerified: true
     });
 
-    const user = await this.client.users.findOne({
+    const user = await this.kcAdminClient.users.findOne({
       id: userId
     });
     expect(user).to.deep.include({
@@ -83,22 +85,22 @@ describe('Users', function() {
     before(async () => {
       // create new role
       const roleName = faker.internet.userName();
-      await this.client.roles.create({
+      await this.kcAdminClient.roles.create({
         name: roleName
       });
-      const role = await this.client.roles.findOneByName({
+      const role = await this.kcAdminClient.roles.findOneByName({
         name: roleName
       });
       this.currentRole = role;
     });
 
     after(async () => {
-      await this.client.roles.delByName({name: this.currentRole.name});
+      await this.kcAdminClient.roles.delByName({name: this.currentRole.name});
     });
 
     it('add a role to user', async () => {
       // add role-mappings with role id
-      await this.client.users.addRealmRoleMappings({
+      await this.kcAdminClient.users.addRealmRoleMappings({
         id: this.currentUser.id,
 
         // at least id and name should appear
@@ -110,7 +112,7 @@ describe('Users', function() {
     });
 
     it('list available role-mappings for user', async () => {
-      const roles = await this.client.users.listAvailableRealmRoleMappings({
+      const roles = await this.kcAdminClient.users.listAvailableRealmRoleMappings({
         id: this.currentUser.id
       });
 
@@ -120,7 +122,7 @@ describe('Users', function() {
     });
 
     it('list role-mappings of user', async () => {
-      const res = await this.client.users.listRoleMappings({
+      const res = await this.kcAdminClient.users.listRoleMappings({
         id: this.currentUser.id
       });
 
@@ -128,14 +130,14 @@ describe('Users', function() {
     });
 
     it('list realm role-mappings of user', async () => {
-      const roles = await this.client.users.listRealmRoleMappings({
+      const roles = await this.kcAdminClient.users.listRealmRoleMappings({
         id: this.currentUser.id
       });
       expect(roles).to.deep.include(this.currentRole);
     });
 
     it('del realm role-mappings from user', async () => {
-      await this.client.users.delRealmRoleMappings({
+      await this.kcAdminClient.users.delRealmRoleMappings({
         id: this.currentUser.id,
         roles: [{
           id: this.currentRole.id,
@@ -143,10 +145,111 @@ describe('Users', function() {
         }]
       });
 
-      const roles = await this.client.users.listRealmRoleMappings({
+      const roles = await this.kcAdminClient.users.listRealmRoleMappings({
         id: this.currentUser.id
       });
       expect(roles).to.not.deep.include(this.currentRole);
+    });
+  });
+
+  /**
+   * client Role mappings
+   */
+  describe('client role-mappings', () => {
+    before(async () => {
+      // create new client
+      const clientId = faker.internet.userName();
+      await this.kcAdminClient.clients.create({
+        clientId
+      });
+
+      const clients = await this.kcAdminClient.clients.find({clientId});
+      expect(clients[0]).to.be.ok;
+      this.currentClient = clients[0];
+
+      // create new client role
+      const roleName = faker.internet.userName();
+      await this.kcAdminClient.clients.createRole({
+        id: this.currentClient.id,
+        name: roleName
+      });
+
+      // assign to currentRole
+      this.currentRole = await this.kcAdminClient.clients.findRole({
+        id: this.currentClient.id,
+        roleName
+      });
+    });
+
+    after(async () => {
+      await this.kcAdminClient.clients.delRole({
+        id: this.currentClient.id,
+        roleName: this.currentRole.name
+      });
+      await this.kcAdminClient.clients.del({id: this.currentClient.id});
+    });
+
+    it('add a client role to user', async () => {
+      // add role-mappings with role id
+      await this.kcAdminClient.users.addClientRoleMappings({
+        id: this.currentUser.id,
+        clientUniqueId: this.currentClient.id,
+
+        // at least id and name should appear
+        roles: [{
+          id: this.currentRole.id,
+          name: this.currentRole.name
+        }]
+      });
+    });
+
+    it('list available client role-mappings for user', async () => {
+      const roles = await this.kcAdminClient.users.listAvailableClientRoleMappings({
+        id: this.currentUser.id,
+        clientUniqueId: this.currentClient.id
+      });
+
+      expect(roles).to.be.empty;
+    });
+
+    it('list client role-mappings of user', async () => {
+      const roles = await this.kcAdminClient.users.listClientRoleMappings({
+        id: this.currentUser.id,
+        clientUniqueId: this.currentClient.id
+      });
+
+      expect(roles[0]).to.be.eql(this.currentRole);
+    });
+
+    it('del client role-mappings from user', async () => {
+      const roleName = faker.internet.userName();
+      await this.kcAdminClient.clients.createRole({
+        id: this.currentClient.id,
+        name: roleName
+      });
+      const role = await this.kcAdminClient.clients.findRole({
+        id: this.currentClient.id,
+        roleName
+      });
+
+      // delete the created role
+      await this.kcAdminClient.users.delClientRoleMappings({
+        id: this.currentUser.id,
+        clientUniqueId: this.currentClient.id,
+        roles: [{
+          id: role.id,
+          name: role.name
+        }]
+      });
+
+      // check if mapping is successfully deleted
+      const roles = await this.kcAdminClient.users.listClientRoleMappings({
+        id: this.currentUser.id,
+        clientUniqueId: this.currentClient.id
+      });
+
+      // should only left the one we added in the previous test
+      expect(roles.length).to.be.eql(1);
     });
   });
 });
