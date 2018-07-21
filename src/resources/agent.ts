@@ -89,6 +89,7 @@ export class Agent {
     }
 
     try {
+      // console.log(requestConfig);
       const res = await axios(requestConfig);
       return res.data;
     } catch (err) {

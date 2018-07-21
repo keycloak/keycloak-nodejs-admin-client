@@ -91,6 +91,40 @@ export class Groups extends Resource {
     params: ['id']
   });
 
+  /**
+   * Client role mappings
+   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   */
+
+  public listClientRoleMappings = this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}',
+    params: ['id', 'clientUniqueId']
+  });
+
+  public addClientRoleMappings =
+    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+    method: 'POST',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}',
+    params: ['id', 'clientUniqueId'],
+    payloadKey: 'roles'
+  });
+
+  public delClientRoleMappings =
+    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+    method: 'DELETE',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}',
+    params: ['id', 'clientUniqueId'],
+    payloadKey: 'roles'
+  });
+
+  public listAvailableClientRoleMappings =
+    this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
+    params: ['id', 'clientUniqueId']
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/groups',
