@@ -4,58 +4,66 @@ import { KeycloakAdminClient } from '../src/client';
 import { cred } from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/ClientRepresentation';
-
 const expect = chai.expect;
 
 declare module 'mocha' {
   // tslint:disable-next-line:interface-name
   interface ISuiteCallbackContext {
-    client?: KeycloakAdminClient;
+    kcAdminClient?: KeycloakAdminClient;
     currentClient?: ClientRepresentation;
+    currentRoleName?: string;
   }
 }
 
 describe('Clients', function() {
   before(async () => {
-    this.client = new KeycloakAdminClient();
-    await this.client.auth(cred);
-  });
+    this.kcAdminClient = new KeycloakAdminClient();
+    await this.kcAdminClient.auth(cred);
 
-  it('list clients', async () => {
-    const clients = await this.client.clients.find();
-    expect(clients).to.be.ok;
-  });
-
-  it('create clients', async () => {
+    // create client and also test it
+    // NOTICE: to be clear, clientId stands for the property `clientId` of client
+    // clientUniqueId stands for property `id` of client
     const clientId = faker.internet.userName();
-    await this.client.clients.create({
+    await this.kcAdminClient.clients.create({
       clientId
     });
 
-    const clients = await this.client.clients.find({clientId});
+    const clients = await this.kcAdminClient.clients.find({clientId});
     expect(clients[0]).to.be.ok;
     this.currentClient = clients[0];
   });
 
+  after(async () => {
+    // delete the current one
+    await this.kcAdminClient.clients.del({
+      id: this.currentClient.id
+    });
+  });
+
+  it('list clients', async () => {
+    const clients = await this.kcAdminClient.clients.find();
+    expect(clients).to.be.ok;
+  });
+
   it('get single client', async () => {
-    const clientId = this.currentClient.id;
-    const client = await this.client.clients.findOne({
-      id: clientId
+    const clientUniqueId = this.currentClient.id;
+    const client = await this.kcAdminClient.clients.findOne({
+      id: clientUniqueId
     });
     // not sure why entity from list api will not have property: authorizationServicesEnabled
     expect(client).to.deep.include(this.currentClient);
   });
 
   it('update single client', async () => {
-    const clientId = this.currentClient.id;
-    await this.client.clients.update({id: clientId}, {
+    const {clientId, id: clientUniqueId} = this.currentClient;
+    await this.kcAdminClient.clients.update({id: clientUniqueId}, {
       // clientId is required in client update. no idea why...
       clientId,
       description: 'test'
     });
 
-    const client = await this.client.clients.findOne({
-      id: clientId
+    const client = await this.kcAdminClient.clients.findOne({
+      id: clientUniqueId
     });
     expect(client).to.include({
       description: 'test'
@@ -63,14 +71,114 @@ describe('Clients', function() {
   });
 
   it('delete single client', async () => {
-    const clientId = this.currentClient.id;
-    await this.client.clients.del({
-      id: clientId
+    // create another one for delete test
+    const clientId = faker.internet.userName();
+    await this.kcAdminClient.clients.create({
+      clientId
     });
 
-    const client = await this.client.clients.findOne({
-      id: clientId
+    const clients = await this.kcAdminClient.clients.find({clientId});
+    const client = clients[0];
+
+    // delete it
+    await this.kcAdminClient.clients.del({
+      id: client.id
     });
-    expect(client).to.be.null;
+
+    const delClient = await this.kcAdminClient.clients.findOne({
+      id: client.id
+    });
+    expect(delClient).to.be.null;
+  });
+
+  /**
+   * client roles
+   */
+  describe('client roles', () => {
+    before(async () => {
+      const roleName = faker.internet.userName();
+      // create a client role
+      await this.kcAdminClient.clients.createRole({
+        id: this.currentClient.id,
+        name: roleName
+      });
+
+      // assign currentClientRole
+      this.currentRoleName = roleName;
+    });
+
+    after(async () => {
+      // delete client role
+      await this.kcAdminClient.clients.delRole({
+        id: this.currentClient.id,
+        roleName: this.currentRoleName
+      });
+    });
+
+    it('list the client roles', async () => {
+      const roles = await this.kcAdminClient.clients.listRoles({
+        id: this.currentClient.id
+      });
+
+      expect(roles[0]).to.include({
+        name: this.currentRoleName
+      });
+    });
+
+    it('find the client role', async () => {
+      const role = await this.kcAdminClient.clients.findRole({
+        id: this.currentClient.id,
+        roleName: this.currentRoleName
+      });
+
+      expect(role).to.include({
+        name: this.currentRoleName,
+        clientRole: true,
+        containerId: this.currentClient.id
+      });
+    });
+
+    it('update the client role', async () => {
+      // NOTICE: roleName MUST be in the payload, no idea why...
+      const delta = {
+        name: this.currentRoleName,
+        description: 'test'
+      };
+      await this.kcAdminClient.clients.updateRole({
+        id: this.currentClient.id,
+        roleName: this.currentRoleName
+      }, delta);
+
+      // check the change
+      const role = await this.kcAdminClient.clients.findRole({
+        id: this.currentClient.id,
+        roleName: this.currentRoleName
+      });
+
+      expect(role).to.include(delta);
+    });
+
+    it('delete a client role', async () => {
+      const roleName = faker.internet.userName();
+      // create a client role
+      await this.kcAdminClient.clients.createRole({
+        id: this.currentClient.id,
+        name: roleName
+      });
+
+      // delete
+      await this.kcAdminClient.clients.delRole({
+        id: this.currentClient.id,
+        roleName
+      });
+
+      // check it's null
+      const role = await this.kcAdminClient.clients.findRole({
+        id: this.currentClient.id,
+        roleName
+      });
+
+      expect(role).to.be.null;
+    });
   });
 });
