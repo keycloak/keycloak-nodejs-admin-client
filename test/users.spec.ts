@@ -3,9 +3,10 @@ import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
 import { cred } from './constants';
 import faker from 'faker';
-import UserRepresentation, {RequiredAction} from '../src/defs/userRepresentation';
+import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/ClientRepresentation';
+import { RequiredActionAlias } from '../src/defs/requiredActionProviderRepresentation';
 
 const expect = chai.expect;
 
@@ -63,7 +64,7 @@ describe('Users', function() {
     await this.kcAdminClient.users.update({id: userId}, {
       firstName: 'william',
       lastName: 'chang',
-      requiredActions: [RequiredAction.UPDATE_PASSWORD],
+      requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
       emailVerified: true
     });
 
@@ -73,7 +74,7 @@ describe('Users', function() {
     expect(user).to.deep.include({
       firstName: 'william',
       lastName: 'chang',
-      requiredActions: [RequiredAction.UPDATE_PASSWORD],
+      requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
       emailVerified: true
     });
   });

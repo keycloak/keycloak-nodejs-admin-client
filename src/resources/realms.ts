@@ -1,0 +1,43 @@
+import Resource from './resource';
+import RealmRepresentation from '../defs/realmRepresentation';
+import { KeycloakAdminClient } from '../client';
+
+export class Realms extends Resource {
+  /**
+   * Realm
+   * https://www.keycloak.org/docs-api/4.1/rest-api/#_realms_admin_resource
+   */
+
+  public find = this.makeRequest<void, RealmRepresentation[]>({
+    method: 'GET'
+  });
+
+  public create = this.makeRequest<RealmRepresentation, void>({
+    method: 'POST'
+  });
+
+  public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
+    method: 'GET',
+    path: '/{realm}',
+    params: ['realm'],
+    catchNotFound: true
+  });
+
+  public update = this.makeUpdateRequest<{realm: string}, RealmRepresentation, void>({
+    method: 'PUT',
+    path: '/{realm}',
+    params: ['realm']
+  });
+
+  public del = this.makeRequest<{realm: string}, void>({
+    method: 'DELETE',
+    path: '/{realm}',
+    params: ['realm']
+  });
+
+  constructor(client: KeycloakAdminClient) {
+    super(client, {
+      path: '/admin/realms'
+    });
+  }
+}

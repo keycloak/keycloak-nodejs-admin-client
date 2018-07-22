@@ -1,14 +1,7 @@
 import UserConsentRepresentation from './userConsentRepresentation';
 import CredentialRepresentation from './credentialRepresentation';
 import FederatedIdentityRepresentation from './federatedIdentityRepresentation';
-
-export enum RequiredAction {
-  VERIFY_EMAIL = 'VERIFY_EMAIL',
-  UPDATE_PROFILE = 'UPDATE_PROFILE',
-  CONFIGURE_TOTP = 'CONFIGURE_TOTP',
-  UPDATE_PASSWORD = 'UPDATE_PASSWORD',
-  terms_and_conditions = 'terms_and_conditions'
-}
+import { RequiredActionAlias } from './requiredActionProviderRepresentation';
 
 export default interface UserRepresentation {
   id?: string;
@@ -18,7 +11,7 @@ export default interface UserRepresentation {
   totp?: boolean;
   emailVerified?: boolean;
   disableableCredentialTypes?: string[];
-  requiredActions?: RequiredAction[];
+  requiredActions?: RequiredActionAlias[];
   notBefore?: number;
   access?: Record<string, boolean>;
 
