@@ -27,20 +27,20 @@ export class Groups extends Resource {
   public findOne = this.makeRequest<{id: string}, GroupRepresentation>({
     method: 'GET',
     path: '/{id}',
-    params: ['id'],
+    urlParams: ['id'],
     catchNotFound: true
   });
 
   public update = this.makeUpdateRequest<{id: string}, GroupRepresentation, void>({
     method: 'PUT',
     path: '/{id}',
-    params: ['id']
+    urlParams: ['id']
   });
 
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
-    params: ['id']
+    urlParams: ['id']
   });
 
   /**
@@ -50,7 +50,7 @@ export class Groups extends Resource {
   public listMembers = this.makeRequest<{id: string, first?: number, max?: number}, UserRepresentation[]>({
     method: 'GET',
     path: '/{id}/members',
-    params: ['id'],
+    urlParams: ['id'],
     catchNotFound: true
   });
 
@@ -62,33 +62,33 @@ export class Groups extends Resource {
   public listRoleMappings = this.makeRequest<{id: string}, MappingsRepresentation>({
     method: 'GET',
     path: '/{id}/role-mappings',
-    params: ['id']
+    urlParams: ['id']
   });
 
   public addRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
     method: 'POST',
     path: '/{id}/role-mappings/realm',
-    params: ['id'],
+    urlParams: ['id'],
     payloadKey: 'roles'
   });
 
   public listRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
     method: 'GET',
     path: '/{id}/role-mappings/realm',
-    params: ['id']
+    urlParams: ['id']
   });
 
   public delRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
     method: 'DELETE',
     path: '/{id}/role-mappings/realm',
-    params: ['id'],
+    urlParams: ['id'],
     payloadKey: 'roles'
   });
 
   public listAvailableRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
     method: 'GET',
     path: '/{id}/role-mappings/realm/available',
-    params: ['id']
+    urlParams: ['id']
   });
 
   /**
@@ -99,14 +99,14 @@ export class Groups extends Resource {
   public listClientRoleMappings = this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    params: ['id', 'clientUniqueId']
+    urlParams: ['id', 'clientUniqueId']
   });
 
   public addClientRoleMappings =
     this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
     method: 'POST',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    params: ['id', 'clientUniqueId'],
+    urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
@@ -114,7 +114,7 @@ export class Groups extends Resource {
     this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
     method: 'DELETE',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    params: ['id', 'clientUniqueId'],
+    urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
@@ -122,13 +122,13 @@ export class Groups extends Resource {
     this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
-    params: ['id', 'clientUniqueId']
+    urlParams: ['id', 'clientUniqueId']
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/groups',
-      params: {
+      urlParams: {
         realm: client.realmName
       }
     });

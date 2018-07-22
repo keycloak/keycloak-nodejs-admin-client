@@ -7,7 +7,10 @@ import { KeycloakAdminClient } from '../client';
 export interface RequestArgs {
   method: string;
   path?: string;
-  params?: string[];
+  // variables we'll put in url params
+  urlParams?: string[];
+  // variables we'll put querystring
+  querystring?: string[];
   // if respond with 404, catch it and return null instead
   catchNotFound?: boolean;
   // the exact key we extract to payload of request
@@ -22,53 +25,77 @@ export class Agent {
   private baseParams?: Record<string, any>;
 
   constructor({
-    client, path = '/', params = {}}:
-    {client: KeycloakAdminClient, path?: string, params?: Record<string, any>}) {
-    this.baseParams = params;
+    client, path = '/', urlParams = {}}:
+    {client: KeycloakAdminClient, path?: string, urlParams?: Record<string, any>}) {
+    this.baseParams = urlParams;
     this.client = client;
     this.baseUrl = client.baseUrl;
     this.basePath = path;
   }
 
-  public request({method, path = '', params, catchNotFound = false, payloadKey}: RequestArgs) {
+  public request({
+    method, path = '', urlParams = [], querystring = [], catchNotFound = false, payloadKey}: RequestArgs) {
     return async (payload: any = {}) => {
-      const mergedParams = {...this.baseParams, ...pick(payload, params)};
+      const mergedParams = {...this.baseParams, ...pick(payload, urlParams)};
       // omit payload
-      payload = omit(payload, params);
+      payload = omit(payload, [...urlParams, ...querystring]);
+      // prepare queryParams
+      const queryParams = querystring ? pick(payload, querystring) : null;
       return this.requestWithParams({
         method,
         path,
         payload,
-        params: mergedParams,
+        urlParams: mergedParams,
+        queryParams,
         catchNotFound,
         payloadKey
       });
     };
   }
 
-  public updateRequest({method, path = '', params, catchNotFound = false, payloadKey}: RequestArgs) {
+  public updateRequest({
+    method, path = '', urlParams = [], querystring = [], catchNotFound = false, payloadKey}: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
       // pick params from query
-      const mergedParams = {...this.baseParams, ...pick(query, params)};
+      const mergedParams = {...this.baseParams, ...pick(query, urlParams)};
+      // pick queryParams from query
+      const queryParams = querystring ? pick(query, querystring) : null;
       return this.requestWithParams({
         method,
         path,
         payload,
-        params: mergedParams,
+        urlParams: mergedParams,
         catchNotFound,
+        queryParams,
         payloadKey
       });
     };
   }
 
   private async requestWithParams(
-    {method, path, payload, params, catchNotFound, payloadKey}:
-    {method: string, path: string, payload: any, params: any, catchNotFound: boolean, payloadKey?: string}) {
+    {
+      method,
+      path,
+      payload,
+      urlParams,
+      queryParams,
+      catchNotFound,
+      payloadKey
+    }:
+    {
+      method: string,
+      path: string,
+      payload: any,
+      urlParams: any,
+      queryParams?: Record<string, any> | null,
+      catchNotFound: boolean,
+      payloadKey?: string
+    }) {
     const newPath = join(this.basePath, path);
 
     // parse
     const temp = template.parse(newPath);
-    const parsedPath = temp.expand(params);
+    const parsedPath = temp.expand(urlParams);
     const url = `${this.baseUrl}${parsedPath}`;
 
     // prepare request configs
@@ -86,6 +113,11 @@ export class Agent {
     } else {
       // consider payloadKey here
       requestConfig.data = payloadKey ? payload[payloadKey] : payload;
+    }
+
+    // merged with previous params
+    if (queryParams) {
+      requestConfig.params = (requestConfig.params) ? {...requestConfig.params, ...queryParams} : queryParams;
     }
 
     try {
