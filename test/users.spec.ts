@@ -21,13 +21,18 @@ declare module 'mocha' {
 }
 
 describe('Users', function() {
+  this.timeout(10000);
+
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
     await this.kcAdminClient.auth(cred);
     // initialize user
     const username = faker.internet.userName();
     await this.kcAdminClient.users.create({
-      username
+      username,
+      email: 'wwwy3y3@canner.io',
+      // enabled required to be true in order to send actions email
+      enabled: true
     });
     const users = await this.kcAdminClient.users.find({username});
     expect(users[0]).to.be.ok;
@@ -76,6 +81,18 @@ describe('Users', function() {
       lastName: 'chang',
       requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
       emailVerified: true
+    });
+  });
+
+  /**
+   * exeute actions email
+   */
+  it('should send user exeute actions email', async () => {
+    const userId = this.currentUser.id;
+    await this.kcAdminClient.users.executeActionsEmail({
+      id: userId,
+      lifespan: 43200,
+      actions: [RequiredActionAlias.UPDATE_PASSWORD]
     });
   });
 

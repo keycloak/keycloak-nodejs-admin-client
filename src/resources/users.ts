@@ -3,6 +3,7 @@ import UserRepresentation from '../defs/userRepresentation';
 import { KeycloakAdminClient } from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import { RequiredActionAlias } from '../defs/requiredActionProviderRepresentation';
 
 export interface UserQuery {
   email?: string;
@@ -114,6 +115,28 @@ export class Users extends Resource {
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParams: ['id', 'clientUniqueId']
+  });
+
+  /**
+   * Send a update account email to the user
+   * an email contains a link the user can click to perform a set of required actions.
+   */
+  public executeActionsEmail = this.makeRequest<{
+      id: string,
+      clientId?: string,
+      lifespan?: number,
+      redirectUri?: string,
+      actions?: RequiredActionAlias[]
+    }, void>({
+    method: 'PUT',
+    path: '/{id}/execute-actions-email',
+    urlParams: ['id'],
+    payloadKey: 'actions',
+    querystring: ['lifespan'],
+    keyTransform: {
+      clientId: 'client_id',
+      redirectUri: 'redirect_uri'
+    }
   });
 
   constructor(client: KeycloakAdminClient) {

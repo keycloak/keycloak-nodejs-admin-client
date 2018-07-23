@@ -11,6 +11,8 @@ export interface RequestArgs {
   urlParams?: string[];
   // variables we'll put querystring
   querystring?: string[];
+  // keyTransform, transform key in payload to other key
+  keyTransform?: Record<string, string>;
   // if respond with 404, catch it and return null instead
   catchNotFound?: boolean;
   // the exact key we extract to payload of request
@@ -34,13 +36,25 @@ export class Agent {
   }
 
   public request({
-    method, path = '', urlParams = [], querystring = [], catchNotFound = false, payloadKey}: RequestArgs) {
+    method,
+    path = '',
+    urlParams = [],
+    querystring = [],
+    catchNotFound = false,
+    keyTransform,
+    payloadKey
+  }: RequestArgs) {
     return async (payload: any = {}) => {
       const mergedParams = {...this.baseParams, ...pick(payload, urlParams)};
-      // omit payload
-      payload = omit(payload, [...urlParams, ...querystring]);
       // prepare queryParams
       const queryParams = querystring ? pick(payload, querystring) : null;
+      // omit payload
+      payload = omit(payload, [...urlParams, ...querystring]);
+      // transform key
+      if (keyTransform) {
+        this.transformKey(payload, keyTransform);
+      }
+
       return this.requestWithParams({
         method,
         path,
@@ -54,12 +68,25 @@ export class Agent {
   }
 
   public updateRequest({
-    method, path = '', urlParams = [], querystring = [], catchNotFound = false, payloadKey}: RequestArgs) {
+    method,
+    path = '',
+    urlParams = [],
+    querystring = [],
+    catchNotFound = false,
+    keyTransform,
+    payloadKey
+  }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
-      // pick params from query
-      const mergedParams = {...this.baseParams, ...pick(query, urlParams)};
       // pick queryParams from query
       const queryParams = querystring ? pick(query, querystring) : null;
+
+      // pick params from query
+      const mergedParams = {...this.baseParams, ...pick(query, urlParams)};
+
+      // transform key of queryParams
+      if (keyTransform) {
+        this.transformKey(queryParams, keyTransform);
+      }
       return this.requestWithParams({
         method,
         path,
@@ -130,5 +157,13 @@ export class Agent {
       }
       throw err;
     }
+  }
+
+  private transformKey(payload: any, keyMapping: Record<string, string>) {
+    Object.keys(keyMapping).forEach(key => {
+      const newKey = keyMapping[key];
+      payload[newKey] = payload[key];
+      delete payload[key];
+    });
   }
 }
