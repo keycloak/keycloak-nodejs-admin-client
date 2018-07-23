@@ -4,6 +4,7 @@ import { KeycloakAdminClient } from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
 import { RequiredActionAlias } from '../defs/requiredActionProviderRepresentation';
+import GroupRepresentation from '../defs/groupRepresentation';
 
 export interface UserQuery {
   email?: string;
@@ -121,6 +122,7 @@ export class Users extends Resource {
    * Send a update account email to the user
    * an email contains a link the user can click to perform a set of required actions.
    */
+
   public executeActionsEmail = this.makeRequest<{
       id: string,
       clientId?: string,
@@ -137,6 +139,28 @@ export class Users extends Resource {
       clientId: 'client_id',
       redirectUri: 'redirect_uri'
     }
+  });
+
+  /**
+   * Group
+   */
+
+  public listGroups = this.makeRequest<{id: string}, GroupRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/groups',
+    urlParams: ['id']
+  });
+
+  public addToGroup = this.makeRequest<{id: string, groupId: string}, GroupRepresentation[]>({
+    method: 'PUT',
+    path: '/{id}/groups/{groupId}',
+    urlParams: ['id', 'groupId']
+  });
+
+  public delFromGroup = this.makeRequest<{id: string, groupId: string}, GroupRepresentation[]>({
+    method: 'DELETE',
+    path: '/{id}/groups/{groupId}',
+    urlParams: ['id', 'groupId']
   });
 
   constructor(client: KeycloakAdminClient) {

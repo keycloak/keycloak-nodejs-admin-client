@@ -8,6 +8,7 @@
     "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
     "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
     "test": "DEBUG=kc-admin mocha --compilers ts:ts-node/register --recursive \"test/**/*.spec.ts\"",
+    "test:grep": "DEBUG=kc-admin mocha --compilers ts:ts-node/register --recursive",
     "coverage": "nyc npm run test",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch"
