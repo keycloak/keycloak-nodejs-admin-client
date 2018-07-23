@@ -5,7 +5,8 @@ import { Groups } from './resources/groups';
 import { Roles } from './resources/roles';
 import { Clients } from './resources/clients';
 import { Realms } from './resources/realms';
-import { IdentityProvider } from './resources/identityProvider';
+import { IdentityProviders } from './resources/identityProviders';
+import { Components } from './resources/components';
 
 export interface ClientArgs {
   baseUrl?: string;
@@ -19,7 +20,8 @@ export class KeycloakAdminClient {
   public roles: Roles;
   public clients: Clients;
   public realms: Realms;
-  public identityProviders: IdentityProvider;
+  public identityProviders: IdentityProviders;
+  public components: Components;
 
   // members
   public baseUrl: string;
@@ -36,7 +38,8 @@ export class KeycloakAdminClient {
     this.roles = new Roles(this);
     this.clients = new Clients(this);
     this.realms = new Realms(this);
-    this.identityProviders = new IdentityProvider(this);
+    this.identityProviders = new IdentityProviders(this);
+    this.components = new Components(this);
   }
 
   public async auth(credential: Credential) {
