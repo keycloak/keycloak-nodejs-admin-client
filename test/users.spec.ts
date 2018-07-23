@@ -32,6 +32,7 @@ describe('Users', function() {
       username,
       email: 'wwwy3y3@canner.io',
       // enabled required to be true in order to send actions email
+      emailVerified: true,
       enabled: true
     });
     const users = await this.kcAdminClient.users.find({username});
@@ -93,6 +94,46 @@ describe('Users', function() {
       id: userId,
       lifespan: 43200,
       actions: [RequiredActionAlias.UPDATE_PASSWORD]
+    });
+  });
+
+  /**
+   * remove totp
+   */
+
+  it('should remove totp', async () => {
+    // todo: find a way to add totp from api
+    const userId = this.currentUser.id;
+    await this.kcAdminClient.users.removeTotp({
+      id: userId
+    });
+  });
+
+  /**
+   * reset password
+   */
+
+  it('should reset user password', async () => {
+    // todo: find a way to validate the reset-password result
+    const userId = this.currentUser.id;
+    await this.kcAdminClient.users.resetPassword({
+      id: userId,
+      credential: {
+        temporary: false,
+        type: 'password',
+        value: 'test'
+      }
+    });
+  });
+
+  /**
+   * send verify email
+   */
+
+  it('should send user verify email', async () => {
+    const userId = this.currentUser.id;
+    await this.kcAdminClient.users.sendVerifyEmail({
+      id: userId
     });
   });
 

@@ -1,7 +1,7 @@
 import {join} from 'path';
 import template from 'url-template';
 import axios, { AxiosRequestConfig } from 'axios';
-import {pick, omit} from 'lodash';
+import {pick, omit, isUndefined} from 'lodash';
 import { KeycloakAdminClient } from '../client';
 
 export interface RequestArgs {
@@ -50,9 +50,11 @@ export class Agent {
       const queryParams = querystring ? pick(payload, querystring) : null;
       // omit payload
       payload = omit(payload, [...urlParams, ...querystring]);
-      // transform key
+
+      // transform both payload and queryParams
       if (keyTransform) {
         this.transformKey(payload, keyTransform);
+        this.transformKey(queryParams, keyTransform);
       }
 
       return this.requestWithParams({
@@ -160,7 +162,15 @@ export class Agent {
   }
 
   private transformKey(payload: any, keyMapping: Record<string, string>) {
-    Object.keys(keyMapping).forEach(key => {
+    if (!payload) {
+      return;
+    }
+
+    Object.keys(keyMapping).some(key => {
+      if (isUndefined(payload[key])) {
+        // skip if undefined
+        return false;
+      }
       const newKey = keyMapping[key];
       payload[newKey] = payload[key];
       delete payload[key];

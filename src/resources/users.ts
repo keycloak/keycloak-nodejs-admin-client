@@ -5,6 +5,7 @@ import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
 import { RequiredActionAlias } from '../defs/requiredActionProviderRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
+import CredentialRepresentation from '../defs/credentialRepresentation';
 
 export interface UserQuery {
   email?: string;
@@ -134,7 +135,7 @@ export class Users extends Resource {
     path: '/{id}/execute-actions-email',
     urlParams: ['id'],
     payloadKey: 'actions',
-    querystring: ['lifespan'],
+    querystring: ['lifespan', 'redirectUri', 'clientId'],
     keyTransform: {
       clientId: 'client_id',
       redirectUri: 'redirect_uri'
@@ -161,6 +162,40 @@ export class Users extends Resource {
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParams: ['id', 'groupId']
+  });
+
+  /**
+   * remove totp
+   */
+  public removeTotp = this.makeRequest<{id: string}, void>({
+    method: 'PUT',
+    path: '/{id}/remove-totp',
+    urlParams: ['id']
+  });
+
+  /**
+   * reset password
+   */
+  public resetPassword = this.makeRequest<{id: string, credential: CredentialRepresentation}, void>({
+    method: 'PUT',
+    path: '/{id}/reset-password',
+    urlParams: ['id'],
+    payloadKey: 'credential'
+  });
+
+  /**
+   * send verify email
+   */
+  public sendVerifyEmail =
+  this.makeRequest<{id: string, clientId?: string, redirectUri?: string}, void>({
+    method: 'PUT',
+    path: '/{id}/send-verify-email',
+    urlParams: ['id'],
+    querystring: ['clientId', 'redirectUri'],
+    keyTransform: {
+      clientId: 'client_id',
+      redirectUri: 'redirect_uri'
+    }
   });
 
   constructor(client: KeycloakAdminClient) {
