@@ -2,13 +2,15 @@ sudo: required
 
 language: node_js
 
+node_js:
+  - "8"
+  - "10"
+
 services:
   - docker
 
 before_install:
   - docker pull jboss/keycloak
-  - docker run -p 8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak
+  - docker run -d -p 8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak
   - docker ps -a
 
-script:
-  - npm run test
