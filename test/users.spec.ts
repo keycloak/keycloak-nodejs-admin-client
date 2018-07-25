@@ -100,6 +100,10 @@ describe('Users', function() {
    * exeute actions email
    */
   it('should send user exeute actions email', async () => {
+    // if travis skip it, cause travis close smtp port
+    if (process.env.TRAVIS) {
+      return;
+    }
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.executeActionsEmail({
       id: userId,
@@ -142,6 +146,10 @@ describe('Users', function() {
    */
 
   it('should send user verify email', async () => {
+    // if travis skip it, cause travis close smtp port
+    if (process.env.TRAVIS) {
+      return;
+    }
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.sendVerifyEmail({
       id: userId
