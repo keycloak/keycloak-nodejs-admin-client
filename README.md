@@ -1,6 +1,6 @@
 
 ## keycloak-admin
-[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin)
+[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin) [![Travis (.org)](https://img.shields.io/travis/Canner/keycloak-admin.svg)](https://travis-ci.org/Canner/keycloak-admin)
 
 Nodejs keycloak admin client
 
