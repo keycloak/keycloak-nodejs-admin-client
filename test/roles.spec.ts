@@ -2,7 +2,6 @@
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
 import { cred } from './constants';
-import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 
 const expect = chai.expect;

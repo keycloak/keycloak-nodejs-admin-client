@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
 import { cred } from './constants';
 import faker from 'faker';
-import ClientRepresentation from '../src/defs/ClientRepresentation';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 const expect = chai.expect;
 
 declare module 'mocha' {

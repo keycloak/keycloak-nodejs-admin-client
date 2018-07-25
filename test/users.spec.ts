@@ -5,7 +5,7 @@ import { cred } from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
-import ClientRepresentation from '../src/defs/ClientRepresentation';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 import { RequiredActionAlias } from '../src/defs/requiredActionProviderRepresentation';
 
 const expect = chai.expect;
@@ -38,6 +38,17 @@ describe('Users', function() {
     const users = await this.kcAdminClient.users.find({username});
     expect(users[0]).to.be.ok;
     this.currentUser = users[0];
+
+    // add smtp to realm
+    await this.kcAdminClient.realms.update({realm: 'master'}, {
+      smtpServer: {
+        auth: true,
+        from: '0830021730-07fb21@inbox.mailtrap.io',
+        host: 'smtp.mailtrap.io',
+        user: process.env.SMTP_USER,
+        password: process.env.SMTP_PWD
+      }
+    });
   });
 
   after(async () => {
