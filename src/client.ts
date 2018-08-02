@@ -44,6 +44,8 @@ export class KeycloakAdminClient {
 
   public async auth(credential: Credential) {
     const {accessToken} = await getToken({
+      baseUrl: this.baseUrl,
+      realmName: this.realmName,
       credential
     });
     this.accessToken = accessToken;
