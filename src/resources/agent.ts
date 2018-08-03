@@ -45,11 +45,12 @@ export class Agent {
     payloadKey
   }: RequestArgs) {
     return async (payload: any = {}) => {
-      const mergedParams = {...this.baseParams, ...pick(payload, urlParams)};
+      const selected = [...Object.keys(this.baseParams), ...urlParams];
+      const mergedParams = {...this.baseParams, ...pick(payload, selected)};
       // prepare queryParams
       const queryParams = querystring ? pick(payload, querystring) : null;
       // omit payload
-      payload = omit(payload, [...urlParams, ...querystring]);
+      payload = omit(payload, [...selected, ...querystring]);
 
       // transform both payload and queryParams
       if (keyTransform) {
@@ -83,7 +84,8 @@ export class Agent {
       const queryParams = querystring ? pick(query, querystring) : null;
 
       // pick params from query
-      const mergedParams = {...this.baseParams, ...pick(query, urlParams)};
+      const selected = [...Object.keys(this.baseParams), ...urlParams];
+      const mergedParams = {...this.baseParams, ...pick(query, selected)};
 
       // transform key of queryParams
       if (keyTransform) {

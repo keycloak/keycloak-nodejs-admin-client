@@ -17,7 +17,7 @@ export interface UserQuery {
   username?: string;
 }
 
-export class Users extends Resource {
+export class Users extends Resource<{realm?: string}> {
   public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET'
   });

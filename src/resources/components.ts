@@ -8,7 +8,7 @@ export interface ComponentQuery {
   type?: string;
 }
 
-export class Components extends Resource {
+export class Components extends Resource<{realm?: string}> {
   /**
    * components
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_component_resource

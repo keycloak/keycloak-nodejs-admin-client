@@ -2,7 +2,7 @@ import Resource from './resource';
 import RoleRepresentation from '../defs/roleRepresentation';
 import { KeycloakAdminClient } from '../client';
 
-export class Roles extends Resource {
+export class Roles extends Resource<{realm?: string}> {
   /**
    * Realm roles
    */

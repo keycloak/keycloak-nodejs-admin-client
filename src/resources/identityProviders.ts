@@ -2,7 +2,7 @@ import Resource from './resource';
 import IdentityProviderRepresentation from '../defs/identityProviderRepresentation';
 import { KeycloakAdminClient } from '../client';
 
-export class IdentityProviders extends Resource {
+export class IdentityProviders extends Resource<{realm?: string}> {
   /**
    * Identity provider
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_identity_providers_resource

@@ -9,7 +9,7 @@ export interface ClientQuery {
   viewableOnly?: boolean;
 }
 
-export class Clients extends Resource {
+export class Clients extends Resource<{realm?: string}> {
   public find = this.makeRequest<ClientQuery, ClientRepresentation[]>({
     method: 'GET'
   });

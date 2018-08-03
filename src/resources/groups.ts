@@ -11,7 +11,7 @@ export interface GroupQuery {
   search?: string;
 }
 
-export class Groups extends Resource {
+export class Groups extends Resource<{realm?: string}> {
   public find = this.makeRequest<GroupQuery, GroupRepresentation[]>({
     method: 'GET'
   });
