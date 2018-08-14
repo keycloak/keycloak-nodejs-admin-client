@@ -51,6 +51,10 @@ export class KeycloakAdminClient {
     this.accessToken = accessToken;
   }
 
+  public setAccessToken(token: string) {
+    this.accessToken = token;
+  }
+
   public getAccessToken() {
     return this.accessToken;
   }
