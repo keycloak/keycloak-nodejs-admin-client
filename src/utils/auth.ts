@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import camelize from 'camelize';
 import querystring from 'querystring';
 import { defaultBaseUrl, defaultRealm } from './contants';
@@ -8,6 +8,7 @@ export interface Credential {
   password: string;
   grantType: string;
   clientId: string;
+  clientSecret?: string;
 }
 
 export interface Settings {
@@ -43,6 +44,13 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     grant_type: credential.grantType,
     client_id: credential.clientId
   });
-  const {data} = await axios.post(url, payload);
+  const configs: AxiosRequestConfig = {};
+  if (credential.clientSecret) {
+    configs.auth = {
+      username: credential.clientId,
+      password: credential.clientSecret
+    };
+  }
+  const {data} = await axios.post(url, payload, configs);
   return camelize(data);
 };
