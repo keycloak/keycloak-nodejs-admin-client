@@ -3,7 +3,9 @@ import {Agent, RequestArgs} from './agent';
 
 export default class Resource<ParamType = {}> {
   private agent: Agent;
-  constructor(client: KeycloakAdminClient, settings: {path?: string, urlParams?: ParamType} = {}) {
+  constructor(client: KeycloakAdminClient, settings: {
+    path?: string, urlParams?: ParamType
+  } = {}) {
     this.agent = new Agent({
       client,
       ...settings

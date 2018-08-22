@@ -25,14 +25,20 @@ export class Agent {
   private baseUrl: string;
   private basePath: string;
   private baseParams?: Record<string, any>;
+  private requestConfigs?: AxiosRequestConfig;
 
   constructor({
-    client, path = '/', urlParams = {}}:
-    {client: KeycloakAdminClient, path?: string, urlParams?: Record<string, any>}) {
+    client, path = '/', urlParams = {}
+  }: {
+    client: KeycloakAdminClient,
+    path?: string,
+    urlParams?: Record<string, any>
+  }) {
     this.baseParams = urlParams;
     this.client = client;
     this.baseUrl = client.baseUrl;
     this.basePath = path;
+    this.requestConfigs = client.getRequestConfigs() || {};
   }
 
   public request({
@@ -131,6 +137,7 @@ export class Agent {
 
     // prepare request configs
     const requestConfig: AxiosRequestConfig = {
+      ...this.requestConfigs,
       method,
       url,
       headers: {

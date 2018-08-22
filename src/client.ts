@@ -7,10 +7,12 @@ import { Clients } from './resources/clients';
 import { Realms } from './resources/realms';
 import { IdentityProviders } from './resources/identityProviders';
 import { Components } from './resources/components';
+import { AxiosRequestConfig } from 'axios';
 
 export interface ClientArgs {
   baseUrl?: string;
   realmName?: string;
+  requestConfigs?: AxiosRequestConfig;
 }
 
 export class KeycloakAdminClient {
@@ -27,10 +29,12 @@ export class KeycloakAdminClient {
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
+  private requestConfigs?: AxiosRequestConfig;
 
   constructor(args?: ClientArgs) {
     this.baseUrl = args && args.baseUrl || defaultBaseUrl;
     this.realmName = args && args.realmName || defaultRealm;
+    this.requestConfigs = args && args.requestConfigs;
 
     // initialize resources
     this.users = new Users(this);
@@ -57,5 +61,9 @@ export class KeycloakAdminClient {
 
   public getAccessToken() {
     return this.accessToken;
+  }
+
+  public getRequestConfigs() {
+    return this.requestConfigs;
   }
 }
