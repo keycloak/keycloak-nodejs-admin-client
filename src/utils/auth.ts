@@ -16,6 +16,7 @@ export interface Settings {
   baseUrl?: string;
   // credential
   credential: Credential;
+  requestConfigs?: AxiosRequestConfig;
 }
 
 export interface TokenResponse {
@@ -44,7 +45,7 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     grant_type: credential.grantType,
     client_id: credential.clientId
   });
-  const configs: AxiosRequestConfig = {};
+  const configs: AxiosRequestConfig = settings.requestConfigs || {};
   if (credential.clientSecret) {
     configs.auth = {
       username: credential.clientId,

@@ -50,7 +50,8 @@ export class KeycloakAdminClient {
     const {accessToken} = await getToken({
       baseUrl: this.baseUrl,
       realmName: this.realmName,
-      credential
+      credential,
+      requestConfigs: this.requestConfigs
     });
     this.accessToken = accessToken;
   }
