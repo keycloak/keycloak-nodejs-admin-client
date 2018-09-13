@@ -3,6 +3,7 @@ import ClientRepresentation from '../defs/clientRepresentation';
 import { KeycloakAdminClient } from '../client';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
+import CredentialRepresentation from '../defs/credentialRepresentation';
 
 export interface ClientQuery {
   clientId?: string;
@@ -81,6 +82,22 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/roles/{roleName}/users',
     urlParams: ['id', 'roleName']
+  });
+
+  /**
+   * Client secret
+   */
+
+  public generateNewClientSecret = this.makeRequest<{id: string}, void>({
+    method: 'POST',
+    path: '/{id}/client-secret',
+    urlParams: ['id']
+  });
+
+  public getClientSecret = this.makeRequest<{id: string}, CredentialRepresentation>({
+    method: 'GET',
+    path: '/{id}/client-secret',
+    urlParams: ['id']
   });
 
   constructor(client: KeycloakAdminClient) {

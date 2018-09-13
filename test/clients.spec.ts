@@ -181,4 +181,37 @@ describe('Clients', function() {
       expect(role).to.be.null;
     });
   });
+
+  describe('client secret', () => {
+    before(async () => {
+      const {clientId, id: clientUniqueId} = this.currentClient;
+      // update with serviceAccountsEnabled: true
+      await this.kcAdminClient.clients.update({
+        id: clientUniqueId
+      }, {
+        clientId,
+        serviceAccountsEnabled: true
+      });
+    });
+
+    it('get client secret', async () => {
+      const credential = await this.kcAdminClient.clients.getClientSecret({
+        id: this.currentClient.id
+      });
+
+      expect(credential).to.have.all.keys('type', 'value');
+    });
+
+    it('generate new client secret', async () => {
+      const newCredential = await this.kcAdminClient.clients.generateNewClientSecret({
+        id: this.currentClient.id
+      });
+
+      const credential = await this.kcAdminClient.clients.getClientSecret({
+        id: this.currentClient.id
+      });
+
+      expect(newCredential).to.be.eql(credential);
+    });
+  });
 });
