@@ -213,5 +213,13 @@ describe('Clients', function() {
 
       expect(newCredential).to.be.eql(credential);
     });
+
+    it('get service account user', async () => {
+      const serviceAccountUser = await this.kcAdminClient.clients.getServiceAccountUser({
+        id: this.currentClient.id
+      });
+
+      expect(serviceAccountUser).to.be.ok;
+    });
   });
 });
