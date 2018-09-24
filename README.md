@@ -27,7 +27,7 @@ import KcAdminClient from 'keycloak-admin';
 // }
 const kcAdminClient = new KcAdminClient();
 
-// authorize with username/passowrd
+// authorize with username/password
 await kcAdminClient.auth({
   username: 'wwwy3y3',
   password: 'wwwy3y3',
