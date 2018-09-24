@@ -36,7 +36,7 @@ await kcAdminClient.auth({
 });
 
 // list all users
-const users = await this.kcAdminClient.users.find();
+const users = await kcAdminClient.users.find();
 ```
 
 ## Supported APIs
