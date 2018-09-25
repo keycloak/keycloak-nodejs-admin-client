@@ -22,11 +22,11 @@ yarn add keycloak-admin
 ```js
 import KcAdminClient from 'keycloak-admin';
 
-// To configure the client, pass an object with any of these options:
+// To configure the client, pass an object to override any of these  options:
 // {
-//   baseUrl?: string;
-//   realmName?: string;
-//   requestConfigs?: AxiosRequestConfig;
+//   baseUrl: 'http://127.0.0.1:8080/auth',
+//   realmName: 'master',
+//   requestConfigs: { /* Axios request config options https://github.com/axios/axios#request-config */ },
 // }
 const kcAdminClient = new KcAdminClient();
 
