@@ -26,7 +26,9 @@ import KcAdminClient from 'keycloak-admin';
 // {
 //   baseUrl: 'http://127.0.0.1:8080/auth',
 //   realmName: 'master',
-//   requestConfigs: { /* Axios request config options https://github.com/axios/axios#request-config */ },
+//   requestConfigs: {
+//     /* Axios request config options https://github.com/axios/axios#request-config */
+//   },
 // }
 const kcAdminClient = new KcAdminClient();
 
