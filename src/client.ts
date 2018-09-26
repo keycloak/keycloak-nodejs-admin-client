@@ -1,5 +1,5 @@
 import { getToken, Credential } from './utils/auth';
-import { defaultBaseUrl, defaultRealm } from './utils/contants';
+import { defaultBaseUrl, defaultRealm } from './utils/constants';
 import { Users } from './resources/users';
 import { Groups } from './resources/groups';
 import { Roles } from './resources/roles';
