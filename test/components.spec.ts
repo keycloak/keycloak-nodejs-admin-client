@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ComponentRepresentation from '../src/defs/componentRepresentation';
@@ -66,13 +66,16 @@ describe('User federation using component api', function() {
   });
 
   it('update a user federation', async () => {
-    await this.kcAdminClient.components.update({id: this.currentUserFed.id}, {
-      // parentId, providerId, providerType required for update
-      parentId: 'master',
-      providerId: 'ldap',
-      providerType: 'org.keycloak.storage.UserStorageProvider',
-      name: 'cool-name'
-    });
+    await this.kcAdminClient.components.update(
+      {id: this.currentUserFed.id},
+      {
+        // parentId, providerId, providerType required for update
+        parentId: 'master',
+        providerId: 'ldap',
+        providerType: 'org.keycloak.storage.UserStorageProvider',
+        name: 'cool-name'
+      }
+    );
     const updated = await this.kcAdminClient.components.findOne({
       id: this.currentUserFed.id
     });

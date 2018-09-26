@@ -1,8 +1,8 @@
 import {join} from 'path';
 import template from 'url-template';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import {pick, omit, isUndefined} from 'lodash';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export interface RequestArgs {
   method: string;
@@ -28,11 +28,13 @@ export class Agent {
   private requestConfigs?: AxiosRequestConfig;
 
   constructor({
-    client, path = '/', urlParams = {}
+    client,
+    path = '/',
+    urlParams = {}
   }: {
-    client: KeycloakAdminClient,
-    path?: string,
-    urlParams?: Record<string, any>
+    client: KeycloakAdminClient;
+    path?: string;
+    urlParams?: Record<string, any>;
   }) {
     this.baseParams = urlParams;
     this.client = client;
@@ -109,25 +111,23 @@ export class Agent {
     };
   }
 
-  private async requestWithParams(
-    {
-      method,
-      path,
-      payload,
-      urlParams,
-      queryParams,
-      catchNotFound,
-      payloadKey
-    }:
-    {
-      method: string,
-      path: string,
-      payload: any,
-      urlParams: any,
-      queryParams?: Record<string, any> | null,
-      catchNotFound: boolean,
-      payloadKey?: string
-    }) {
+  private async requestWithParams({
+    method,
+    path,
+    payload,
+    urlParams,
+    queryParams,
+    catchNotFound,
+    payloadKey
+  }: {
+    method: string;
+    path: string;
+    payload: any;
+    urlParams: any;
+    queryParams?: Record<string, any> | null;
+    catchNotFound: boolean;
+    payloadKey?: string;
+  }) {
     const newPath = join(this.basePath, path);
 
     // parse
@@ -155,7 +155,9 @@ export class Agent {
 
     // merged with previous params
     if (queryParams) {
-      requestConfig.params = (requestConfig.params) ? {...requestConfig.params, ...queryParams} : queryParams;
+      requestConfig.params = requestConfig.params
+        ? {...requestConfig.params, ...queryParams}
+        : queryParams;
     }
 
     try {

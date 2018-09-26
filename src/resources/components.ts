@@ -1,6 +1,6 @@
 import Resource from './resource';
 import ComponentRepresentation from '../defs/componentRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export interface ComponentQuery {
   name?: string;
@@ -29,7 +29,11 @@ export class Components extends Resource<{realm?: string}> {
     catchNotFound: true
   });
 
-  public update = this.makeUpdateRequest<{id: string}, ComponentRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {id: string},
+    ComponentRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{id}',
     urlParams: ['id']

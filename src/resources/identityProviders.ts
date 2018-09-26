@@ -1,6 +1,6 @@
 import Resource from './resource';
 import IdentityProviderRepresentation from '../defs/identityProviderRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class IdentityProviders extends Resource<{realm?: string}> {
   /**
@@ -16,14 +16,21 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     method: 'POST'
   });
 
-  public findOne = this.makeRequest<{alias: string}, IdentityProviderRepresentation>({
+  public findOne = this.makeRequest<
+    {alias: string},
+    IdentityProviderRepresentation
+  >({
     method: 'GET',
     path: '/{alias}',
     urlParams: ['alias'],
     catchNotFound: true
   });
 
-  public update = this.makeUpdateRequest<{alias: string}, IdentityProviderRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {alias: string},
+    IdentityProviderRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{alias}',
     urlParams: ['alias']

@@ -1,12 +1,12 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
-import { RequiredActionAlias } from '../src/defs/requiredActionProviderRepresentation';
+import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 
 const expect = chai.expect;
 
@@ -40,15 +40,18 @@ describe('Users', function() {
     this.currentUser = users[0];
 
     // add smtp to realm
-    await this.kcAdminClient.realms.update({realm: 'master'}, {
-      smtpServer: {
-        auth: true,
-        from: '0830021730-07fb21@inbox.mailtrap.io',
-        host: 'smtp.mailtrap.io',
-        user: process.env.SMTP_USER,
-        password: process.env.SMTP_PWD
+    await this.kcAdminClient.realms.update(
+      {realm: 'master'},
+      {
+        smtpServer: {
+          auth: true,
+          from: '0830021730-07fb21@inbox.mailtrap.io',
+          host: 'smtp.mailtrap.io',
+          user: process.env.SMTP_USER,
+          password: process.env.SMTP_PWD
+        }
       }
-    });
+    );
   });
 
   after(async () => {
@@ -78,12 +81,15 @@ describe('Users', function() {
 
   it('update single users', async () => {
     const userId = this.currentUser.id;
-    await this.kcAdminClient.users.update({id: userId}, {
-      firstName: 'william',
-      lastName: 'chang',
-      requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
-      emailVerified: true
-    });
+    await this.kcAdminClient.users.update(
+      {id: userId},
+      {
+        firstName: 'william',
+        lastName: 'chang',
+        requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
+        emailVerified: true
+      }
+    );
 
     const user = await this.kcAdminClient.users.findOne({
       id: userId
@@ -182,17 +188,21 @@ describe('Users', function() {
         id: this.currentUser.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
     });
 
     it('list available role-mappings for user', async () => {
-      const roles = await this.kcAdminClient.users.listAvailableRealmRoleMappings({
-        id: this.currentUser.id
-      });
+      const roles = await this.kcAdminClient.users.listAvailableRealmRoleMappings(
+        {
+          id: this.currentUser.id
+        }
+      );
 
       // admin, create-realm
       // not sure why others like offline_access, uma_authorization not included
@@ -217,10 +227,12 @@ describe('Users', function() {
     it('del realm role-mappings from user', async () => {
       await this.kcAdminClient.users.delRealmRoleMappings({
         id: this.currentUser.id,
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
 
       const roles = await this.kcAdminClient.users.listRealmRoleMappings({
@@ -274,18 +286,22 @@ describe('Users', function() {
         clientUniqueId: this.currentClient.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
     });
 
     it('list available client role-mappings for user', async () => {
-      const roles = await this.kcAdminClient.users.listAvailableClientRoleMappings({
-        id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id
-      });
+      const roles = await this.kcAdminClient.users.listAvailableClientRoleMappings(
+        {
+          id: this.currentUser.id,
+          clientUniqueId: this.currentClient.id
+        }
+      );
 
       expect(roles).to.be.empty;
     });
@@ -314,10 +330,12 @@ describe('Users', function() {
       await this.kcAdminClient.users.delClientRoleMappings({
         id: this.currentUser.id,
         clientUniqueId: this.currentClient.id,
-        roles: [{
-          id: role.id,
-          name: role.name
-        }]
+        roles: [
+          {
+            id: role.id,
+            name: role.name
+          }
+        ]
       });
 
       // check if mapping is successfully deleted

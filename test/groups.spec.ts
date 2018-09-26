@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import GroupRepresentation from '../src/defs/groupRepresentation';
@@ -59,7 +59,10 @@ describe('Groups', function() {
 
   it('update single groups', async () => {
     const groupId = this.currentGroup.id;
-    await this.kcAdminClient.groups.update({id: groupId}, {name: 'another-group-name'});
+    await this.kcAdminClient.groups.update(
+      {id: groupId},
+      {name: 'another-group-name'}
+    );
 
     const group = await this.kcAdminClient.groups.findOne({
       id: groupId
@@ -95,17 +98,21 @@ describe('Groups', function() {
         id: this.currentGroup.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
     });
 
     it('list available role-mappings', async () => {
-      const roles = await this.kcAdminClient.groups.listAvailableRealmRoleMappings({
-        id: this.currentGroup.id
-      });
+      const roles = await this.kcAdminClient.groups.listAvailableRealmRoleMappings(
+        {
+          id: this.currentGroup.id
+        }
+      );
 
       // admin, create-realm, offline_access, uma_authorization
       expect(roles.length).to.be.least(4);
@@ -130,10 +137,12 @@ describe('Groups', function() {
     it('del realm role-mappings from group', async () => {
       await this.kcAdminClient.groups.delRealmRoleMappings({
         id: this.currentGroup.id,
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
 
       const roles = await this.kcAdminClient.groups.listRealmRoleMappings({
@@ -187,18 +196,22 @@ describe('Groups', function() {
         clientUniqueId: this.currentClient.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name
+          }
+        ]
       });
     });
 
     it('list available client role-mappings for group', async () => {
-      const roles = await this.kcAdminClient.groups.listAvailableClientRoleMappings({
-        id: this.currentGroup.id,
-        clientUniqueId: this.currentClient.id
-      });
+      const roles = await this.kcAdminClient.groups.listAvailableClientRoleMappings(
+        {
+          id: this.currentGroup.id,
+          clientUniqueId: this.currentClient.id
+        }
+      );
 
       expect(roles).to.be.empty;
     });
@@ -227,10 +240,12 @@ describe('Groups', function() {
       await this.kcAdminClient.groups.delClientRoleMappings({
         id: this.currentGroup.id,
         clientUniqueId: this.currentClient.id,
-        roles: [{
-          id: role.id,
-          name: role.name
-        }]
+        roles: [
+          {
+            id: role.id,
+            name: role.name
+          }
+        ]
       });
 
       // check if mapping is successfully deleted

@@ -1,9 +1,11 @@
 import Resource from './resource';
 import GroupRepresentation from '../defs/groupRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 import UserRepresentation from '../defs/userRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import RoleRepresentation, {
+  RoleMappingPayload
+} from '../defs/roleRepresentation';
 
 export interface GroupQuery {
   first?: number;
@@ -31,7 +33,11 @@ export class Groups extends Resource<{realm?: string}> {
     catchNotFound: true
   });
 
-  public update = this.makeUpdateRequest<{id: string}, GroupRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {id: string},
+    GroupRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{id}',
     urlParams: ['id']
@@ -47,7 +53,10 @@ export class Groups extends Resource<{realm?: string}> {
    * Members
    */
 
-  public listMembers = this.makeRequest<{id: string, first?: number, max?: number}, UserRepresentation[]>({
+  public listMembers = this.makeRequest<
+    {id: string; first?: number; max?: number},
+    UserRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/members',
     urlParams: ['id'],
@@ -59,33 +68,48 @@ export class Groups extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_role_mapper_resource
    */
 
-  public listRoleMappings = this.makeRequest<{id: string}, MappingsRepresentation>({
+  public listRoleMappings = this.makeRequest<
+    {id: string},
+    MappingsRepresentation
+  >({
     method: 'GET',
     path: '/{id}/role-mappings',
     urlParams: ['id']
   });
 
-  public addRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+  public addRealmRoleMappings = this.makeRequest<
+    {id: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'POST',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id'],
     payloadKey: 'roles'
   });
 
-  public listRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+  public listRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id']
   });
 
-  public delRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+  public delRealmRoleMappings = this.makeRequest<
+    {id: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'DELETE',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id'],
     payloadKey: 'roles'
   });
 
-  public listAvailableRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+  public listAvailableRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/realm/available',
     urlParams: ['id']
@@ -96,30 +120,39 @@ export class Groups extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
    */
 
-  public listClientRoleMappings = this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+  public listClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId']
   });
 
-  public addClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+  public addClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'POST',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
-  public delClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+  public delClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'DELETE',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
-  public listAvailableClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+  public listAvailableClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParams: ['id', 'clientUniqueId']

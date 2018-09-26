@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { pick, omit } from 'lodash';
-import { KeycloakAdminClient } from '../src/client';
+import {pick, omit} from 'lodash';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
@@ -68,7 +68,9 @@ describe('Group user integration', function() {
       id: this.currentUser.id
     });
     // expect id,name,path to be the same
-    expect(groups[0]).to.be.eql(pick(this.currentGroup, ['id', 'name', 'path']));
+    expect(groups[0]).to.be.eql(
+      pick(this.currentGroup, ['id', 'name', 'path'])
+    );
   });
 
   it('should list members using group api', async () => {

@@ -1,9 +1,11 @@
 import Resource from './resource';
 import UserRepresentation from '../defs/userRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
-import { RequiredActionAlias } from '../defs/requiredActionProviderRepresentation';
+import RoleRepresentation, {
+  RoleMappingPayload
+} from '../defs/roleRepresentation';
+import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
 
@@ -37,7 +39,11 @@ export class Users extends Resource<{realm?: string}> {
     catchNotFound: true
   });
 
-  public update = this.makeUpdateRequest<{id: string}, UserRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {id: string},
+    UserRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{id}',
     urlParams: ['id']
@@ -53,33 +59,48 @@ export class Users extends Resource<{realm?: string}> {
    * role mappings
    */
 
-  public listRoleMappings = this.makeRequest<{id: string}, MappingsRepresentation>({
+  public listRoleMappings = this.makeRequest<
+    {id: string},
+    MappingsRepresentation
+  >({
     method: 'GET',
     path: '/{id}/role-mappings',
     urlParams: ['id']
   });
 
-  public addRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+  public addRealmRoleMappings = this.makeRequest<
+    {id: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'POST',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id'],
     payloadKey: 'roles'
   });
 
-  public listRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+  public listRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id']
   });
 
-  public delRealmRoleMappings = this.makeRequest<{id: string, roles: RoleMappingPayload[]}, void>({
+  public delRealmRoleMappings = this.makeRequest<
+    {id: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'DELETE',
     path: '/{id}/role-mappings/realm',
     urlParams: ['id'],
     payloadKey: 'roles'
   });
 
-  public listAvailableRealmRoleMappings = this.makeRequest<{id: string}, RoleRepresentation[]>({
+  public listAvailableRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/realm/available',
     urlParams: ['id']
@@ -90,30 +111,39 @@ export class Users extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
    */
 
-  public listClientRoleMappings = this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+  public listClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId']
   });
 
-  public addClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+  public addClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'POST',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
-  public delClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string, roles: RoleMappingPayload[]}, void>({
+  public delClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
+    void
+  >({
     method: 'DELETE',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
     urlParams: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
-  public listAvailableClientRoleMappings =
-    this.makeRequest<{id: string, clientUniqueId: string}, RoleRepresentation[]>({
+  public listAvailableClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParams: ['id', 'clientUniqueId']
@@ -124,13 +154,16 @@ export class Users extends Resource<{realm?: string}> {
    * an email contains a link the user can click to perform a set of required actions.
    */
 
-  public executeActionsEmail = this.makeRequest<{
-      id: string,
-      clientId?: string,
-      lifespan?: number,
-      redirectUri?: string,
-      actions?: RequiredActionAlias[]
-    }, void>({
+  public executeActionsEmail = this.makeRequest<
+    {
+      id: string;
+      clientId?: string;
+      lifespan?: number;
+      redirectUri?: string;
+      actions?: RequiredActionAlias[];
+    },
+    void
+  >({
     method: 'PUT',
     path: '/{id}/execute-actions-email',
     urlParams: ['id'],
@@ -152,13 +185,19 @@ export class Users extends Resource<{realm?: string}> {
     urlParams: ['id']
   });
 
-  public addToGroup = this.makeRequest<{id: string, groupId: string}, GroupRepresentation[]>({
+  public addToGroup = this.makeRequest<
+    {id: string; groupId: string},
+    GroupRepresentation[]
+  >({
     method: 'PUT',
     path: '/{id}/groups/{groupId}',
     urlParams: ['id', 'groupId']
   });
 
-  public delFromGroup = this.makeRequest<{id: string, groupId: string}, GroupRepresentation[]>({
+  public delFromGroup = this.makeRequest<
+    {id: string; groupId: string},
+    GroupRepresentation[]
+  >({
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParams: ['id', 'groupId']
@@ -176,7 +215,10 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * reset password
    */
-  public resetPassword = this.makeRequest<{id: string, credential: CredentialRepresentation}, void>({
+  public resetPassword = this.makeRequest<
+    {id: string; credential: CredentialRepresentation},
+    void
+  >({
     method: 'PUT',
     path: '/{id}/reset-password',
     urlParams: ['id'],
@@ -186,8 +228,10 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * send verify email
    */
-  public sendVerifyEmail =
-  this.makeRequest<{id: string, clientId?: string, redirectUri?: string}, void>({
+  public sendVerifyEmail = this.makeRequest<
+    {id: string; clientId?: string; redirectUri?: string},
+    void
+  >({
     method: 'PUT',
     path: '/{id}/send-verify-email',
     urlParams: ['id'],

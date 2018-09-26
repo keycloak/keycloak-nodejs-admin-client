@@ -1,13 +1,13 @@
-import { getToken, Credentials } from './utils/auth';
-import { defaultBaseUrl, defaultRealm } from './utils/constants';
-import { Users } from './resources/users';
-import { Groups } from './resources/groups';
-import { Roles } from './resources/roles';
-import { Clients } from './resources/clients';
-import { Realms } from './resources/realms';
-import { IdentityProviders } from './resources/identityProviders';
-import { Components } from './resources/components';
-import { AxiosRequestConfig } from 'axios';
+import {getToken, Credentials} from './utils/auth';
+import {defaultBaseUrl, defaultRealm} from './utils/constants';
+import {Users} from './resources/users';
+import {Groups} from './resources/groups';
+import {Roles} from './resources/roles';
+import {Clients} from './resources/clients';
+import {Realms} from './resources/realms';
+import {IdentityProviders} from './resources/identityProviders';
+import {Components} from './resources/components';
+import {AxiosRequestConfig} from 'axios';
 
 export interface ConnectionConfig {
   baseUrl?: string;

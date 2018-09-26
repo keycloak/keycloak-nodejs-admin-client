@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
@@ -56,11 +56,14 @@ describe('Clients', function() {
 
   it('update single client', async () => {
     const {clientId, id: clientUniqueId} = this.currentClient;
-    await this.kcAdminClient.clients.update({id: clientUniqueId}, {
-      // clientId is required in client update. no idea why...
-      clientId,
-      description: 'test'
-    });
+    await this.kcAdminClient.clients.update(
+      {id: clientUniqueId},
+      {
+        // clientId is required in client update. no idea why...
+        clientId,
+        description: 'test'
+      }
+    );
 
     const client = await this.kcAdminClient.clients.findOne({
       id: clientUniqueId
@@ -144,10 +147,13 @@ describe('Clients', function() {
         name: this.currentRoleName,
         description: 'test'
       };
-      await this.kcAdminClient.clients.updateRole({
-        id: this.currentClient.id,
-        roleName: this.currentRoleName
-      }, delta);
+      await this.kcAdminClient.clients.updateRole(
+        {
+          id: this.currentClient.id,
+          roleName: this.currentRoleName
+        },
+        delta
+      );
 
       // check the change
       const role = await this.kcAdminClient.clients.findRole({
@@ -186,12 +192,15 @@ describe('Clients', function() {
     before(async () => {
       const {clientId, id: clientUniqueId} = this.currentClient;
       // update with serviceAccountsEnabled: true
-      await this.kcAdminClient.clients.update({
-        id: clientUniqueId
-      }, {
-        clientId,
-        serviceAccountsEnabled: true
-      });
+      await this.kcAdminClient.clients.update(
+        {
+          id: clientUniqueId
+        },
+        {
+          clientId,
+          serviceAccountsEnabled: true
+        }
+      );
     });
 
     it('get client secret', async () => {
@@ -203,9 +212,11 @@ describe('Clients', function() {
     });
 
     it('generate new client secret', async () => {
-      const newCredential = await this.kcAdminClient.clients.generateNewClientSecret({
-        id: this.currentClient.id
-      });
+      const newCredential = await this.kcAdminClient.clients.generateNewClientSecret(
+        {
+          id: this.currentClient.id
+        }
+      );
 
       const credential = await this.kcAdminClient.clients.getClientSecret({
         id: this.currentClient.id
@@ -215,9 +226,11 @@ describe('Clients', function() {
     });
 
     it('get service account user', async () => {
-      const serviceAccountUser = await this.kcAdminClient.clients.getServiceAccountUser({
-        id: this.currentClient.id
-      });
+      const serviceAccountUser = await this.kcAdminClient.clients.getServiceAccountUser(
+        {
+          id: this.currentClient.id
+        }
+      );
 
       expect(serviceAccountUser).to.be.ok;
     });

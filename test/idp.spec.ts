@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 const expect = chai.expect;
@@ -57,12 +57,15 @@ describe('Identity providers', function() {
     const idp = await this.kcAdminClient.identityProviders.findOne({
       alias: this.currentIdpAlias
     });
-    await this.kcAdminClient.identityProviders.update({alias: this.currentIdpAlias}, {
-      // alias and internalId are requried to update
-      alias: idp.alias,
-      internalId: idp.internalId,
-      displayName: 'test'
-    });
+    await this.kcAdminClient.identityProviders.update(
+      {alias: this.currentIdpAlias},
+      {
+        // alias and internalId are requried to update
+        alias: idp.alias,
+        internalId: idp.internalId,
+        displayName: 'test'
+      }
+    );
     const updatedIdp = await this.kcAdminClient.identityProviders.findOne({
       alias: this.currentIdpAlias
     });

@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
+import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 
@@ -44,26 +44,32 @@ describe('Roles', function() {
   });
 
   it('update single role by name & by id', async () => {
-    await this.client.roles.updateByName({name: this.currentRole.name}, {
-      // dont know why if role name not exist in payload, role name will be overriden with empty string
-      // todo: open an issue on keycloak
-      name: 'cool-role',
-      description: 'cool'
-    });
+    await this.client.roles.updateByName(
+      {name: this.currentRole.name},
+      {
+        // dont know why if role name not exist in payload, role name will be overriden with empty string
+        // todo: open an issue on keycloak
+        name: 'cool-role',
+        description: 'cool'
+      }
+    );
 
     const role = await this.client.roles.findOneByName({
-      name: this.currentRole.name,
+      name: this.currentRole.name
     });
     expect(role).to.include({
       description: 'cool'
     });
 
-    await this.client.roles.updateById({id: this.currentRole.id}, {
-      description: 'another description'
-    });
+    await this.client.roles.updateById(
+      {id: this.currentRole.id},
+      {
+        description: 'another description'
+      }
+    );
 
     const roleById = await this.client.roles.findOneById({
-      id: this.currentRole.id,
+      id: this.currentRole.id
     });
     expect(roleById).to.include({
       description: 'another description'

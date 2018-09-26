@@ -1,6 +1,6 @@
 import Resource from './resource';
 import RoleRepresentation from '../defs/roleRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class Roles extends Resource<{realm?: string}> {
   /**
@@ -28,7 +28,11 @@ export class Roles extends Resource<{realm?: string}> {
     catchNotFound: true
   });
 
-  public updateByName = this.makeUpdateRequest<{name: string}, RoleRepresentation, void>({
+  public updateByName = this.makeUpdateRequest<
+    {name: string},
+    RoleRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/roles/{name}',
     urlParams: ['name']
@@ -51,7 +55,11 @@ export class Roles extends Resource<{realm?: string}> {
     catchNotFound: true
   });
 
-  public updateById = this.makeUpdateRequest<{id: string}, RoleRepresentation, void>({
+  public updateById = this.makeUpdateRequest<
+    {id: string},
+    RoleRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/roles-by-id/{id}',
     urlParams: ['id']

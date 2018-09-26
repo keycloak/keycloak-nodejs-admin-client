@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import camelize from 'camelize';
 import querystring from 'querystring';
-import { defaultBaseUrl, defaultRealm } from './constants';
+import {defaultBaseUrl, defaultRealm} from './constants';
 
 export interface Credentials {
   username: string;

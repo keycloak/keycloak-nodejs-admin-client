@@ -1,6 +1,6 @@
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class Realms extends Resource {
   /**
@@ -23,7 +23,11 @@ export class Realms extends Resource {
     catchNotFound: true
   });
 
-  public update = this.makeUpdateRequest<{realm: string}, RealmRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {realm: string},
+    RealmRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{realm}',
     urlParams: ['realm']
