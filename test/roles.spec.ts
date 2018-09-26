@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 
 const expect = chai.expect;
@@ -17,7 +17,7 @@ declare module 'mocha' {
 describe('Roles', function() {
   before(async () => {
     this.client = new KeycloakAdminClient();
-    await this.client.auth(cred);
+    await this.client.auth(credentials);
   });
 
   it('list roles', async () => {

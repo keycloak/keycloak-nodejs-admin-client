@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import faker from 'faker';
 import GroupRepresentation from '../src/defs/groupRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
@@ -22,7 +22,7 @@ declare module 'mocha' {
 describe('Groups', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
     // initialize group
     await this.kcAdminClient.groups.create({
       name: 'cool-group'

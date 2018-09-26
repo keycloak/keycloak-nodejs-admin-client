@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import faker from 'faker';
 const expect = chai.expect;
 
@@ -16,7 +16,7 @@ declare module 'mocha' {
 describe('Realms', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
 
     const realmId = faker.internet.userName();
     await this.kcAdminClient.realms.create({

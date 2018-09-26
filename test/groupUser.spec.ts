@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import { pick, omit } from 'lodash';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
 import GroupRepresentation from '../src/defs/groupRepresentation';
@@ -22,7 +22,7 @@ describe('Group user integration', function() {
   before(async () => {
     const groupName = faker.internet.userName();
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
     // create group
     await this.kcAdminClient.groups.create({
       name: groupName

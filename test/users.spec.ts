@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
@@ -25,7 +25,7 @@ describe('Users', function() {
 
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
     // initialize user
     const username = faker.internet.userName();
     await this.kcAdminClient.users.create({
