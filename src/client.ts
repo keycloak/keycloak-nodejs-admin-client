@@ -9,7 +9,7 @@ import { IdentityProviders } from './resources/identityProviders';
 import { Components } from './resources/components';
 import { AxiosRequestConfig } from 'axios';
 
-export interface ClientArgs {
+export interface ConnectionConfig {
   baseUrl?: string;
   realmName?: string;
   requestConfigs?: AxiosRequestConfig;
@@ -31,10 +31,12 @@ export class KeycloakAdminClient {
   public accessToken: string;
   private requestConfigs?: AxiosRequestConfig;
 
-  constructor(args?: ClientArgs) {
-    this.baseUrl = args && args.baseUrl || defaultBaseUrl;
-    this.realmName = args && args.realmName || defaultRealm;
-    this.requestConfigs = args && args.requestConfigs;
+  constructor(connectionConfig?: ConnectionConfig) {
+    this.baseUrl =
+      (connectionConfig && connectionConfig.baseUrl) || defaultBaseUrl;
+    this.realmName =
+      (connectionConfig && connectionConfig.realmName) || defaultRealm;
+    this.requestConfigs = connectionConfig && connectionConfig.requestConfigs;
 
     // initialize resources
     this.users = new Users(this);
