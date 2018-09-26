@@ -30,7 +30,7 @@ export interface TokenResponse {
 }
 
 export const getToken = async (settings: Settings): Promise<TokenResponse> => {
-  // url construction
+  // Construct URL
   const baseUrl = settings.baseUrl || defaultBaseUrl;
   const realmName = settings.realmName || defaultRealm;
   const url = `${baseUrl}/realms/${realmName}/protocol/openid-connect/token`;
