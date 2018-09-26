@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 const expect = chai.expect;
@@ -18,7 +18,7 @@ declare module 'mocha' {
 describe('Clients', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
 
     // create client and also test it
     // NOTICE: to be clear, clientId stands for the property `clientId` of client

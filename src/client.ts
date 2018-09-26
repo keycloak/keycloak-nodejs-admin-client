@@ -1,4 +1,4 @@
-import { getToken, Credential } from './utils/auth';
+import { getToken, Credentials } from './utils/auth';
 import { defaultBaseUrl, defaultRealm } from './utils/constants';
 import { Users } from './resources/users';
 import { Groups } from './resources/groups';
@@ -48,11 +48,11 @@ export class KeycloakAdminClient {
     this.components = new Components(this);
   }
 
-  public async auth(credential: Credential) {
+  public async auth(credentials: Credentials) {
     const {accessToken} = await getToken({
       baseUrl: this.baseUrl,
       realmName: this.realmName,
-      credential,
+      credentials,
       requestConfigs: this.requestConfigs
     });
     this.accessToken = accessToken;
