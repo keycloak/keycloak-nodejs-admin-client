@@ -69,4 +69,20 @@ export class KeycloakAdminClient {
   public getRequestConfigs() {
     return this.requestConfigs;
   }
+
+  public setConfig(connectionConfig: ConnectionConfig) {
+    if (
+      typeof connectionConfig.baseUrl === 'string' &&
+      connectionConfig.baseUrl
+    ) {
+      this.baseUrl = connectionConfig.baseUrl;
+    }
+
+    if (
+      typeof connectionConfig.realmName === 'string' &&
+      connectionConfig.realmName
+    ) {
+      this.realmName = connectionConfig.realmName;
+    }
+  }
 }

@@ -7,7 +7,8 @@ export default class Resource<ParamType = {}> {
     client: KeycloakAdminClient,
     settings: {
       path?: string;
-      urlParams?: ParamType;
+      getUrlParams?: () => Record<string, any>;
+      getBaseUrl?: () => string;
     } = {}
   ) {
     this.agent = new Agent({

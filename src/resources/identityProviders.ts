@@ -42,12 +42,16 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParams: ['alias']
   });
 
-  constructor(client: KeycloakAdminClient) {
+  constructor(
+    client: KeycloakAdminClient,
+    settings: {realmName?: string; baseUrl?: string} = {}
+  ) {
     super(client, {
       path: '/admin/realms/{realm}/identity-provider/instances',
-      urlParams: {
-        realm: client.realmName
-      }
+      getUrlParams: () => ({
+        realm: settings.realmName || client.realmName
+      }),
+      getBaseUrl: () => settings.baseUrl || client.baseUrl
     });
   }
 }

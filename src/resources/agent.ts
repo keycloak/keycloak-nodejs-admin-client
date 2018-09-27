@@ -22,23 +22,25 @@ export interface RequestArgs {
 
 export class Agent {
   private client: KeycloakAdminClient;
-  private baseUrl: string;
   private basePath: string;
-  private baseParams?: Record<string, any>;
+  private getBaseParams?: () => Record<string, any>;
+  private getBaseUrl?: () => string;
   private requestConfigs?: AxiosRequestConfig;
 
   constructor({
     client,
     path = '/',
-    urlParams = {}
+    getUrlParams = () => ({}),
+    getBaseUrl = () => client.baseUrl
   }: {
     client: KeycloakAdminClient;
     path?: string;
-    urlParams?: Record<string, any>;
+    getUrlParams?: () => Record<string, any>;
+    getBaseUrl?: () => string;
   }) {
-    this.baseParams = urlParams;
     this.client = client;
-    this.baseUrl = client.baseUrl;
+    this.getBaseParams = getUrlParams;
+    this.getBaseUrl = getBaseUrl;
     this.basePath = path;
     this.requestConfigs = client.getRequestConfigs() || {};
   }
@@ -53,8 +55,9 @@ export class Agent {
     payloadKey
   }: RequestArgs) {
     return async (payload: any = {}) => {
-      const selected = [...Object.keys(this.baseParams), ...urlParams];
-      const mergedParams = {...this.baseParams, ...pick(payload, selected)};
+      const baseParams = this.getBaseParams();
+      const selected = [...Object.keys(baseParams), ...urlParams];
+      const mergedParams = {...baseParams, ...pick(payload, selected)};
       // prepare queryParams
       const queryParams = querystring ? pick(payload, querystring) : null;
       // omit payload
@@ -88,12 +91,14 @@ export class Agent {
     payloadKey
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
+      const baseParams = this.getBaseParams();
+
       // pick queryParams from query
       const queryParams = querystring ? pick(query, querystring) : null;
 
       // pick params from query
-      const selected = [...Object.keys(this.baseParams), ...urlParams];
-      const mergedParams = {...this.baseParams, ...pick(query, selected)};
+      const selected = [...Object.keys(baseParams), ...urlParams];
+      const mergedParams = {...baseParams, ...pick(query, selected)};
 
       // transform key of queryParams
       if (keyTransform) {
@@ -133,7 +138,7 @@ export class Agent {
     // parse
     const temp = template.parse(newPath);
     const parsedPath = temp.expand(urlParams);
-    const url = `${this.baseUrl}${parsedPath}`;
+    const url = `${this.getBaseUrl()}${parsedPath}`;
 
     // prepare request configs
     const requestConfig: AxiosRequestConfig = {
