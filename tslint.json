@@ -9,6 +9,7 @@
         "named-imports-order": "any"
       }
     ],
+    "semicolon": [true, "always", "strict-bound-class-methods"],
     "quotemark": [true, "single"],
     "no-implicit-dependencies": [true, "dev"],
     "no-submodule-imports": false,
