@@ -35,7 +35,7 @@ export class Users extends Resource<{realm?: string}> {
   public findOne = this.makeRequest<{id: string}, UserRepresentation>({
     method: 'GET',
     path: '/{id}',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     catchNotFound: true
   });
 
@@ -46,13 +46,13 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   /**
@@ -65,7 +65,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public addRealmRoleMappings = this.makeRequest<
@@ -74,7 +74,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'POST',
     path: '/{id}/role-mappings/realm',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     payloadKey: 'roles'
   });
 
@@ -84,7 +84,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/realm',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public delRealmRoleMappings = this.makeRequest<
@@ -93,7 +93,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'DELETE',
     path: '/{id}/role-mappings/realm',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     payloadKey: 'roles'
   });
 
@@ -103,7 +103,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/realm/available',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   /**
@@ -117,7 +117,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    urlParams: ['id', 'clientUniqueId']
+    urlParamKeys: ['id', 'clientUniqueId']
   });
 
   public addClientRoleMappings = this.makeRequest<
@@ -126,7 +126,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'POST',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    urlParams: ['id', 'clientUniqueId'],
+    urlParamKeys: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
@@ -136,7 +136,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'DELETE',
     path: '/{id}/role-mappings/clients/{clientUniqueId}',
-    urlParams: ['id', 'clientUniqueId'],
+    urlParamKeys: ['id', 'clientUniqueId'],
     payloadKey: 'roles'
   });
 
@@ -146,7 +146,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
-    urlParams: ['id', 'clientUniqueId']
+    urlParamKeys: ['id', 'clientUniqueId']
   });
 
   /**
@@ -166,9 +166,9 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}/execute-actions-email',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     payloadKey: 'actions',
-    querystring: ['lifespan', 'redirectUri', 'clientId'],
+    queryParamKeys: ['lifespan', 'redirectUri', 'clientId'],
     keyTransform: {
       clientId: 'client_id',
       redirectUri: 'redirect_uri'
@@ -182,7 +182,7 @@ export class Users extends Resource<{realm?: string}> {
   public listGroups = this.makeRequest<{id: string}, GroupRepresentation[]>({
     method: 'GET',
     path: '/{id}/groups',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public addToGroup = this.makeRequest<
@@ -191,7 +191,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}/groups/{groupId}',
-    urlParams: ['id', 'groupId']
+    urlParamKeys: ['id', 'groupId']
   });
 
   public delFromGroup = this.makeRequest<
@@ -200,7 +200,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
-    urlParams: ['id', 'groupId']
+    urlParamKeys: ['id', 'groupId']
   });
 
   /**
@@ -209,7 +209,7 @@ export class Users extends Resource<{realm?: string}> {
   public removeTotp = this.makeRequest<{id: string}, void>({
     method: 'PUT',
     path: '/{id}/remove-totp',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   /**
@@ -221,7 +221,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}/reset-password',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     payloadKey: 'credential'
   });
 
@@ -234,8 +234,8 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}/send-verify-email',
-    urlParams: ['id'],
-    querystring: ['clientId', 'redirectUri'],
+    urlParamKeys: ['id'],
+    queryParamKeys: ['clientId', 'redirectUri'],
     keyTransform: {
       clientId: 'client_id',
       redirectUri: 'redirect_uri'

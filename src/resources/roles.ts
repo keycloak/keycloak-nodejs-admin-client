@@ -24,7 +24,7 @@ export class Roles extends Resource<{realm?: string}> {
   public findOneByName = this.makeRequest<{name: string}, RoleRepresentation>({
     method: 'GET',
     path: '/roles/{name}',
-    urlParams: ['name'],
+    urlParamKeys: ['name'],
     catchNotFound: true
   });
 
@@ -35,13 +35,13 @@ export class Roles extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/roles/{name}',
-    urlParams: ['name']
+    urlParamKeys: ['name']
   });
 
   public delByName = this.makeRequest<{name: string}, void>({
     method: 'DELETE',
     path: '/roles/{name}',
-    urlParams: ['name']
+    urlParamKeys: ['name']
   });
 
   /**
@@ -51,7 +51,7 @@ export class Roles extends Resource<{realm?: string}> {
   public findOneById = this.makeRequest<{id: string}, RoleRepresentation>({
     method: 'GET',
     path: '/roles-by-id/{id}',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     catchNotFound: true
   });
 
@@ -62,13 +62,13 @@ export class Roles extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/roles-by-id/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public delById = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/roles-by-id/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   constructor(

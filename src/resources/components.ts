@@ -25,7 +25,7 @@ export class Components extends Resource<{realm?: string}> {
   public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({
     method: 'GET',
     path: '/{id}',
-    urlParams: ['id'],
+    urlParamKeys: ['id'],
     catchNotFound: true
   });
 
@@ -36,13 +36,13 @@ export class Components extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id']
   });
 
   constructor(

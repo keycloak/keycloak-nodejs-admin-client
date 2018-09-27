@@ -7,16 +7,15 @@ import {KeycloakAdminClient} from '../client';
 export interface RequestArgs {
   method: string;
   path?: string;
-  // variables we'll put in url params
-  urlParams?: string[];
-  // variables we'll put querystring
-  querystring?: string[];
-  // keyTransform, transform key in payload to other key
+  // Keys of url params to be applied
+  urlParamKeys?: string[];
+  // Keys of query parameters to be applied
+  queryParamKeys?: string[];
+  // Mapping of key transformations to be performed on the payload
   keyTransform?: Record<string, string>;
-  // if respond with 404, catch it and return null instead
+  // If responding with 404, catch it and return null instead
   catchNotFound?: boolean;
-  // the exact key we extract to payload of request
-  // only works for POST, PUT
+  // The key of the value to use from the payload of request. Only works for POST & PUT.
   payloadKey?: string;
 }
 
@@ -48,22 +47,26 @@ export class Agent {
   public request({
     method,
     path = '',
-    urlParams = [],
-    querystring = [],
+    urlParamKeys = [],
+    queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
     payloadKey
   }: RequestArgs) {
     return async (payload: any = {}) => {
       const baseParams = this.getBaseParams();
-      const selected = [...Object.keys(baseParams), ...urlParams];
-      const mergedParams = {...baseParams, ...pick(payload, selected)};
-      // prepare queryParams
-      const queryParams = querystring ? pick(payload, querystring) : null;
-      // omit payload
-      payload = omit(payload, [...selected, ...querystring]);
 
-      // transform both payload and queryParams
+      // Filter query parameters by queryParamKeys
+      const queryParams = queryParamKeys ? pick(payload, queryParamKeys) : null;
+
+      // Add filtered payload parameters to base parameters
+      const allUrlParamKeys = [...Object.keys(baseParams), ...urlParamKeys];
+      const urlParams = {...baseParams, ...pick(payload, allUrlParamKeys)};
+
+      // Omit url parameters and query parameters from payload
+      payload = omit(payload, [...allUrlParamKeys, ...queryParamKeys]);
+
+      // Transform keys of both payload and queryParams
       if (keyTransform) {
         this.transformKey(payload, keyTransform);
         this.transformKey(queryParams, keyTransform);
@@ -73,7 +76,7 @@ export class Agent {
         method,
         path,
         payload,
-        urlParams: mergedParams,
+        urlParams,
         queryParams,
         catchNotFound,
         payloadKey
@@ -84,8 +87,8 @@ export class Agent {
   public updateRequest({
     method,
     path = '',
-    urlParams = [],
-    querystring = [],
+    urlParamKeys = [],
+    queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
     payloadKey
@@ -93,24 +96,28 @@ export class Agent {
     return async (query: any = {}, payload: any = {}) => {
       const baseParams = this.getBaseParams();
 
-      // pick queryParams from query
-      const queryParams = querystring ? pick(query, querystring) : null;
+      // Filter query parameters by queryParamKeys
+      const queryParams = queryParamKeys ? pick(query, queryParamKeys) : null;
 
-      // pick params from query
-      const selected = [...Object.keys(baseParams), ...urlParams];
-      const mergedParams = {...baseParams, ...pick(query, selected)};
+      // Add filtered query parameters to base parameters
+      const allUrlParamKeys = [...Object.keys(baseParams), ...urlParamKeys];
+      const urlParams = {
+        ...baseParams,
+        ...pick(query, allUrlParamKeys)
+      };
 
-      // transform key of queryParams
+      // Transform keys of queryParams
       if (keyTransform) {
         this.transformKey(queryParams, keyTransform);
       }
+
       return this.requestWithParams({
         method,
         path,
         payload,
-        urlParams: mergedParams,
-        catchNotFound,
+        urlParams,
         queryParams,
+        catchNotFound,
         payloadKey
       });
     };
@@ -135,12 +142,12 @@ export class Agent {
   }) {
     const newPath = join(this.basePath, path);
 
-    // parse
-    const temp = template.parse(newPath);
-    const parsedPath = temp.expand(urlParams);
-    const url = `${this.getBaseUrl()}${parsedPath}`;
+    // Parse template and replace with values from urlParams
+    const pathTemplate = template.parse(newPath);
+    const parsedPath = pathTemplate.expand(urlParams);
+    const url = `${this.getBaseUrl}${parsedPath}`;
 
-    // prepare request configs
+    // Prepare request configs
     const requestConfig: AxiosRequestConfig = {
       ...this.requestConfigs,
       method,
@@ -150,23 +157,25 @@ export class Agent {
       }
     };
 
-    // put payload into querystring if method is GET
+    // Put payload into querystring if method is GET
     if (method === 'GET') {
       requestConfig.params = payload;
     } else {
-      // consider payloadKey here
+      // Set the request data to the payload, or the value corresponding to the payloadKey, if it's defined
       requestConfig.data = payloadKey ? payload[payloadKey] : payload;
     }
 
-    // merged with previous params
+    // Concat to existing queryParams
     if (queryParams) {
       requestConfig.params = requestConfig.params
-        ? {...requestConfig.params, ...queryParams}
+        ? {
+            ...requestConfig.params,
+            ...queryParams
+          }
         : queryParams;
     }
 
     try {
-      // console.log(requestConfig);
       const res = await axios(requestConfig);
       return res.data;
     } catch (err) {
@@ -184,7 +193,7 @@ export class Agent {
 
     Object.keys(keyMapping).some(key => {
       if (isUndefined(payload[key])) {
-        // skip if undefined
+        // Skip if undefined
         return false;
       }
       const newKey = keyMapping[key];

@@ -22,7 +22,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{alias}',
-    urlParams: ['alias'],
+    urlParamKeys: ['alias'],
     catchNotFound: true
   });
 
@@ -33,13 +33,13 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{alias}',
-    urlParams: ['alias']
+    urlParamKeys: ['alias']
   });
 
   public del = this.makeRequest<{alias: string}, void>({
     method: 'DELETE',
     path: '/{alias}',
-    urlParams: ['alias']
+    urlParamKeys: ['alias']
   });
 
   constructor(

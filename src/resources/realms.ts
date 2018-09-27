@@ -19,7 +19,7 @@ export class Realms extends Resource {
   public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
     method: 'GET',
     path: '/{realm}',
-    urlParams: ['realm'],
+    urlParamKeys: ['realm'],
     catchNotFound: true
   });
 
@@ -30,13 +30,13 @@ export class Realms extends Resource {
   >({
     method: 'PUT',
     path: '/{realm}',
-    urlParams: ['realm']
+    urlParamKeys: ['realm']
   });
 
   public del = this.makeRequest<{realm: string}, void>({
     method: 'DELETE',
     path: '/{realm}',
-    urlParams: ['realm']
+    urlParamKeys: ['realm']
   });
 
   constructor(client: KeycloakAdminClient, settings: {baseUrl?: string} = {}) {
