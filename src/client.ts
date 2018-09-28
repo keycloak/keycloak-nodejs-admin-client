@@ -16,7 +16,7 @@ export interface ConnectionConfig {
 }
 
 export class KeycloakAdminClient {
-  // resources
+  // Resources
   public users: Users;
   public groups: Groups;
   public roles: Roles;
@@ -25,7 +25,7 @@ export class KeycloakAdminClient {
   public identityProviders: IdentityProviders;
   public components: Components;
 
-  // members
+  // Members
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
@@ -38,7 +38,7 @@ export class KeycloakAdminClient {
       (connectionConfig && connectionConfig.realmName) || defaultRealm;
     this.requestConfig = connectionConfig && connectionConfig.requestConfig;
 
-    // initialize resources
+    // Initialize resources
     this.users = new Users(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
