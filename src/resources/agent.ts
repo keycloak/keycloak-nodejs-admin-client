@@ -1,4 +1,4 @@
-import {join} from 'path';
+import urlJoin from 'url-join';
 import template from 'url-template';
 import axios, {AxiosRequestConfig} from 'axios';
 import {pick, omit, isUndefined} from 'lodash';
@@ -140,7 +140,7 @@ export class Agent {
     catchNotFound: boolean;
     payloadKey?: string;
   }) {
-    const newPath = join(this.basePath, path);
+    const newPath = urlJoin(this.basePath, path);
 
     // Parse template and replace with values from urlParams
     const pathTemplate = template.parse(newPath);
