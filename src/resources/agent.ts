@@ -145,7 +145,7 @@ export class Agent {
     // Parse template and replace with values from urlParams
     const pathTemplate = template.parse(newPath);
     const parsedPath = pathTemplate.expand(urlParams);
-    const url = `${this.getBaseUrl}${parsedPath}`;
+    const url = `${this.getBaseUrl()}${parsedPath}`;
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
