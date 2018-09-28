@@ -47,6 +47,7 @@
 "@types/url-join@^0.8.2":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@types/url-join/-/url-join-0.8.2.tgz#1181ecbe1d97b7034e0ea1e35e62e86cc26b422d"
+  integrity sha1-EYHsvh2XtwNODqHjXmLobMJrQi0=
 
 "@types/url-template@^2.0.28":
   version "2.0.28"
@@ -2023,6 +2024,7 @@ urix@^0.1.0:
 url-join@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/url-join/-/url-join-4.0.0.tgz#4d3340e807d3773bda9991f8305acdcc2a665d2a"
+  integrity sha1-TTNA6AfTdzvamZH4MFrNzCpmXSo=
 
 url-template@^2.0.8:
   version "2.0.8"
