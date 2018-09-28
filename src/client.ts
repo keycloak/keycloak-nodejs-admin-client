@@ -53,7 +53,7 @@ export class KeycloakAdminClient {
       baseUrl: this.baseUrl,
       realmName: this.realmName,
       credentials,
-      requestConfig: this.requestConfig
+      requestConfig: this.requestConfig,
     });
     this.accessToken = accessToken;
   }

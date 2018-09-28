@@ -22,19 +22,19 @@ describe('Identity providers', function() {
     const alias = faker.internet.userName();
     await this.kcAdminClient.identityProviders.create({
       alias,
-      providerId: 'saml'
+      providerId: 'saml',
     });
     this.currentIdpAlias = alias;
   });
 
   after(async () => {
     await this.kcAdminClient.identityProviders.del({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
 
     // check deleted
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
     expect(idp).to.be.null;
   });
@@ -46,16 +46,16 @@ describe('Identity providers', function() {
 
   it('get an idp', async () => {
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
     expect(idp).to.include({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
   });
 
   it('update an idp', async () => {
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
     await this.kcAdminClient.identityProviders.update(
       {alias: this.currentIdpAlias},
@@ -63,16 +63,16 @@ describe('Identity providers', function() {
         // alias and internalId are requried to update
         alias: idp.alias,
         internalId: idp.internalId,
-        displayName: 'test'
-      }
+        displayName: 'test',
+      },
     );
     const updatedIdp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
 
     expect(updatedIdp).to.include({
       alias: this.currentIdpAlias,
-      displayName: 'test'
+      displayName: 'test',
     });
   });
 });

@@ -15,18 +15,18 @@ export class Components extends Resource<{realm?: string}> {
    */
 
   public find = this.makeRequest<ComponentQuery, ComponentRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<ComponentRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
   public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
-    catchNotFound: true
+    catchNotFound: true,
   });
 
   public update = this.makeUpdateRequest<
@@ -36,22 +36,22 @@ export class Components extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{id}',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/components',
       getUrlParams: () => ({
-        realm: client.realmName
+        realm: client.realmName,
       }),
-      getBaseUrl: () => client.baseUrl
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

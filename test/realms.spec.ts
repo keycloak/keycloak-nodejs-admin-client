@@ -28,18 +28,18 @@ describe('Realms', function() {
     const realmId = faker.internet.userName();
     await this.kcAdminClient.realms.create({
       id: realmId,
-      realm: realmId
+      realm: realmId,
     });
     this.currentRealmId = realmId;
   });
 
   it('get a realm', async () => {
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId
+      realm: this.currentRealmId,
     });
     expect(realm).to.include({
       id: this.currentRealmId,
-      realm: this.currentRealmId
+      realm: this.currentRealmId,
     });
   });
 
@@ -47,23 +47,23 @@ describe('Realms', function() {
     await this.kcAdminClient.realms.update(
       {realm: this.currentRealmId},
       {
-        displayName: 'test'
-      }
+        displayName: 'test',
+      },
     );
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId
+      realm: this.currentRealmId,
     });
     expect(realm).to.include({
       id: this.currentRealmId,
       realm: this.currentRealmId,
-      displayName: 'test'
+      displayName: 'test',
     });
   });
 
   it('delete a realm', async () => {
     await this.kcAdminClient.realms.del({realm: this.currentRealmId});
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId
+      realm: this.currentRealmId,
     });
     expect(realm).to.be.null;
   });

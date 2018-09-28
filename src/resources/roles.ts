@@ -9,12 +9,12 @@ export class Roles extends Resource<{realm?: string}> {
 
   public find = this.makeRequest<void, RoleRepresentation[]>({
     method: 'GET',
-    path: '/roles'
+    path: '/roles',
   });
 
   public create = this.makeRequest<RoleRepresentation, void>({
     method: 'POST',
-    path: '/roles'
+    path: '/roles',
   });
 
   /**
@@ -25,7 +25,7 @@ export class Roles extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/roles/{name}',
     urlParamKeys: ['name'],
-    catchNotFound: true
+    catchNotFound: true,
   });
 
   public updateByName = this.makeUpdateRequest<
@@ -35,13 +35,13 @@ export class Roles extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/roles/{name}',
-    urlParamKeys: ['name']
+    urlParamKeys: ['name'],
   });
 
   public delByName = this.makeRequest<{name: string}, void>({
     method: 'DELETE',
     path: '/roles/{name}',
-    urlParamKeys: ['name']
+    urlParamKeys: ['name'],
   });
 
   /**
@@ -52,7 +52,7 @@ export class Roles extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/roles-by-id/{id}',
     urlParamKeys: ['id'],
-    catchNotFound: true
+    catchNotFound: true,
   });
 
   public updateById = this.makeUpdateRequest<
@@ -62,22 +62,22 @@ export class Roles extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/roles-by-id/{id}',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   public delById = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/roles-by-id/{id}',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}',
       getUrlParams: () => ({
-        realm: client.realmName
+        realm: client.realmName,
       }),
-      getBaseUrl: () => client.baseUrl
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

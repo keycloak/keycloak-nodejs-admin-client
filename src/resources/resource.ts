@@ -9,16 +9,16 @@ export default class Resource<ParamType = {}> {
       path?: string;
       getUrlParams?: () => Record<string, any>;
       getBaseUrl?: () => string;
-    } = {}
+    } = {},
   ) {
     this.agent = new Agent({
       client,
-      ...settings
+      ...settings,
     });
   }
 
   public makeRequest = <PayloadType = any, ResponseType = any>(
-    args: RequestArgs
+    args: RequestArgs,
   ): ((payload?: PayloadType & ParamType) => Promise<ResponseType>) => {
     return this.agent.request(args);
   };
@@ -29,10 +29,10 @@ export default class Resource<ParamType = {}> {
     PayloadType = any,
     ResponseType = any
   >(
-    args: RequestArgs
+    args: RequestArgs,
   ): ((
     query: QueryType & ParamType,
-    payload: PayloadType
+    payload: PayloadType,
   ) => Promise<ResponseType>) => {
     return this.agent.updateRequest(args);
   };

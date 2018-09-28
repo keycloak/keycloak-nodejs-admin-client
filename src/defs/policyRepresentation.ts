@@ -5,12 +5,12 @@
 export enum DecisionStrategy {
   AFFIRMATIVE = 'AFFIRMATIVE',
   UNANIMOUS = 'UNANIMOUS',
-  CONSENSUS = 'CONSENSUS'
+  CONSENSUS = 'CONSENSUS',
 }
 
 export enum Logic {
   POSITIVE = 'POSITIVE',
-  NEGATIVE = 'NEGATIVE'
+  NEGATIVE = 'NEGATIVE',
 }
 
 export default interface PolicyRepresentation {

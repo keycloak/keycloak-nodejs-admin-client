@@ -30,7 +30,7 @@ export class Agent {
     client,
     path = '/',
     getUrlParams = () => ({}),
-    getBaseUrl = () => client.baseUrl
+    getBaseUrl = () => client.baseUrl,
   }: {
     client: KeycloakAdminClient;
     path?: string;
@@ -51,7 +51,7 @@ export class Agent {
     queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
-    payloadKey
+    payloadKey,
   }: RequestArgs) {
     return async (payload: any = {}) => {
       const baseParams = this.getBaseParams();
@@ -79,7 +79,7 @@ export class Agent {
         urlParams,
         queryParams,
         catchNotFound,
-        payloadKey
+        payloadKey,
       });
     };
   }
@@ -91,7 +91,7 @@ export class Agent {
     queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
-    payloadKey
+    payloadKey,
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
       const baseParams = this.getBaseParams();
@@ -103,7 +103,7 @@ export class Agent {
       const allUrlParamKeys = [...Object.keys(baseParams), ...urlParamKeys];
       const urlParams = {
         ...baseParams,
-        ...pick(query, allUrlParamKeys)
+        ...pick(query, allUrlParamKeys),
       };
 
       // Transform keys of queryParams
@@ -118,7 +118,7 @@ export class Agent {
         urlParams,
         queryParams,
         catchNotFound,
-        payloadKey
+        payloadKey,
       });
     };
   }
@@ -130,7 +130,7 @@ export class Agent {
     urlParams,
     queryParams,
     catchNotFound,
-    payloadKey
+    payloadKey,
   }: {
     method: string;
     path: string;
@@ -153,8 +153,8 @@ export class Agent {
       method,
       url,
       headers: {
-        Authorization: `bearer ${this.client.getAccessToken()}`
-      }
+        Authorization: `bearer ${this.client.getAccessToken()}`,
+      },
     };
 
     // Put payload into querystring if method is GET
@@ -170,7 +170,7 @@ export class Agent {
       requestConfig.params = requestConfig.params
         ? {
             ...requestConfig.params,
-            ...queryParams
+            ...queryParams,
           }
         : queryParams;
     }

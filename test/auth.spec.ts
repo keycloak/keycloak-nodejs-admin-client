@@ -7,7 +7,7 @@ const expect = chai.expect;
 describe('Authorization', () => {
   it('should get token from local keycloak', async () => {
     const data = await getToken({
-      credentials
+      credentials,
     });
 
     expect(data).to.have.all.keys(
@@ -18,7 +18,7 @@ describe('Authorization', () => {
       'tokenType',
       'notBeforePolicy',
       'sessionState',
-      'scope'
+      'scope',
     );
   });
 });

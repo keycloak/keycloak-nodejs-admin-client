@@ -9,11 +9,11 @@ export class IdentityProviders extends Resource<{realm?: string}> {
    */
 
   public find = this.makeRequest<void, IdentityProviderRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<IdentityProviderRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
   public findOne = this.makeRequest<
@@ -23,7 +23,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{alias}',
     urlParamKeys: ['alias'],
-    catchNotFound: true
+    catchNotFound: true,
   });
 
   public update = this.makeUpdateRequest<
@@ -33,22 +33,22 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   >({
     method: 'PUT',
     path: '/{alias}',
-    urlParamKeys: ['alias']
+    urlParamKeys: ['alias'],
   });
 
   public del = this.makeRequest<{alias: string}, void>({
     method: 'DELETE',
     path: '/{alias}',
-    urlParamKeys: ['alias']
+    urlParamKeys: ['alias'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/identity-provider/instances',
       getUrlParams: () => ({
-        realm: client.realmName
+        realm: client.realmName,
       }),
-      getBaseUrl: () => client.baseUrl
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

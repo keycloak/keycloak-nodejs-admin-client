@@ -9,18 +9,18 @@ export class Realms extends Resource {
    */
 
   public find = this.makeRequest<void, RealmRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<RealmRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
   public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
     method: 'GET',
     path: '/{realm}',
     urlParamKeys: ['realm'],
-    catchNotFound: true
+    catchNotFound: true,
   });
 
   public update = this.makeUpdateRequest<
@@ -30,19 +30,19 @@ export class Realms extends Resource {
   >({
     method: 'PUT',
     path: '/{realm}',
-    urlParamKeys: ['realm']
+    urlParamKeys: ['realm'],
   });
 
   public del = this.makeRequest<{realm: string}, void>({
     method: 'DELETE',
     path: '/{realm}',
-    urlParamKeys: ['realm']
+    urlParamKeys: ['realm'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms',
-      getBaseUrl: () => client.baseUrl
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

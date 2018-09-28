@@ -25,7 +25,7 @@ describe('Group user integration', function() {
     await this.kcAdminClient.auth(credentials);
     // create group
     await this.kcAdminClient.groups.create({
-      name: groupName
+      name: groupName,
     });
     const groups = await this.kcAdminClient.groups.find({search: groupName});
     this.currentGroup = groups[0];
@@ -35,7 +35,7 @@ describe('Group user integration', function() {
     await this.kcAdminClient.users.create({
       username,
       email: 'wwwy3y3@canner.io',
-      enabled: true
+      enabled: true,
     });
     const users = await this.kcAdminClient.users.find({username});
     expect(users[0]).to.be.ok;
@@ -44,16 +44,16 @@ describe('Group user integration', function() {
 
   after(async () => {
     await this.kcAdminClient.groups.del({
-      id: this.currentGroup.id
+      id: this.currentGroup.id,
     });
     await this.kcAdminClient.users.del({
-      id: this.currentUser.id
+      id: this.currentUser.id,
     });
   });
 
   it('should list user\'s group and expect empty', async () => {
     const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id
+      id: this.currentUser.id,
     });
     expect(groups).to.be.eql([]);
   });
@@ -61,21 +61,21 @@ describe('Group user integration', function() {
   it('should add user to group', async () => {
     await this.kcAdminClient.users.addToGroup({
       id: this.currentUser.id,
-      groupId: this.currentGroup.id
+      groupId: this.currentGroup.id,
     });
 
     const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id
+      id: this.currentUser.id,
     });
     // expect id,name,path to be the same
     expect(groups[0]).to.be.eql(
-      pick(this.currentGroup, ['id', 'name', 'path'])
+      pick(this.currentGroup, ['id', 'name', 'path']),
     );
   });
 
   it('should list members using group api', async () => {
     const members = await this.kcAdminClient.groups.listMembers({
-      id: this.currentGroup.id
+      id: this.currentGroup.id,
     });
     // access will not returned from member api
     expect(members[0]).to.be.eql(omit(this.currentUser, ['access']));
@@ -84,11 +84,11 @@ describe('Group user integration', function() {
   it('should remove user from group', async () => {
     await this.kcAdminClient.users.delFromGroup({
       id: this.currentUser.id,
-      groupId: this.currentGroup.id
+      groupId: this.currentGroup.id,
     });
 
     const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id
+      id: this.currentUser.id,
     });
     expect(groups).to.be.eql([]);
   });

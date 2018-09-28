@@ -25,25 +25,25 @@ describe('User federation using component api', function() {
       name,
       parentId: 'master',
       providerId: 'ldap',
-      providerType: 'org.keycloak.storage.UserStorageProvider'
+      providerType: 'org.keycloak.storage.UserStorageProvider',
     });
 
     // assign current user fed
     const feds = await this.kcAdminClient.components.find({
       parent: 'master',
-      type: 'org.keycloak.storage.UserStorageProvider'
+      type: 'org.keycloak.storage.UserStorageProvider',
     });
     this.currentUserFed = feds[0];
   });
 
   after(async () => {
     await this.kcAdminClient.components.del({
-      id: this.currentUserFed.id
+      id: this.currentUserFed.id,
     });
 
     // check deleted
     const idp = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id
+      id: this.currentUserFed.id,
     });
     expect(idp).to.be.null;
   });
@@ -51,17 +51,17 @@ describe('User federation using component api', function() {
   it('list user federations', async () => {
     const feds = await this.kcAdminClient.components.find({
       parent: 'master',
-      type: 'org.keycloak.storage.UserStorageProvider'
+      type: 'org.keycloak.storage.UserStorageProvider',
     });
     expect(feds.length).to.be.least(1);
   });
 
   it('get a user federation', async () => {
     const fed = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id
+      id: this.currentUserFed.id,
     });
     expect(fed).to.include({
-      id: this.currentUserFed.id
+      id: this.currentUserFed.id,
     });
   });
 
@@ -73,16 +73,16 @@ describe('User federation using component api', function() {
         parentId: 'master',
         providerId: 'ldap',
         providerType: 'org.keycloak.storage.UserStorageProvider',
-        name: 'cool-name'
-      }
+        name: 'cool-name',
+      },
     );
     const updated = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id
+      id: this.currentUserFed.id,
     });
 
     expect(updated).to.include({
       id: this.currentUserFed.id,
-      name: 'cool-name'
+      name: 'cool-name',
     });
   });
 });

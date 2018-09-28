@@ -27,7 +27,7 @@ describe('Roles', function() {
 
   it('create roles and get by name', async () => {
     await this.client.roles.create({
-      name: 'cool-role'
+      name: 'cool-role',
     });
 
     const role = await this.client.roles.findOneByName({name: 'cool-role'});
@@ -38,7 +38,7 @@ describe('Roles', function() {
   it('get single roles by id', async () => {
     const roleId = this.currentRole.id;
     const role = await this.client.roles.findOneById({
-      id: roleId
+      id: roleId,
     });
     expect(role).to.deep.include(this.currentRole);
   });
@@ -50,55 +50,55 @@ describe('Roles', function() {
         // dont know why if role name not exist in payload, role name will be overriden with empty string
         // todo: open an issue on keycloak
         name: 'cool-role',
-        description: 'cool'
-      }
+        description: 'cool',
+      },
     );
 
     const role = await this.client.roles.findOneByName({
-      name: this.currentRole.name
+      name: this.currentRole.name,
     });
     expect(role).to.include({
-      description: 'cool'
+      description: 'cool',
     });
 
     await this.client.roles.updateById(
       {id: this.currentRole.id},
       {
-        description: 'another description'
-      }
+        description: 'another description',
+      },
     );
 
     const roleById = await this.client.roles.findOneById({
-      id: this.currentRole.id
+      id: this.currentRole.id,
     });
     expect(roleById).to.include({
-      description: 'another description'
+      description: 'another description',
     });
   });
 
   it('delete single roles by id', async () => {
     const roleId = this.currentRole.id;
     await this.client.roles.create({
-      name: 'for-delete'
+      name: 'for-delete',
     });
 
     await this.client.roles.delByName({
-      name: 'for-delete'
+      name: 'for-delete',
     });
 
     // delete the currentRole with id
     await this.client.roles.delById({
-      id: roleId
+      id: roleId,
     });
 
     // both should be null
     const role = await this.client.roles.findOneById({
-      id: roleId
+      id: roleId,
     });
     expect(role).to.be.null;
 
     const roleDelByName = await this.client.roles.findOneByName({
-      name: 'for-delete'
+      name: 'for-delete',
     });
     expect(roleDelByName).to.be.null;
   });

@@ -33,7 +33,7 @@ describe('Users', function() {
       email: 'wwwy3y3@canner.io',
       // enabled required to be true in order to send actions email
       emailVerified: true,
-      enabled: true
+      enabled: true,
     });
     const users = await this.kcAdminClient.users.find({username});
     expect(users[0]).to.be.ok;
@@ -48,20 +48,20 @@ describe('Users', function() {
           from: '0830021730-07fb21@inbox.mailtrap.io',
           host: 'smtp.mailtrap.io',
           user: process.env.SMTP_USER,
-          password: process.env.SMTP_PWD
-        }
-      }
+          password: process.env.SMTP_PWD,
+        },
+      },
     );
   });
 
   after(async () => {
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.del({
-      id: userId
+      id: userId,
     });
 
     const user = await this.kcAdminClient.users.findOne({
-      id: userId
+      id: userId,
     });
     expect(user).to.be.null;
   });
@@ -74,7 +74,7 @@ describe('Users', function() {
   it('get single users', async () => {
     const userId = this.currentUser.id;
     const user = await this.kcAdminClient.users.findOne({
-      id: userId
+      id: userId,
     });
     expect(user).to.be.deep.include(this.currentUser);
   });
@@ -87,18 +87,18 @@ describe('Users', function() {
         firstName: 'william',
         lastName: 'chang',
         requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
-        emailVerified: true
-      }
+        emailVerified: true,
+      },
     );
 
     const user = await this.kcAdminClient.users.findOne({
-      id: userId
+      id: userId,
     });
     expect(user).to.deep.include({
       firstName: 'william',
       lastName: 'chang',
       requiredActions: [RequiredActionAlias.UPDATE_PASSWORD],
-      emailVerified: true
+      emailVerified: true,
     });
   });
 
@@ -114,7 +114,7 @@ describe('Users', function() {
     await this.kcAdminClient.users.executeActionsEmail({
       id: userId,
       lifespan: 43200,
-      actions: [RequiredActionAlias.UPDATE_PASSWORD]
+      actions: [RequiredActionAlias.UPDATE_PASSWORD],
     });
   });
 
@@ -126,7 +126,7 @@ describe('Users', function() {
     // todo: find a way to add totp from api
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.removeTotp({
-      id: userId
+      id: userId,
     });
   });
 
@@ -142,8 +142,8 @@ describe('Users', function() {
       credential: {
         temporary: false,
         type: 'password',
-        value: 'test'
-      }
+        value: 'test',
+      },
     });
   });
 
@@ -158,7 +158,7 @@ describe('Users', function() {
     }
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.sendVerifyEmail({
-      id: userId
+      id: userId,
     });
   });
 
@@ -170,10 +170,10 @@ describe('Users', function() {
       // create new role
       const roleName = faker.internet.userName();
       await this.kcAdminClient.roles.create({
-        name: roleName
+        name: roleName,
       });
       const role = await this.kcAdminClient.roles.findOneByName({
-        name: roleName
+        name: roleName,
       });
       this.currentRole = role;
     });
@@ -191,17 +191,17 @@ describe('Users', function() {
         roles: [
           {
             id: this.currentRole.id,
-            name: this.currentRole.name
-          }
-        ]
+            name: this.currentRole.name,
+          },
+        ],
       });
     });
 
     it('list available role-mappings for user', async () => {
       const roles = await this.kcAdminClient.users.listAvailableRealmRoleMappings(
         {
-          id: this.currentUser.id
-        }
+          id: this.currentUser.id,
+        },
       );
 
       // admin, create-realm
@@ -211,7 +211,7 @@ describe('Users', function() {
 
     it('list role-mappings of user', async () => {
       const res = await this.kcAdminClient.users.listRoleMappings({
-        id: this.currentUser.id
+        id: this.currentUser.id,
       });
 
       expect(res).have.all.keys('realmMappings', 'clientMappings');
@@ -219,7 +219,7 @@ describe('Users', function() {
 
     it('list realm role-mappings of user', async () => {
       const roles = await this.kcAdminClient.users.listRealmRoleMappings({
-        id: this.currentUser.id
+        id: this.currentUser.id,
       });
       expect(roles).to.deep.include(this.currentRole);
     });
@@ -230,13 +230,13 @@ describe('Users', function() {
         roles: [
           {
             id: this.currentRole.id,
-            name: this.currentRole.name
-          }
-        ]
+            name: this.currentRole.name,
+          },
+        ],
       });
 
       const roles = await this.kcAdminClient.users.listRealmRoleMappings({
-        id: this.currentUser.id
+        id: this.currentUser.id,
       });
       expect(roles).to.not.deep.include(this.currentRole);
     });
@@ -250,7 +250,7 @@ describe('Users', function() {
       // create new client
       const clientId = faker.internet.userName();
       await this.kcAdminClient.clients.create({
-        clientId
+        clientId,
       });
 
       const clients = await this.kcAdminClient.clients.find({clientId});
@@ -261,20 +261,20 @@ describe('Users', function() {
       const roleName = faker.internet.userName();
       await this.kcAdminClient.clients.createRole({
         id: this.currentClient.id,
-        name: roleName
+        name: roleName,
       });
 
       // assign to currentRole
       this.currentRole = await this.kcAdminClient.clients.findRole({
         id: this.currentClient.id,
-        roleName
+        roleName,
       });
     });
 
     after(async () => {
       await this.kcAdminClient.clients.delRole({
         id: this.currentClient.id,
-        roleName: this.currentRole.name
+        roleName: this.currentRole.name,
       });
       await this.kcAdminClient.clients.del({id: this.currentClient.id});
     });
@@ -289,9 +289,9 @@ describe('Users', function() {
         roles: [
           {
             id: this.currentRole.id,
-            name: this.currentRole.name
-          }
-        ]
+            name: this.currentRole.name,
+          },
+        ],
       });
     });
 
@@ -299,8 +299,8 @@ describe('Users', function() {
       const roles = await this.kcAdminClient.users.listAvailableClientRoleMappings(
         {
           id: this.currentUser.id,
-          clientUniqueId: this.currentClient.id
-        }
+          clientUniqueId: this.currentClient.id,
+        },
       );
 
       expect(roles).to.be.empty;
@@ -309,7 +309,7 @@ describe('Users', function() {
     it('list client role-mappings of user', async () => {
       const roles = await this.kcAdminClient.users.listClientRoleMappings({
         id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id
+        clientUniqueId: this.currentClient.id,
       });
 
       expect(roles[0]).to.be.eql(this.currentRole);
@@ -319,11 +319,11 @@ describe('Users', function() {
       const roleName = faker.internet.userName();
       await this.kcAdminClient.clients.createRole({
         id: this.currentClient.id,
-        name: roleName
+        name: roleName,
       });
       const role = await this.kcAdminClient.clients.findRole({
         id: this.currentClient.id,
-        roleName
+        roleName,
       });
 
       // delete the created role
@@ -333,15 +333,15 @@ describe('Users', function() {
         roles: [
           {
             id: role.id,
-            name: role.name
-          }
-        ]
+            name: role.name,
+          },
+        ],
       });
 
       // check if mapping is successfully deleted
       const roles = await this.kcAdminClient.users.listClientRoleMappings({
         id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id
+        clientUniqueId: this.currentClient.id,
       });
 
       // should only left the one we added in the previous test

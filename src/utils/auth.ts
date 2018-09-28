@@ -42,16 +42,16 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     username: credentials.username,
     password: credentials.password,
     grant_type: credentials.grantType,
-    client_id: credentials.clientId
+    client_id: credentials.clientId,
   });
   const config: AxiosRequestConfig = {
-    ...settings.requestConfig
+    ...settings.requestConfig,
   };
 
   if (credentials.clientSecret) {
     config.auth = {
       username: credentials.clientId,
-      password: credentials.clientSecret
+      password: credentials.clientSecret,
     };
   }
 
