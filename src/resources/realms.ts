@@ -39,10 +39,10 @@ export class Realms extends Resource {
     urlParamKeys: ['realm']
   });
 
-  constructor(client: KeycloakAdminClient, settings: {baseUrl?: string} = {}) {
+  constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms',
-      getBaseUrl: () => settings.baseUrl || client.baseUrl
+      getBaseUrl: () => client.baseUrl
     });
   }
 }
