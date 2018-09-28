@@ -15,7 +15,7 @@ export interface Settings {
   realmName?: string;
   baseUrl?: string;
   credentials: Credentials;
-  requestConfigs?: AxiosRequestConfig;
+  requestConfig?: AxiosRequestConfig;
 }
 
 export interface TokenResponse {
@@ -44,16 +44,17 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     grant_type: credentials.grantType,
     client_id: credentials.clientId
   });
-  const configs: AxiosRequestConfig = {
-    ...settings.requestConfigs
+  const config: AxiosRequestConfig = {
+    ...settings.requestConfig
   };
 
   if (credentials.clientSecret) {
-    configs.auth = {
+    config.auth = {
       username: credentials.clientId,
       password: credentials.clientSecret
     };
   }
-  const {data} = await axios.post(url, payload, configs);
+
+  const {data} = await axios.post(url, payload, config);
   return camelize(data);
 };

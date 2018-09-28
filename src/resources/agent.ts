@@ -24,7 +24,7 @@ export class Agent {
   private basePath: string;
   private getBaseParams?: () => Record<string, any>;
   private getBaseUrl?: () => string;
-  private requestConfigs?: AxiosRequestConfig;
+  private requestConfig?: AxiosRequestConfig;
 
   constructor({
     client,
@@ -41,7 +41,7 @@ export class Agent {
     this.getBaseParams = getUrlParams;
     this.getBaseUrl = getBaseUrl;
     this.basePath = path;
-    this.requestConfigs = client.getRequestConfigs() || {};
+    this.requestConfig = client.getRequestConfig() || {};
   }
 
   public request({
@@ -147,9 +147,9 @@ export class Agent {
     const parsedPath = pathTemplate.expand(urlParams);
     const url = `${this.getBaseUrl}${parsedPath}`;
 
-    // Prepare request configs
+    // Prepare request config
     const requestConfig: AxiosRequestConfig = {
-      ...this.requestConfigs,
+      ...this.requestConfig,
       method,
       url,
       headers: {

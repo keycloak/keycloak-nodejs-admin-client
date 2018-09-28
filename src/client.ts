@@ -12,7 +12,7 @@ import {AxiosRequestConfig} from 'axios';
 export interface ConnectionConfig {
   baseUrl?: string;
   realmName?: string;
-  requestConfigs?: AxiosRequestConfig;
+  requestConfig?: AxiosRequestConfig;
 }
 
 export class KeycloakAdminClient {
@@ -29,14 +29,14 @@ export class KeycloakAdminClient {
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
-  private requestConfigs?: AxiosRequestConfig;
+  private requestConfig?: AxiosRequestConfig;
 
   constructor(connectionConfig?: ConnectionConfig) {
     this.baseUrl =
       (connectionConfig && connectionConfig.baseUrl) || defaultBaseUrl;
     this.realmName =
       (connectionConfig && connectionConfig.realmName) || defaultRealm;
-    this.requestConfigs = connectionConfig && connectionConfig.requestConfigs;
+    this.requestConfig = connectionConfig && connectionConfig.requestConfig;
 
     // initialize resources
     this.users = new Users(this);
@@ -53,7 +53,7 @@ export class KeycloakAdminClient {
       baseUrl: this.baseUrl,
       realmName: this.realmName,
       credentials,
-      requestConfigs: this.requestConfigs
+      requestConfig: this.requestConfig
     });
     this.accessToken = accessToken;
   }
@@ -66,8 +66,8 @@ export class KeycloakAdminClient {
     return this.accessToken;
   }
 
-  public getRequestConfigs() {
-    return this.requestConfigs;
+  public getRequestConfig() {
+    return this.requestConfig;
   }
 
   public setConfig(connectionConfig: ConnectionConfig) {
