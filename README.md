@@ -32,7 +32,7 @@ import KcAdminClient from 'keycloak-admin';
 // }
 const kcAdminClient = new KcAdminClient();
 
-// Authorize with username/password
+// Authorize with username / password
 await kcAdminClient.auth({
   username: 'wwwy3y3',
   password: 'wwwy3y3',
@@ -43,10 +43,18 @@ await kcAdminClient.auth({
 // List all users
 const users = await kcAdminClient.users.find();
 
-// Pass a `realm` value to override the realm for an operation
-// For example: create a user in another realm:
+// Override client configuration for all further requests:
+kcAdminClient.setConfig({
+  realmName: 'another-realm',
+});
+
+// This operation will now be performed in 'another-realm' if the user has access.
+const groups = await kcAdminClient.groups.find();
+
+// Set a `realm` property to override the realm for only a single operation.
+// For example, creating a user in another realm:
 await this.kcAdminClient.users.create({
-  realm: 'another-realm',
+  realm: 'a-third-realm',
   username: 'username',
   email: 'user@example.com'
 });
