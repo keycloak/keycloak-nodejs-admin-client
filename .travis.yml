@@ -13,4 +13,3 @@ before_install:
   - docker pull jboss/keycloak
   - docker run -d -p 8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak
   - docker ps -a
-

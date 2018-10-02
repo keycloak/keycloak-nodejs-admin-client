@@ -1,6 +1,6 @@
 import Resource from './resource';
 import ComponentRepresentation from '../defs/componentRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export interface ComponentQuery {
   name?: string;
@@ -15,38 +15,43 @@ export class Components extends Resource<{realm?: string}> {
    */
 
   public find = this.makeRequest<ComponentQuery, ComponentRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<ComponentRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
   public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({
     method: 'GET',
     path: '/{id}',
-    urlParams: ['id'],
-    catchNotFound: true
+    urlParamKeys: ['id'],
+    catchNotFound: true,
   });
 
-  public update = this.makeUpdateRequest<{id: string}, ComponentRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {id: string},
+    ComponentRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id'],
   });
 
   public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
-    urlParams: ['id']
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/components',
-      urlParams: {
-        realm: client.realmName
-      }
+      getUrlParams: () => ({
+        realm: client.realmName,
+      }),
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

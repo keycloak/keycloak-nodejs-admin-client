@@ -26,13 +26,13 @@ import KcAdminClient from 'keycloak-admin';
 // {
 //   baseUrl: 'http://127.0.0.1:8080/auth',
 //   realmName: 'master',
-//   requestConfigs: {
+//   requestConfig: {
 //     /* Axios request config options https://github.com/axios/axios#request-config */
 //   },
 // }
 const kcAdminClient = new KcAdminClient();
 
-// authorize with username/password
+// Authorize with username/password
 await kcAdminClient.auth({
   username: 'wwwy3y3',
   password: 'wwwy3y3',
@@ -40,8 +40,16 @@ await kcAdminClient.auth({
   clientId: 'admin-cli'
 });
 
-// list all users
+// List all users
 const users = await kcAdminClient.users.find();
+
+// Pass a `realm` value to override the realm for an operation
+// For example: create a user in another realm:
+await this.kcAdminClient.users.create({
+  realm: 'another-realm',
+  username: 'username',
+  email: 'user@example.com'
+});
 ```
 
 ## Supported APIs

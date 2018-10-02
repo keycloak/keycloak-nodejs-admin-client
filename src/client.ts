@@ -1,22 +1,22 @@
-import { getToken, Credential } from './utils/auth';
-import { defaultBaseUrl, defaultRealm } from './utils/constants';
-import { Users } from './resources/users';
-import { Groups } from './resources/groups';
-import { Roles } from './resources/roles';
-import { Clients } from './resources/clients';
-import { Realms } from './resources/realms';
-import { IdentityProviders } from './resources/identityProviders';
-import { Components } from './resources/components';
-import { AxiosRequestConfig } from 'axios';
+import {getToken, Credentials} from './utils/auth';
+import {defaultBaseUrl, defaultRealm} from './utils/constants';
+import {Users} from './resources/users';
+import {Groups} from './resources/groups';
+import {Roles} from './resources/roles';
+import {Clients} from './resources/clients';
+import {Realms} from './resources/realms';
+import {IdentityProviders} from './resources/identityProviders';
+import {Components} from './resources/components';
+import {AxiosRequestConfig} from 'axios';
 
-export interface ClientArgs {
+export interface ConnectionConfig {
   baseUrl?: string;
   realmName?: string;
-  requestConfigs?: AxiosRequestConfig;
+  requestConfig?: AxiosRequestConfig;
 }
 
 export class KeycloakAdminClient {
-  // resources
+  // Resources
   public users: Users;
   public groups: Groups;
   public roles: Roles;
@@ -25,18 +25,20 @@ export class KeycloakAdminClient {
   public identityProviders: IdentityProviders;
   public components: Components;
 
-  // members
+  // Members
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
-  private requestConfigs?: AxiosRequestConfig;
+  private requestConfig?: AxiosRequestConfig;
 
-  constructor(args?: ClientArgs) {
-    this.baseUrl = args && args.baseUrl || defaultBaseUrl;
-    this.realmName = args && args.realmName || defaultRealm;
-    this.requestConfigs = args && args.requestConfigs;
+  constructor(connectionConfig?: ConnectionConfig) {
+    this.baseUrl =
+      (connectionConfig && connectionConfig.baseUrl) || defaultBaseUrl;
+    this.realmName =
+      (connectionConfig && connectionConfig.realmName) || defaultRealm;
+    this.requestConfig = connectionConfig && connectionConfig.requestConfig;
 
-    // initialize resources
+    // Initialize resources
     this.users = new Users(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
@@ -46,12 +48,12 @@ export class KeycloakAdminClient {
     this.components = new Components(this);
   }
 
-  public async auth(credential: Credential) {
+  public async auth(credentials: Credentials) {
     const {accessToken} = await getToken({
       baseUrl: this.baseUrl,
       realmName: this.realmName,
-      credential,
-      requestConfigs: this.requestConfigs
+      credentials,
+      requestConfig: this.requestConfig,
     });
     this.accessToken = accessToken;
   }
@@ -64,7 +66,23 @@ export class KeycloakAdminClient {
     return this.accessToken;
   }
 
-  public getRequestConfigs() {
-    return this.requestConfigs;
+  public getRequestConfig() {
+    return this.requestConfig;
+  }
+
+  public setConfig(connectionConfig: ConnectionConfig) {
+    if (
+      typeof connectionConfig.baseUrl === 'string' &&
+      connectionConfig.baseUrl
+    ) {
+      this.baseUrl = connectionConfig.baseUrl;
+    }
+
+    if (
+      typeof connectionConfig.realmName === 'string' &&
+      connectionConfig.realmName
+    ) {
+      this.realmName = connectionConfig.realmName;
+    }
   }
 }

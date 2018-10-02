@@ -1,64 +1,72 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import {pick, omit, isUndefined} from 'lodash';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export interface RequestArgs {
   method: string;
   path?: string;
-  // variables we'll put in url params
-  urlParams?: string[];
-  // variables we'll put querystring
-  querystring?: string[];
-  // keyTransform, transform key in payload to other key
+  // Keys of url params to be applied
+  urlParamKeys?: string[];
+  // Keys of query parameters to be applied
+  queryParamKeys?: string[];
+  // Mapping of key transformations to be performed on the payload
   keyTransform?: Record<string, string>;
-  // if respond with 404, catch it and return null instead
+  // If responding with 404, catch it and return null instead
   catchNotFound?: boolean;
-  // the exact key we extract to payload of request
-  // only works for POST, PUT
+  // The key of the value to use from the payload of request. Only works for POST & PUT.
   payloadKey?: string;
 }
 
 export class Agent {
   private client: KeycloakAdminClient;
-  private baseUrl: string;
   private basePath: string;
-  private baseParams?: Record<string, any>;
-  private requestConfigs?: AxiosRequestConfig;
+  private getBaseParams?: () => Record<string, any>;
+  private getBaseUrl?: () => string;
+  private requestConfig?: AxiosRequestConfig;
 
   constructor({
-    client, path = '/', urlParams = {}
+    client,
+    path = '/',
+    getUrlParams = () => ({}),
+    getBaseUrl = () => client.baseUrl,
   }: {
-    client: KeycloakAdminClient,
-    path?: string,
-    urlParams?: Record<string, any>
+    client: KeycloakAdminClient;
+    path?: string;
+    getUrlParams?: () => Record<string, any>;
+    getBaseUrl?: () => string;
   }) {
-    this.baseParams = urlParams;
     this.client = client;
-    this.baseUrl = client.baseUrl;
+    this.getBaseParams = getUrlParams;
+    this.getBaseUrl = getBaseUrl;
     this.basePath = path;
-    this.requestConfigs = client.getRequestConfigs() || {};
+    this.requestConfig = client.getRequestConfig() || {};
   }
 
   public request({
     method,
     path = '',
-    urlParams = [],
-    querystring = [],
+    urlParamKeys = [],
+    queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
-    payloadKey
+    payloadKey,
   }: RequestArgs) {
     return async (payload: any = {}) => {
-      const selected = [...Object.keys(this.baseParams), ...urlParams];
-      const mergedParams = {...this.baseParams, ...pick(payload, selected)};
-      // prepare queryParams
-      const queryParams = querystring ? pick(payload, querystring) : null;
-      // omit payload
-      payload = omit(payload, [...selected, ...querystring]);
+      const baseParams = this.getBaseParams();
 
-      // transform both payload and queryParams
+      // Filter query parameters by queryParamKeys
+      const queryParams = queryParamKeys ? pick(payload, queryParamKeys) : null;
+
+      // Add filtered payload parameters to base parameters
+      const allUrlParamKeys = [...Object.keys(baseParams), ...urlParamKeys];
+      const urlParams = {...baseParams, ...pick(payload, allUrlParamKeys)};
+
+      // Omit url parameters and query parameters from payload
+      payload = omit(payload, [...allUrlParamKeys, ...queryParamKeys]);
+
+      // Transform keys of both payload and queryParams
       if (keyTransform) {
         this.transformKey(payload, keyTransform);
         this.transformKey(queryParams, keyTransform);
@@ -68,10 +76,10 @@ export class Agent {
         method,
         path,
         payload,
-        urlParams: mergedParams,
+        urlParams,
         queryParams,
         catchNotFound,
-        payloadKey
+        payloadKey,
       });
     };
   }
@@ -79,87 +87,95 @@ export class Agent {
   public updateRequest({
     method,
     path = '',
-    urlParams = [],
-    querystring = [],
+    urlParamKeys = [],
+    queryParamKeys = [],
     catchNotFound = false,
     keyTransform,
-    payloadKey
+    payloadKey,
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
-      // pick queryParams from query
-      const queryParams = querystring ? pick(query, querystring) : null;
+      const baseParams = this.getBaseParams();
 
-      // pick params from query
-      const selected = [...Object.keys(this.baseParams), ...urlParams];
-      const mergedParams = {...this.baseParams, ...pick(query, selected)};
+      // Filter query parameters by queryParamKeys
+      const queryParams = queryParamKeys ? pick(query, queryParamKeys) : null;
 
-      // transform key of queryParams
+      // Add filtered query parameters to base parameters
+      const allUrlParamKeys = [...Object.keys(baseParams), ...urlParamKeys];
+      const urlParams = {
+        ...baseParams,
+        ...pick(query, allUrlParamKeys),
+      };
+
+      // Transform keys of queryParams
       if (keyTransform) {
         this.transformKey(queryParams, keyTransform);
       }
+
       return this.requestWithParams({
         method,
         path,
         payload,
-        urlParams: mergedParams,
-        catchNotFound,
+        urlParams,
         queryParams,
-        payloadKey
+        catchNotFound,
+        payloadKey,
       });
     };
   }
 
-  private async requestWithParams(
-    {
-      method,
-      path,
-      payload,
-      urlParams,
-      queryParams,
-      catchNotFound,
-      payloadKey
-    }:
-    {
-      method: string,
-      path: string,
-      payload: any,
-      urlParams: any,
-      queryParams?: Record<string, any> | null,
-      catchNotFound: boolean,
-      payloadKey?: string
-    }) {
+  private async requestWithParams({
+    method,
+    path,
+    payload,
+    urlParams,
+    queryParams,
+    catchNotFound,
+    payloadKey,
+  }: {
+    method: string;
+    path: string;
+    payload: any;
+    urlParams: any;
+    queryParams?: Record<string, any> | null;
+    catchNotFound: boolean;
+    payloadKey?: string;
+  }) {
     const newPath = urlJoin(this.basePath, path);
 
-    // parse
-    const temp = template.parse(newPath);
-    const parsedPath = temp.expand(urlParams);
-    const url = `${this.baseUrl}${parsedPath}`;
+    // Parse template and replace with values from urlParams
+    const pathTemplate = template.parse(newPath);
+    const parsedPath = pathTemplate.expand(urlParams);
+    const url = `${this.getBaseUrl()}${parsedPath}`;
 
-    // prepare request configs
+    // Prepare request config
     const requestConfig: AxiosRequestConfig = {
-      ...this.requestConfigs,
+      ...this.requestConfig,
       method,
       url,
       headers: {
-        Authorization: `bearer ${this.client.getAccessToken()}`
-      }
+        Authorization: `bearer ${this.client.getAccessToken()}`,
+      },
     };
 
-    // put payload into querystring if method is GET
+    // Put payload into querystring if method is GET
     if (method === 'GET') {
       requestConfig.params = payload;
     } else {
-      // consider payloadKey here
+      // Set the request data to the payload, or the value corresponding to the payloadKey, if it's defined
       requestConfig.data = payloadKey ? payload[payloadKey] : payload;
     }
 
-    // merged with previous params
+    // Concat to existing queryParams
     if (queryParams) {
-      requestConfig.params = (requestConfig.params) ? {...requestConfig.params, ...queryParams} : queryParams;
+      requestConfig.params = requestConfig.params
+        ? {
+            ...requestConfig.params,
+            ...queryParams,
+          }
+        : queryParams;
     }
 
     try {
-      // console.log(requestConfig);
       const res = await axios(requestConfig);
       return res.data;
     } catch (err) {
@@ -177,7 +193,7 @@ export class Agent {
 
     Object.keys(keyMapping).some(key => {
       if (isUndefined(payload[key])) {
-        // skip if undefined
+        // Skip if undefined
         return false;
       }
       const newKey = keyMapping[key];

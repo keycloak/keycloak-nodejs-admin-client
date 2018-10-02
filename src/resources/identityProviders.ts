@@ -1,6 +1,6 @@
 import Resource from './resource';
 import IdentityProviderRepresentation from '../defs/identityProviderRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class IdentityProviders extends Resource<{realm?: string}> {
   /**
@@ -9,38 +9,46 @@ export class IdentityProviders extends Resource<{realm?: string}> {
    */
 
   public find = this.makeRequest<void, IdentityProviderRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<IdentityProviderRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
-  public findOne = this.makeRequest<{alias: string}, IdentityProviderRepresentation>({
+  public findOne = this.makeRequest<
+    {alias: string},
+    IdentityProviderRepresentation
+  >({
     method: 'GET',
     path: '/{alias}',
-    urlParams: ['alias'],
-    catchNotFound: true
+    urlParamKeys: ['alias'],
+    catchNotFound: true,
   });
 
-  public update = this.makeUpdateRequest<{alias: string}, IdentityProviderRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {alias: string},
+    IdentityProviderRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{alias}',
-    urlParams: ['alias']
+    urlParamKeys: ['alias'],
   });
 
   public del = this.makeRequest<{alias: string}, void>({
     method: 'DELETE',
     path: '/{alias}',
-    urlParams: ['alias']
+    urlParamKeys: ['alias'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/identity-provider/instances',
-      urlParams: {
-        realm: client.realmName
-      }
+      getUrlParams: () => ({
+        realm: client.realmName,
+      }),
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

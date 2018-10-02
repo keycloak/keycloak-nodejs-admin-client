@@ -1,6 +1,6 @@
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class Realms extends Resource {
   /**
@@ -9,35 +9,40 @@ export class Realms extends Resource {
    */
 
   public find = this.makeRequest<void, RealmRepresentation[]>({
-    method: 'GET'
+    method: 'GET',
   });
 
   public create = this.makeRequest<RealmRepresentation, void>({
-    method: 'POST'
+    method: 'POST',
   });
 
   public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
     method: 'GET',
     path: '/{realm}',
-    urlParams: ['realm'],
-    catchNotFound: true
+    urlParamKeys: ['realm'],
+    catchNotFound: true,
   });
 
-  public update = this.makeUpdateRequest<{realm: string}, RealmRepresentation, void>({
+  public update = this.makeUpdateRequest<
+    {realm: string},
+    RealmRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/{realm}',
-    urlParams: ['realm']
+    urlParamKeys: ['realm'],
   });
 
   public del = this.makeRequest<{realm: string}, void>({
     method: 'DELETE',
     path: '/{realm}',
-    urlParams: ['realm']
+    urlParamKeys: ['realm'],
   });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
-      path: '/admin/realms'
+      path: '/admin/realms',
+      getBaseUrl: () => client.baseUrl,
     });
   }
 }

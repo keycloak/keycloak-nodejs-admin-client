@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {KeycloakAdminClient} from '../src/client';
+import {credentials} from './constants';
 import faker from 'faker';
 const expect = chai.expect;
 
@@ -16,25 +16,25 @@ declare module 'mocha' {
 describe('Identity providers', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
 
     // create idp
     const alias = faker.internet.userName();
     await this.kcAdminClient.identityProviders.create({
       alias,
-      providerId: 'saml'
+      providerId: 'saml',
     });
     this.currentIdpAlias = alias;
   });
 
   after(async () => {
     await this.kcAdminClient.identityProviders.del({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
 
     // check deleted
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
     expect(idp).to.be.null;
   });
@@ -46,30 +46,33 @@ describe('Identity providers', function() {
 
   it('get an idp', async () => {
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
     expect(idp).to.include({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
   });
 
   it('update an idp', async () => {
     const idp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
-    await this.kcAdminClient.identityProviders.update({alias: this.currentIdpAlias}, {
-      // alias and internalId are requried to update
-      alias: idp.alias,
-      internalId: idp.internalId,
-      displayName: 'test'
-    });
+    await this.kcAdminClient.identityProviders.update(
+      {alias: this.currentIdpAlias},
+      {
+        // alias and internalId are requried to update
+        alias: idp.alias,
+        internalId: idp.internalId,
+        displayName: 'test',
+      },
+    );
     const updatedIdp = await this.kcAdminClient.identityProviders.findOne({
-      alias: this.currentIdpAlias
+      alias: this.currentIdpAlias,
     });
 
     expect(updatedIdp).to.include({
       alias: this.currentIdpAlias,
-      displayName: 'test'
+      displayName: 'test',
     });
   });
 });

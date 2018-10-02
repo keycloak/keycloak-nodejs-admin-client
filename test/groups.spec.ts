@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {KeycloakAdminClient} from '../src/client';
+import {credentials} from './constants';
 import faker from 'faker';
 import GroupRepresentation from '../src/defs/groupRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
@@ -22,10 +22,10 @@ declare module 'mocha' {
 describe('Groups', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
     // initialize group
     await this.kcAdminClient.groups.create({
-      name: 'cool-group'
+      name: 'cool-group',
     });
     const groups = await this.kcAdminClient.groups.find({search: 'cool-group'});
     this.currentGroup = groups[0];
@@ -34,11 +34,11 @@ describe('Groups', function() {
   after(async () => {
     const groupId = this.currentGroup.id;
     await this.kcAdminClient.groups.del({
-      id: groupId
+      id: groupId,
     });
 
     const group = await this.kcAdminClient.groups.findOne({
-      id: groupId
+      id: groupId,
     });
     expect(group).to.be.null;
   });
@@ -51,7 +51,7 @@ describe('Groups', function() {
   it('get single groups', async () => {
     const groupId = this.currentGroup.id;
     const group = await this.kcAdminClient.groups.findOne({
-      id: groupId
+      id: groupId,
     });
     // get group from id will contains more fields than listing api
     expect(group).to.deep.include(this.currentGroup);
@@ -59,13 +59,16 @@ describe('Groups', function() {
 
   it('update single groups', async () => {
     const groupId = this.currentGroup.id;
-    await this.kcAdminClient.groups.update({id: groupId}, {name: 'another-group-name'});
+    await this.kcAdminClient.groups.update(
+      {id: groupId},
+      {name: 'another-group-name'},
+    );
 
     const group = await this.kcAdminClient.groups.findOne({
-      id: groupId
+      id: groupId,
     });
     expect(group).to.include({
-      name: 'another-group-name'
+      name: 'another-group-name',
     });
   });
 
@@ -77,10 +80,10 @@ describe('Groups', function() {
       // create new role
       const roleName = faker.internet.userName();
       await this.kcAdminClient.roles.create({
-        name: roleName
+        name: roleName,
       });
       const role = await this.kcAdminClient.roles.findOneByName({
-        name: roleName
+        name: roleName,
       });
       this.currentRole = role;
     });
@@ -95,17 +98,21 @@ describe('Groups', function() {
         id: this.currentGroup.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name,
+          },
+        ],
       });
     });
 
     it('list available role-mappings', async () => {
-      const roles = await this.kcAdminClient.groups.listAvailableRealmRoleMappings({
-        id: this.currentGroup.id
-      });
+      const roles = await this.kcAdminClient.groups.listAvailableRealmRoleMappings(
+        {
+          id: this.currentGroup.id,
+        },
+      );
 
       // admin, create-realm, offline_access, uma_authorization
       expect(roles.length).to.be.least(4);
@@ -113,7 +120,7 @@ describe('Groups', function() {
 
     it('list role-mappings', async () => {
       const {realmMappings} = await this.kcAdminClient.groups.listRoleMappings({
-        id: this.currentGroup.id
+        id: this.currentGroup.id,
       });
 
       expect(realmMappings).to.be.ok;
@@ -122,7 +129,7 @@ describe('Groups', function() {
 
     it('list realm role-mappings of group', async () => {
       const roles = await this.kcAdminClient.groups.listRealmRoleMappings({
-        id: this.currentGroup.id
+        id: this.currentGroup.id,
       });
       expect(roles[0]).to.be.eql(this.currentRole);
     });
@@ -130,14 +137,16 @@ describe('Groups', function() {
     it('del realm role-mappings from group', async () => {
       await this.kcAdminClient.groups.delRealmRoleMappings({
         id: this.currentGroup.id,
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name,
+          },
+        ],
       });
 
       const roles = await this.kcAdminClient.groups.listRealmRoleMappings({
-        id: this.currentGroup.id
+        id: this.currentGroup.id,
       });
       expect(roles).to.be.empty;
     });
@@ -151,7 +160,7 @@ describe('Groups', function() {
       // create new client
       const clientId = faker.internet.userName();
       await this.kcAdminClient.clients.create({
-        clientId
+        clientId,
       });
 
       const clients = await this.kcAdminClient.clients.find({clientId});
@@ -162,20 +171,20 @@ describe('Groups', function() {
       const roleName = faker.internet.userName();
       await this.kcAdminClient.clients.createRole({
         id: this.currentClient.id,
-        name: roleName
+        name: roleName,
       });
 
       // assign to currentRole
       this.currentRole = await this.kcAdminClient.clients.findRole({
         id: this.currentClient.id,
-        roleName
+        roleName,
       });
     });
 
     after(async () => {
       await this.kcAdminClient.clients.delRole({
         id: this.currentClient.id,
-        roleName: this.currentRole.name
+        roleName: this.currentRole.name,
       });
       await this.kcAdminClient.clients.del({id: this.currentClient.id});
     });
@@ -187,18 +196,22 @@ describe('Groups', function() {
         clientUniqueId: this.currentClient.id,
 
         // at least id and name should appear
-        roles: [{
-          id: this.currentRole.id,
-          name: this.currentRole.name
-        }]
+        roles: [
+          {
+            id: this.currentRole.id,
+            name: this.currentRole.name,
+          },
+        ],
       });
     });
 
     it('list available client role-mappings for group', async () => {
-      const roles = await this.kcAdminClient.groups.listAvailableClientRoleMappings({
-        id: this.currentGroup.id,
-        clientUniqueId: this.currentClient.id
-      });
+      const roles = await this.kcAdminClient.groups.listAvailableClientRoleMappings(
+        {
+          id: this.currentGroup.id,
+          clientUniqueId: this.currentClient.id,
+        },
+      );
 
       expect(roles).to.be.empty;
     });
@@ -206,7 +219,7 @@ describe('Groups', function() {
     it('list client role-mappings of group', async () => {
       const roles = await this.kcAdminClient.groups.listClientRoleMappings({
         id: this.currentGroup.id,
-        clientUniqueId: this.currentClient.id
+        clientUniqueId: this.currentClient.id,
       });
 
       expect(roles[0]).to.be.eql(this.currentRole);
@@ -216,27 +229,29 @@ describe('Groups', function() {
       const roleName = faker.internet.userName();
       await this.kcAdminClient.clients.createRole({
         id: this.currentClient.id,
-        name: roleName
+        name: roleName,
       });
       const role = await this.kcAdminClient.clients.findRole({
         id: this.currentClient.id,
-        roleName
+        roleName,
       });
 
       // delete the created role
       await this.kcAdminClient.groups.delClientRoleMappings({
         id: this.currentGroup.id,
         clientUniqueId: this.currentClient.id,
-        roles: [{
-          id: role.id,
-          name: role.name
-        }]
+        roles: [
+          {
+            id: role.id,
+            name: role.name,
+          },
+        ],
       });
 
       // check if mapping is successfully deleted
       const roles = await this.kcAdminClient.groups.listClientRoleMappings({
         id: this.currentGroup.id,
-        clientUniqueId: this.currentClient.id
+        clientUniqueId: this.currentClient.id,
       });
 
       // should only left the one we added in the previous test

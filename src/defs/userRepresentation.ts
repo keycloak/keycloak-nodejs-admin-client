@@ -1,7 +1,7 @@
 import UserConsentRepresentation from './userConsentRepresentation';
 import CredentialRepresentation from './credentialRepresentation';
 import FederatedIdentityRepresentation from './federatedIdentityRepresentation';
-import { RequiredActionAlias } from './requiredActionProviderRepresentation';
+import {RequiredActionAlias} from './requiredActionProviderRepresentation';
 
 export default interface UserRepresentation {
   id?: string;

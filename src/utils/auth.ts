@@ -1,9 +1,9 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import camelize from 'camelize';
 import querystring from 'querystring';
-import { defaultBaseUrl, defaultRealm } from './constants';
+import {defaultBaseUrl, defaultRealm} from './constants';
 
-export interface Credential {
+export interface Credentials {
   username: string;
   password: string;
   grantType: string;
@@ -14,9 +14,8 @@ export interface Credential {
 export interface Settings {
   realmName?: string;
   baseUrl?: string;
-  // credential
-  credential: Credential;
-  requestConfigs?: AxiosRequestConfig;
+  credentials: Credentials;
+  requestConfig?: AxiosRequestConfig;
 }
 
 export interface TokenResponse {
@@ -31,30 +30,31 @@ export interface TokenResponse {
 }
 
 export const getToken = async (settings: Settings): Promise<TokenResponse> => {
-  // url construction
+  // Construct URL
   const baseUrl = settings.baseUrl || defaultBaseUrl;
   const realmName = settings.realmName || defaultRealm;
   const url = `${baseUrl}/realms/${realmName}/protocol/openid-connect/token`;
 
-  // prepare credential for openid-connect token request
+  // Prepare credentials for openid-connect token request
   // ref: http://openid.net/specs/openid-connect-core-1_0.html#TokenEndpoint
-  const credential = settings.credential || {} as any;
+  const credentials = settings.credentials || ({} as any);
   const payload = querystring.stringify({
-    username: credential.username,
-    password: credential.password,
-    grant_type: credential.grantType,
-    client_id: credential.clientId
+    username: credentials.username,
+    password: credentials.password,
+    grant_type: credentials.grantType,
+    client_id: credentials.clientId,
   });
-  const configs: AxiosRequestConfig = {
-    ...settings.requestConfigs
+  const config: AxiosRequestConfig = {
+    ...settings.requestConfig,
   };
 
-  if (credential.clientSecret) {
-    configs.auth = {
-      username: credential.clientId,
-      password: credential.clientSecret
+  if (credentials.clientSecret) {
+    config.auth = {
+      username: credentials.clientId,
+      password: credentials.clientSecret,
     };
   }
-  const {data} = await axios.post(url, payload, configs);
+
+  const {data} = await axios.post(url, payload, config);
   return camelize(data);
 };

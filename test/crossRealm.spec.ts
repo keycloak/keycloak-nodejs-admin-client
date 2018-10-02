@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeycloakAdminClient } from '../src/client';
-import { cred } from './constants';
+import {KeycloakAdminClient} from '../src/client';
+import {credentials} from './constants';
 import faker from 'faker';
 const expect = chai.expect;
 
@@ -16,12 +16,12 @@ declare module 'mocha' {
 describe('Realms', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(cred);
+    await this.kcAdminClient.auth(credentials);
 
     const realmId = faker.internet.userName();
     await this.kcAdminClient.realms.create({
       id: realmId,
-      realm: realmId
+      realm: realmId,
     });
     this.currentRealmId = realmId;
   });
@@ -38,11 +38,11 @@ describe('Realms', function() {
       email: 'wwwy3y3@canner.io',
       // enabled required to be true in order to send actions email
       emailVerified: true,
-      enabled: true
+      enabled: true,
     });
     const users = await this.kcAdminClient.users.find({
       realm: this.currentRealmId,
-      username
+      username,
     });
     expect(users[0].username).to.be.eql(username);
   });

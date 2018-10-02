@@ -1,13 +1,13 @@
 import * as chai from 'chai';
-import { getToken } from '../src/utils/auth';
-import { cred } from './constants';
+import {getToken} from '../src/utils/auth';
+import {credentials} from './constants';
 
 const expect = chai.expect;
 
 describe('Authorization', () => {
   it('should get token from local keycloak', async () => {
     const data = await getToken({
-      credential: cred
+      credentials,
     });
 
     expect(data).to.have.all.keys(
@@ -18,7 +18,7 @@ describe('Authorization', () => {
       'tokenType',
       'notBeforePolicy',
       'sessionState',
-      'scope'
+      'scope',
     );
   });
 });

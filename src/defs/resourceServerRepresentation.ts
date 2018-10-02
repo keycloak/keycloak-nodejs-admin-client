@@ -8,7 +8,7 @@ import ScopeRepresentation from './scopeRepresentation';
 export enum PolicyEnforcementMode {
   ENFORCING = 'ENFORCING',
   PERMISSIVE = 'PERMISSIVE',
-  DISABLED = 'DISABLED'
+  DISABLED = 'DISABLED',
 }
 
 export default interface ResourceServerRepresentation {
