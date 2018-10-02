@@ -44,7 +44,7 @@ await kcAdminClient.auth({
 const users = await kcAdminClient.users.find();
 
 // Override client configuration for all further requests:
-keycloakClient.setConfig({
+kcAdminClient.setConfig({
   realmName: 'another-realm',
 });
 
