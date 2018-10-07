@@ -369,8 +369,8 @@ describe('Users', function() {
       this.federatedIdentity = {
         identityProvider: 'foobar',
         userId: 'userid1',
-        userName: 'username1'
-      }
+        userName: 'username1',
+      };
     });
 
     after(async () => {
@@ -386,22 +386,20 @@ describe('Users', function() {
       expect(federatedIdentities).to.be.eql([]);
     });
 
-    // @TODO: In order to test the integration with federated identities, the User Federation
-    // would need to be created first, this is not implemented yet.
-    //
-    // it('should add federated identity to user', async () => {
-    //   await this.kcAdminClient.users.addToFederatedIdentity({
-    //     id: this.currentUser.id,
-    //     federatedIdentityId: 'foobar',
-    //     federatedIdentity: this.federatedIdentity
-    //   });
+    it('should add federated identity to user', async () => {
+      await this.kcAdminClient.users.addToFederatedIdentity({
+        id: this.currentUser.id,
+        federatedIdentityId: 'foobar',
+        federatedIdentity: this.federatedIdentity,
+      });
 
-    //   const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
-    //     id: this.currentUser.id,
-    //   });
-    //   console.log(federatedIdentities[0])
-    //   expect(federatedIdentities[0]).to.be.eql(this.federatedIdentity);
-    // });
+      // @TODO: In order to test the integration with federated identities, the User Federation
+      // would need to be created first, this is not implemented yet.
+      // const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
+      //   id: this.currentUser.id,
+      // });
+      // expect(federatedIdentities[0]).to.be.eql(this.federatedIdentity);
+    });
 
     it('should remove federated identity from user', async () => {
       await this.kcAdminClient.users.delFromFederatedIdentity({
@@ -415,6 +413,5 @@ describe('Users', function() {
       expect(federatedIdentities).to.be.eql([]);
     });
   });
-
 
 });
