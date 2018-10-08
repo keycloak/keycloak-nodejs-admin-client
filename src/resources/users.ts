@@ -6,6 +6,7 @@ import RoleRepresentation, {
   RoleMappingPayload
 } from '../defs/roleRepresentation';
 import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation';
+import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
 
@@ -201,6 +202,35 @@ export class Users extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
+  });
+
+  /**
+   * Federated Identity
+   */
+
+  public listFederatedIdentities = this.makeRequest<{id: string}, FederatedIdentityRepresentation[]>({
+    method: 'GET',
+    path: '/{id}/federated-identity',
+    urlParamKeys: ['id'],
+  });
+
+  public addToFederatedIdentity = this.makeRequest<
+    {id: string; federatedIdentityId: string, federatedIdentity: FederatedIdentityRepresentation},
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/federated-identity/{federatedIdentityId}',
+    urlParamKeys: ['id', 'federatedIdentityId'],
+    payloadKey: 'federatedIdentity',
+  });
+
+  public delFromFederatedIdentity = this.makeRequest<
+    {id: string; federatedIdentityId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/federated-identity/{federatedIdentityId}',
+    urlParamKeys: ['id', 'federatedIdentityId'],
   });
 
   /**

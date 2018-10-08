@@ -7,6 +7,7 @@ import UserRepresentation from '../src/defs/userRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
+import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
 
 const expect = chai.expect;
 
@@ -17,6 +18,7 @@ declare module 'mocha' {
     currentClient?: ClientRepresentation;
     currentUser?: UserRepresentation;
     currentRole?: RoleRepresentation;
+    federatedIdentity?: FederatedIdentityRepresentation;
   }
 }
 
@@ -348,4 +350,68 @@ describe('Users', function() {
       expect(roles.length).to.be.eql(1);
     });
   });
+
+  describe('Federated Identity user integration', function() {
+    before(async () => {
+      this.kcAdminClient = new KeycloakAdminClient();
+      await this.kcAdminClient.auth(credentials);
+
+      // create user
+      const username = faker.internet.userName();
+      await this.kcAdminClient.users.create({
+        username,
+        email: 'wwwy3y3-federated@canner.io',
+        enabled: true,
+      });
+      const users = await this.kcAdminClient.users.find({username});
+      expect(users[0]).to.be.ok;
+      this.currentUser = users[0];
+      this.federatedIdentity = {
+        identityProvider: 'foobar',
+        userId: 'userid1',
+        userName: 'username1',
+      };
+    });
+
+    after(async () => {
+      await this.kcAdminClient.users.del({
+        id: this.currentUser.id,
+      });
+    });
+
+    it('should list user\'s federated identities and expect empty', async () => {
+      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
+        id: this.currentUser.id,
+      });
+      expect(federatedIdentities).to.be.eql([]);
+    });
+
+    it('should add federated identity to user', async () => {
+      await this.kcAdminClient.users.addToFederatedIdentity({
+        id: this.currentUser.id,
+        federatedIdentityId: 'foobar',
+        federatedIdentity: this.federatedIdentity,
+      });
+
+      // @TODO: In order to test the integration with federated identities, the User Federation
+      // would need to be created first, this is not implemented yet.
+      // const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
+      //   id: this.currentUser.id,
+      // });
+      // expect(federatedIdentities[0]).to.be.eql(this.federatedIdentity);
+    });
+
+    it('should remove federated identity from user', async () => {
+      await this.kcAdminClient.users.delFromFederatedIdentity({
+        id: this.currentUser.id,
+        federatedIdentityId: 'foobar',
+      });
+
+      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
+        id: this.currentUser.id,
+      });
+      expect(federatedIdentities).to.be.eql([]);
+    });
+  });
+
 });
