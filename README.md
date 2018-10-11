@@ -60,6 +60,27 @@ await this.kcAdminClient.users.create({
 });
 ```
 
+To refresh the acces token provided by Keycloak, an OpenID client like [panva/node-openid-client](https://github.com/panva/node-openid-client) can be used like this:
+
+```js
+import {Issuer} from 'openid-client';
+
+const keycloakIssuer = await Issuer.discover(
+  'http://localhost:8080/auth/realms/master'
+);
+
+const client = new keycloakIssuer.Client({
+  client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  client_secret: 'wwwy3y3', // Same as `password` passed to client.auth()
+});
+
+setInterval(async () => {
+  const refreshToken = client.refreshToken;
+  const tokenSet = await client.refresh(refreshToken);
+  kcAdminClient.setAccessToken(tokenSet.access_token);
+}, 58 * 1000); // 58 seconds
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_realms_admin_resource)
