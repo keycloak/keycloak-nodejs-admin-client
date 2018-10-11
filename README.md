@@ -37,7 +37,7 @@ await kcAdminClient.auth({
   username: 'wwwy3y3',
   password: 'wwwy3y3',
   grantType: 'password',
-  clientId: 'admin-cli'
+  clientId: 'admin-cli',
 });
 
 // List all users
@@ -56,7 +56,7 @@ const groups = await kcAdminClient.groups.find();
 await this.kcAdminClient.users.create({
   realm: 'a-third-realm',
   username: 'username',
-  email: 'user@example.com'
+  email: 'user@example.com',
 });
 ```
 
