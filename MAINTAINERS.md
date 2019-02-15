@@ -22,7 +22,7 @@ This repo is originally developed by [Canner](https://www.cannercms.com) and [In
       </td>
       <td align="center" valign="middle">
         <a href="https://infuseai.io" target="_blank">
-          <img width="200px" src="https://i.imgur.com/6HA9FGX.png">
+          <img width="200px" src="https://i.imgur.com/oNdq5Qq.png">
         </a>
       </td>
     </tr>
