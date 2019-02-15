@@ -29,6 +29,7 @@ export class KeycloakAdminClient {
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
+  public refreshToken: string;
   private requestConfig?: AxiosRequestConfig;
 
   constructor(connectionConfig?: ConnectionConfig) {
@@ -49,13 +50,14 @@ export class KeycloakAdminClient {
   }
 
   public async auth(credentials: Credentials) {
-    const {accessToken} = await getToken({
+    const {accessToken, refreshToken} = await getToken({
       baseUrl: this.baseUrl,
       realmName: this.realmName,
       credentials,
       requestConfig: this.requestConfig,
     });
     this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
   }
 
   public setAccessToken(token: string) {

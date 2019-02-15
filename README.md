@@ -37,7 +37,7 @@ await kcAdminClient.auth({
   username: 'wwwy3y3',
   password: 'wwwy3y3',
   grantType: 'password',
-  clientId: 'admin-cli'
+  clientId: 'admin-cli',
 });
 
 // List all users
@@ -56,8 +56,29 @@ const groups = await kcAdminClient.groups.find();
 await this.kcAdminClient.users.create({
   realm: 'a-third-realm',
   username: 'username',
-  email: 'user@example.com'
+  email: 'user@example.com',
 });
+```
+
+To refresh the acces token provided by Keycloak, an OpenID client like [panva/node-openid-client](https://github.com/panva/node-openid-client) can be used like this:
+
+```js
+import {Issuer} from 'openid-client';
+
+const keycloakIssuer = await Issuer.discover(
+  'http://localhost:8080/auth/realms/master'
+);
+
+const client = new keycloakIssuer.Client({
+  client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  client_secret: 'wwwy3y3', // Same as `password` passed to client.auth()
+});
+
+setInterval(async () => {
+  const refreshToken = client.refreshToken;
+  const tokenSet = await client.refresh(refreshToken);
+  kcAdminClient.setAccessToken(tokenSet.access_token);
+}, 58 * 1000); // 58 seconds
 ```
 
 ## Supported APIs
