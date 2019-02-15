@@ -10,7 +10,7 @@
 
 ## Originally developed by
 
-This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under keycloak organization.
+This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under Keycloak organization.
 
 <table>
   <tbody>
