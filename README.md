@@ -60,7 +60,7 @@ await this.kcAdminClient.users.create({
 });
 ```
 
-To refresh the acces token provided by Keycloak, an OpenID client like [panva/node-openid-client](https://github.com/panva/node-openid-client) can be used like this:
+To refresh the access token provided by Keycloak, an OpenID client like [panva/node-openid-client](https://github.com/panva/node-openid-client) can be used like this:
 
 ```js
 import {Issuer} from 'openid-client';
@@ -74,6 +74,7 @@ const client = new keycloakIssuer.Client({
   client_secret: 'wwwy3y3', // Same as `password` passed to client.auth()
 });
 
+// periodically using refresh_token grant flow to get new access token here
 setInterval(async () => {
   const refreshToken = client.refreshToken;
   const tokenSet = await client.refresh(refreshToken);
