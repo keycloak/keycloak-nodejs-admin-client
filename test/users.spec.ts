@@ -8,6 +8,7 @@ import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
+import {omit} from 'lodash';
 
 const expect = chai.expect;
 
@@ -223,7 +224,10 @@ describe('Users', function() {
       const roles = await this.kcAdminClient.users.listRealmRoleMappings({
         id: this.currentUser.id,
       });
-      expect(roles).to.deep.include(this.currentRole);
+      // currentRole will have an empty `attributes`, but role-mappings do not
+      expect(roles).to.deep.include(
+        omit(this.currentRole, 'attributes')
+      );
     });
 
     it('del realm role-mappings from user', async () => {
@@ -314,7 +318,8 @@ describe('Users', function() {
         clientUniqueId: this.currentClient.id,
       });
 
-      expect(roles[0]).to.be.eql(this.currentRole);
+      // currentRole will have an empty `attributes`, but role-mappings do not
+      expect(this.currentRole).to.deep.include(roles[0]);
     });
 
     it('del client role-mappings from user', async () => {

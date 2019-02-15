@@ -124,14 +124,16 @@ describe('Groups', function() {
       });
 
       expect(realmMappings).to.be.ok;
-      expect(realmMappings[0]).to.be.eql(this.currentRole);
+      // currentRole will have an empty `attributes`, but role-mappings do not
+      expect(this.currentRole).to.deep.include(realmMappings[0]);
     });
 
     it('list realm role-mappings of group', async () => {
       const roles = await this.kcAdminClient.groups.listRealmRoleMappings({
         id: this.currentGroup.id,
       });
-      expect(roles[0]).to.be.eql(this.currentRole);
+      // currentRole will have an empty `attributes`, but role-mappings do not
+      expect(this.currentRole).to.deep.include(roles[0]);
     });
 
     it('del realm role-mappings from group', async () => {
@@ -222,7 +224,8 @@ describe('Groups', function() {
         clientUniqueId: this.currentClient.id,
       });
 
-      expect(roles[0]).to.be.eql(this.currentRole);
+      // currentRole will have an empty `attributes`, but role-mappings do not
+      expect(this.currentRole).to.deep.include(roles[0]);
     });
 
     it('del client role-mappings from group', async () => {
