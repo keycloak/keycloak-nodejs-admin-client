@@ -66,7 +66,7 @@ To refresh the access token provided by Keycloak, an OpenID client like [panva/n
 import {Issuer} from 'openid-client';
 
 const keycloakIssuer = await Issuer.discover(
-  'http://localhost:8080/auth/realms/master'
+  'http://localhost:8080/auth/realms/master',
 );
 
 const client = new keycloakIssuer.Client({
@@ -227,3 +227,9 @@ Supported for [user federation](https://www.keycloak.org/docs/latest/server_admi
 - [Protocol Mappers](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_protocol_mappers_resource)
 - [Scope Mappings](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_scope_mappings_resource)
 - [User Storage Provider](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_user_storage_provider_resource)
+
+## Maintainers
+
+Checkout [MAINTAINERS.md](https://github.com/Canner/keycloak-admin/blob/master/MAINTAINERS.md) for detailed maintainers list.
+
+This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under keycloak organization.
