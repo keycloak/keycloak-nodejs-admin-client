@@ -45,16 +45,11 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParamKeys: ['alias'],
   });
 
-
-  public findFactory = this.makeRequest<
-    {providerId: string},
-    any
-  >({
+  public findFactory = this.makeRequest<{providerId: string}, any>({
     method: 'GET',
     path: '/providers/{providerId}',
     urlParamKeys: ['providerId'],
   });
-
 
   public findMappers = this.makeRequest<
     {alias: string},
@@ -79,8 +74,8 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   });
 
   public updateMapper = this.makeUpdateRequest<
-    {alias: string, id: string},
-    IdentityProviderRepresentation,
+    {alias: string; id: string},
+    IdentityProviderMapperRepresentation,
     void
   >({
     method: 'PUT',
@@ -88,12 +83,11 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParamKeys: ['alias', 'id'],
   });
 
-  public delMapper = this.makeRequest<{alias: string, id: string}, void>({
+  public delMapper = this.makeRequest<{alias: string; id: string}, void>({
     method: 'DELETE',
     path: '/instances/{alias}/mappers/{id}',
     urlParamKeys: ['alias', 'id'],
   });
-
 
   public findMapperTypes = this.makeRequest<
     {alias: string},
