@@ -50,9 +50,10 @@ describe('Identity providers', function() {
       id: idpMapperId,
     });
 
-    const idpMapperUpdated = await this.kcAdminClient.identityProviders.findMappers(
+    const idpMapperUpdated = await this.kcAdminClient.identityProviders.findOneMapper(
       {
         alias: this.currentIdpAlias,
+        id: idpMapperId,
       },
     );
 
@@ -66,7 +67,7 @@ describe('Identity providers', function() {
 
     // check idp and idp mapper deleted
     expect(idp).to.be.null;
-    expect(idpMapperUpdated.length).to.equal(0);
+    expect(idp).to.be.null;
   });
 
   it('list idp', async () => {
@@ -141,13 +142,14 @@ describe('Identity providers', function() {
       },
     );
 
-    const updatedIdpMappers = await this.kcAdminClient.identityProviders.findMappers(
+    const updatedIdpMappers = await this.kcAdminClient.identityProviders.findOneMapper(
       {
         alias: this.currentIdpAlias,
+        id: idpMapperId,
       },
     );
 
-    const userAttribute = updatedIdpMappers[0].config['user.attribute'];
+    const userAttribute = updatedIdpMappers.config['user.attribute'];
     expect(userAttribute).to.equal('firstName');
   });
 });

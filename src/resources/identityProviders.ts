@@ -60,6 +60,16 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParamKeys: ['alias'],
   });
 
+  public findOneMapper = this.makeRequest<
+    {alias: string; id: string},
+    IdentityProviderMapperRepresentation
+  >({
+    method: 'GET',
+    path: '/instances/{alias}/mappers/{id}',
+    urlParamKeys: ['alias', 'id'],
+    catchNotFound: true,
+  });
+
   public createMapper = this.makeRequest<
     {
       alias: string;
