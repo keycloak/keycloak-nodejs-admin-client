@@ -204,6 +204,13 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get the identity provider (`GET /{realm}/identity-provider/instances/{alias}`)
 - Update the identity provider (`PUT /{realm}/identity-provider/instances/{alias}`)
 - Delete the identity provider (`DELETE /{realm}/identity-provider/instances/{alias}`)
+- Find identity provider factory (`GET /{realm}/identity-provider//providers/{providerId}`)
+- Create a new identity provider mapper (`POST /{realm}/identity-provider/instances/{alias}/mappers`)
+- Get identity provider mappers (`GET /{realm}/identity-provider/instances/{alias}/mappers`)
+- Get the identity provider mapper (`GET /{realm}/identity-provider/instances/{alias}/mappers/{id}`)
+- Update the identity provider mapper (`PUT /{realm}/identity-provider/instances/{alias}/mappers/{id}`)
+- Delete the identity provider mapper (`DELETE /{realm}/identity-provider/instances/{alias}/mappers/{id}`)
+- Find the identity provider mapper types (`GET /{realm}/identity-provider/instances/{alias}/mapper-types`)
 
 ### [Component]()
 
