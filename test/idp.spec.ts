@@ -56,6 +56,9 @@ describe('Identity providers', function() {
         id: idpMapperId,
       },
     );
+	
+	// check idp mapper deleted
+    expect(idpMapperUpdated).to.be.null;
 
     await this.kcAdminClient.identityProviders.del({
       alias: this.currentIdpAlias,
@@ -65,8 +68,7 @@ describe('Identity providers', function() {
       alias: this.currentIdpAlias,
     });
 
-    // check idp and idp mapper deleted
-    expect(idp).to.be.null;
+    // check idp deleted
     expect(idp).to.be.null;
   });
 
