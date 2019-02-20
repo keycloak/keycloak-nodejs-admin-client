@@ -225,9 +225,7 @@ describe('Users', function() {
         id: this.currentUser.id,
       });
       // currentRole will have an empty `attributes`, but role-mappings do not
-      expect(roles).to.deep.include(
-        omit(this.currentRole, 'attributes')
-      );
+      expect(roles).to.deep.include(omit(this.currentRole, 'attributes'));
     });
 
     it('del realm role-mappings from user', async () => {
@@ -385,9 +383,11 @@ describe('Users', function() {
     });
 
     it('should list user\'s federated identities and expect empty', async () => {
-      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
-        id: this.currentUser.id,
-      });
+      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities(
+        {
+          id: this.currentUser.id,
+        },
+      );
       expect(federatedIdentities).to.be.eql([]);
     });
 
@@ -412,11 +412,12 @@ describe('Users', function() {
         federatedIdentityId: 'foobar',
       });
 
-      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
-        id: this.currentUser.id,
-      });
+      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities(
+        {
+          id: this.currentUser.id,
+        },
+      );
       expect(federatedIdentities).to.be.eql([]);
     });
   });
-
 });

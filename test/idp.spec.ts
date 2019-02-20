@@ -56,8 +56,8 @@ describe('Identity providers', function() {
         id: idpMapperId,
       },
     );
-	
-	// check idp mapper deleted
+
+    // check idp mapper deleted
     expect(idpMapperUpdated).to.be.null;
 
     await this.kcAdminClient.identityProviders.del({
