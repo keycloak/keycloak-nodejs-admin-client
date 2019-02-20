@@ -25,17 +25,50 @@ describe('Identity providers', function() {
       providerId: 'saml',
     });
     this.currentIdpAlias = alias;
+
+    // create idp mapper
+    const mapper = {
+      name: 'First Name',
+      identityProviderAlias: this.currentIdpAlias,
+      identityProviderMapper: 'saml-user-attribute-idp-mapper',
+      config: {},
+    };
+    await this.kcAdminClient.identityProviders.createMapper({
+      alias: this.currentIdpAlias,
+      identityProviderMapper: mapper,
+    });
   });
 
   after(async () => {
+    const idpMapper = await this.kcAdminClient.identityProviders.findMappers({
+      alias: this.currentIdpAlias,
+    });
+
+    const idpMapperId = idpMapper[0].id;
+    await this.kcAdminClient.identityProviders.delMapper({
+      alias: this.currentIdpAlias,
+      id: idpMapperId,
+    });
+
+    const idpMapperUpdated = await this.kcAdminClient.identityProviders.findOneMapper(
+      {
+        alias: this.currentIdpAlias,
+        id: idpMapperId,
+      },
+    );
+	
+	// check idp mapper deleted
+    expect(idpMapperUpdated).to.be.null;
+
     await this.kcAdminClient.identityProviders.del({
       alias: this.currentIdpAlias,
     });
 
-    // check deleted
     const idp = await this.kcAdminClient.identityProviders.findOne({
       alias: this.currentIdpAlias,
     });
+
+    // check idp deleted
     expect(idp).to.be.null;
   });
 
@@ -74,5 +107,51 @@ describe('Identity providers', function() {
       alias: this.currentIdpAlias,
       displayName: 'test',
     });
+  });
+
+  it('list idp factory', async () => {
+    const idpFactory = await this.kcAdminClient.identityProviders.findFactory({
+      providerId: 'saml',
+    });
+
+    expect(idpFactory).to.include({
+      id: 'saml',
+    });
+  });
+
+  it('get an idp mapper', async () => {
+    const mappers = await this.kcAdminClient.identityProviders.findMappers({
+      alias: this.currentIdpAlias,
+    });
+    expect(mappers.length).to.be.least(1);
+  });
+
+  it('update an idp mapper', async () => {
+    const idpMapper = await this.kcAdminClient.identityProviders.findMappers({
+      alias: this.currentIdpAlias,
+    });
+    const idpMapperId = idpMapper[0].id;
+
+    await this.kcAdminClient.identityProviders.updateMapper(
+      {alias: this.currentIdpAlias, id: idpMapperId},
+      {
+        id: idpMapperId,
+        identityProviderAlias: this.currentIdpAlias,
+        identityProviderMapper: 'saml-user-attribute-idp-mapper',
+        config: {
+          'user.attribute': 'firstName',
+        },
+      },
+    );
+
+    const updatedIdpMappers = await this.kcAdminClient.identityProviders.findOneMapper(
+      {
+        alias: this.currentIdpAlias,
+        id: idpMapperId,
+      },
+    );
+
+    const userAttribute = updatedIdpMappers.config['user.attribute'];
+    expect(userAttribute).to.equal('firstName');
   });
 });
