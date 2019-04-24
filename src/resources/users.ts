@@ -107,6 +107,16 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  // Get effective realm-level role mappings This will recurse all composite roles to get the result.
+  public listCompositeRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/realm/composite',
+    urlParamKeys: ['id'],
+  });
+
   /**
    * Client role mappings
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource

@@ -228,6 +228,16 @@ describe('Users', function() {
       expect(roles).to.deep.include(omit(this.currentRole, 'attributes'));
     });
 
+    it('list realm composite role-mappings of user', async () => {
+      const roles = await this.kcAdminClient.users.listCompositeRealmRoleMappings(
+        {
+          id: this.currentUser.id,
+        },
+      );
+      // todo: add data integrity check later
+      expect(roles).to.be.ok;
+    });
+
     it('del realm role-mappings from user', async () => {
       await this.kcAdminClient.users.delRealmRoleMappings({
         id: this.currentUser.id,
