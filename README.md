@@ -71,13 +71,19 @@ const keycloakIssuer = await Issuer.discover(
 
 const client = new keycloakIssuer.Client({
   client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
-  client_secret: 'wwwy3y3', // Same as `password` passed to client.auth()
 });
 
-// periodically using refresh_token grant flow to get new access token here
+// Use the grant type 'password'
+let tokenSet = await client.grant({
+  grant_type: 'password',
+  username: 'wwwy3y3',
+  password: 'wwwy3y3',
+});
+
+// Periodically using refresh_token grant flow to get new access token here
 setInterval(async () => {
-  const refreshToken = client.refreshToken;
-  const tokenSet = await client.refresh(refreshToken);
+  const refreshToken = tokenSet.refresh_token;
+  tokenSet = await client.refresh(refreshToken);
   kcAdminClient.setAccessToken(tokenSet.access_token);
 }, 58 * 1000); // 58 seconds
 ```
