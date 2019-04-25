@@ -153,6 +153,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Update (`PUT /{realm}/groups/{id}`)
 - Delete (`DELETE /{realm}/groups/{id}`)
 - List members (`GET /{realm}/groups/{id}/members`)
+- Set or create child (`POST /{realm}/groups/{id}/children`)
 
 ### Group role-mapping
 
