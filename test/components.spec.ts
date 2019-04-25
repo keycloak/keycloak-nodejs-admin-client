@@ -21,19 +21,19 @@ describe('User federation using component api', function() {
 
     // create user fed
     const name = faker.internet.userName();
-    await this.kcAdminClient.components.create({
+    const component = await this.kcAdminClient.components.create({
       name,
       parentId: 'master',
       providerId: 'ldap',
       providerType: 'org.keycloak.storage.UserStorageProvider',
     });
+    expect(component.id).to.be.ok;
 
     // assign current user fed
-    const feds = await this.kcAdminClient.components.find({
-      parent: 'master',
-      type: 'org.keycloak.storage.UserStorageProvider',
+    const fed = await this.kcAdminClient.components.findOne({
+      id: component.id,
     });
-    this.currentUserFed = feds[0];
+    this.currentUserFed = fed;
   });
 
   after(async () => {

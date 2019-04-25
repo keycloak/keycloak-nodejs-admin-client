@@ -24,22 +24,19 @@ describe('Group user integration', function() {
     this.kcAdminClient = new KeycloakAdminClient();
     await this.kcAdminClient.auth(credentials);
     // create group
-    await this.kcAdminClient.groups.create({
+    const group = await this.kcAdminClient.groups.create({
       name: groupName,
     });
-    const groups = await this.kcAdminClient.groups.find({search: groupName});
-    this.currentGroup = groups[0];
+    this.currentGroup = await this.kcAdminClient.groups.findOne({id: group.id});
 
     // create user
     const username = faker.internet.userName();
-    await this.kcAdminClient.users.create({
+    const user = await this.kcAdminClient.users.create({
       username,
       email: 'wwwy3y3@canner.io',
       enabled: true,
     });
-    const users = await this.kcAdminClient.users.find({username});
-    expect(users[0]).to.be.ok;
-    this.currentUser = users[0];
+    this.currentUser = await this.kcAdminClient.users.findOne({id: user.id});
   });
 
   after(async () => {

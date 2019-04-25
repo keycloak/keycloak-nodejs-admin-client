@@ -3,7 +3,7 @@ import UserRepresentation from '../defs/userRepresentation';
 import {KeycloakAdminClient} from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {
-  RoleMappingPayload
+  RoleMappingPayload,
 } from '../defs/roleRepresentation';
 import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
@@ -25,8 +25,9 @@ export class Users extends Resource<{realm?: string}> {
     method: 'GET',
   });
 
-  public create = this.makeRequest<UserRepresentation, void>({
+  public create = this.makeRequest<UserRepresentation, {id: string}>({
     method: 'POST',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   /**
@@ -218,14 +219,21 @@ export class Users extends Resource<{realm?: string}> {
    * Federated Identity
    */
 
-  public listFederatedIdentities = this.makeRequest<{id: string}, FederatedIdentityRepresentation[]>({
+  public listFederatedIdentities = this.makeRequest<
+    {id: string},
+    FederatedIdentityRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/federated-identity',
     urlParamKeys: ['id'],
   });
 
   public addToFederatedIdentity = this.makeRequest<
-    {id: string; federatedIdentityId: string, federatedIdentity: FederatedIdentityRepresentation},
+    {
+      id: string;
+      federatedIdentityId: string;
+      federatedIdentity: FederatedIdentityRepresentation;
+    },
     void
   >({
     method: 'POST',

@@ -19,10 +19,11 @@ describe('Realms', function() {
     await this.kcAdminClient.auth(credentials);
 
     const realmId = faker.internet.userName();
-    await this.kcAdminClient.realms.create({
+    const realm = await this.kcAdminClient.realms.create({
       id: realmId,
       realm: realmId,
     });
+    expect(realm.realmName).to.be.ok;
     this.currentRealmId = realmId;
   });
 
@@ -32,7 +33,7 @@ describe('Realms', function() {
 
   it('add a user to another realm', async () => {
     const username = faker.internet.userName().toLowerCase();
-    await this.kcAdminClient.users.create({
+    const user = await this.kcAdminClient.users.create({
       realm: this.currentRealmId,
       username,
       email: 'wwwy3y3@canner.io',
@@ -40,10 +41,10 @@ describe('Realms', function() {
       emailVerified: true,
       enabled: true,
     });
-    const users = await this.kcAdminClient.users.find({
+    const foundUser = await this.kcAdminClient.users.findOne({
       realm: this.currentRealmId,
-      username,
+      id: user.id,
     });
-    expect(users[0].username).to.be.eql(username);
+    expect(foundUser.username).to.be.eql(username);
   });
 });

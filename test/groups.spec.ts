@@ -24,11 +24,11 @@ describe('Groups', function() {
     this.kcAdminClient = new KeycloakAdminClient();
     await this.kcAdminClient.auth(credentials);
     // initialize group
-    await this.kcAdminClient.groups.create({
+    const group = await this.kcAdminClient.groups.create({
       name: 'cool-group',
     });
-    const groups = await this.kcAdminClient.groups.find({search: 'cool-group'});
-    this.currentGroup = groups[0];
+    expect(group.id).to.be.ok;
+    this.currentGroup = await this.kcAdminClient.groups.findOne({id: group.id});
   });
 
   after(async () => {
@@ -79,9 +79,12 @@ describe('Groups', function() {
     before(async () => {
       // create new role
       const roleName = faker.internet.userName();
-      await this.kcAdminClient.roles.create({
-        name: roleName,
-      });
+      const {roleName: createdRoleName} = await this.kcAdminClient.roles.create(
+        {
+          name: roleName,
+        },
+      );
+      expect(createdRoleName).to.be.equal(roleName);
       const role = await this.kcAdminClient.roles.findOneByName({
         name: roleName,
       });

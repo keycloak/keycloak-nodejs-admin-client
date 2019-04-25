@@ -15,8 +15,9 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
   });
 
-  public create = this.makeRequest<ClientRepresentation, void>({
+  public create = this.makeRequest<ClientRepresentation, {id: string}>({
     method: 'POST',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   /**
@@ -50,10 +51,11 @@ export class Clients extends Resource<{realm?: string}> {
    * Client roles
    */
 
-  public createRole = this.makeRequest<RoleRepresentation, void>({
+  public createRole = this.makeRequest<RoleRepresentation, {roleName: string}>({
     method: 'POST',
     path: '/{id}/roles',
     urlParamKeys: ['id'],
+    returnResourceIdInLocationHeader: {field: 'roleName'},
   });
 
   public listRoles = this.makeRequest<{id: string}, RoleRepresentation[]>({
@@ -114,11 +116,13 @@ export class Clients extends Resource<{realm?: string}> {
    * Client secret
    */
 
-  public generateNewClientSecret = this.makeRequest<{id: string}, void>({
-    method: 'POST',
-    path: '/{id}/client-secret',
-    urlParamKeys: ['id'],
-  });
+  public generateNewClientSecret = this.makeRequest<{id: string}, {id: string}>(
+    {
+      method: 'POST',
+      path: '/{id}/client-secret',
+      urlParamKeys: ['id'],
+    },
+  );
 
   public getClientSecret = this.makeRequest<
     {id: string},

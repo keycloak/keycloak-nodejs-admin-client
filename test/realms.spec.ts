@@ -10,6 +10,7 @@ declare module 'mocha' {
   interface ISuiteCallbackContext {
     kcAdminClient?: KeycloakAdminClient;
     currentRealmId?: string;
+    currentRealmName?: string;
   }
 }
 
@@ -25,45 +26,48 @@ describe('Realms', function() {
   });
 
   it('create realm', async () => {
-    const realmId = faker.internet.userName();
-    await this.kcAdminClient.realms.create({
+    const realmId = faker.internet.userName().toLowerCase();
+    const realmName = faker.internet.userName().toLowerCase();
+    const realm = await this.kcAdminClient.realms.create({
       id: realmId,
-      realm: realmId,
+      realm: realmName,
     });
+    expect(realm.realmName).to.be.equal(realmName);
     this.currentRealmId = realmId;
+    this.currentRealmName = realmName;
   });
 
   it('get a realm', async () => {
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId,
+      realm: this.currentRealmName,
     });
     expect(realm).to.include({
       id: this.currentRealmId,
-      realm: this.currentRealmId,
+      realm: this.currentRealmName,
     });
   });
 
   it('update a realm', async () => {
     await this.kcAdminClient.realms.update(
-      {realm: this.currentRealmId},
+      {realm: this.currentRealmName},
       {
         displayName: 'test',
       },
     );
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId,
+      realm: this.currentRealmName,
     });
     expect(realm).to.include({
       id: this.currentRealmId,
-      realm: this.currentRealmId,
+      realm: this.currentRealmName,
       displayName: 'test',
     });
   });
 
   it('delete a realm', async () => {
-    await this.kcAdminClient.realms.del({realm: this.currentRealmId});
+    await this.kcAdminClient.realms.del({realm: this.currentRealmName});
     const realm = await this.kcAdminClient.realms.findOne({
-      realm: this.currentRealmId,
+      realm: this.currentRealmName,
     });
     expect(realm).to.be.null;
   });

@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
+import BPromise from 'bluebird';
 const expect = chai.expect;
 
 declare module 'mocha' {
@@ -24,13 +25,16 @@ describe('Clients', function() {
     // NOTICE: to be clear, clientId stands for the property `clientId` of client
     // clientUniqueId stands for property `id` of client
     const clientId = faker.internet.userName();
-    await this.kcAdminClient.clients.create({
+    const createdClient = await this.kcAdminClient.clients.create({
       clientId,
     });
+    expect(createdClient.id).to.be.ok;
 
-    const clients = await this.kcAdminClient.clients.find({clientId});
-    expect(clients[0]).to.be.ok;
-    this.currentClient = clients[0];
+    const client = await this.kcAdminClient.clients.findOne({
+      id: createdClient.id,
+    });
+    expect(client).to.be.ok;
+    this.currentClient = client;
   });
 
   after(async () => {
@@ -76,20 +80,17 @@ describe('Clients', function() {
   it('delete single client', async () => {
     // create another one for delete test
     const clientId = faker.internet.userName();
-    await this.kcAdminClient.clients.create({
+    const {id} = await this.kcAdminClient.clients.create({
       clientId,
     });
 
-    const clients = await this.kcAdminClient.clients.find({clientId});
-    const client = clients[0];
-
     // delete it
     await this.kcAdminClient.clients.del({
-      id: client.id,
+      id,
     });
 
     const delClient = await this.kcAdminClient.clients.findOne({
-      id: client.id,
+      id,
     });
     expect(delClient).to.be.null;
   });
@@ -101,10 +102,14 @@ describe('Clients', function() {
     before(async () => {
       const roleName = faker.internet.userName();
       // create a client role
-      await this.kcAdminClient.clients.createRole({
+      const {
+        roleName: createdRoleName,
+      } = await this.kcAdminClient.clients.createRole({
         id: this.currentClient.id,
         name: roleName,
       });
+
+      expect(createdRoleName).to.be.equal(roleName);
 
       // assign currentClientRole
       this.currentRoleName = roleName;

@@ -1,9 +1,13 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
 import axios, {AxiosRequestConfig} from 'axios';
-import {pick, omit, isUndefined} from 'lodash';
+import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
 
+// constants
+const SLASH = '/';
+
+// interface
 export interface RequestArgs {
   method: string;
   path?: string;
@@ -17,6 +21,11 @@ export interface RequestArgs {
   catchNotFound?: boolean;
   // The key of the value to use from the payload of request. Only works for POST & PUT.
   payloadKey?: string;
+  // Whether the response header have a location field with newly created resource id
+  // if this value is set, we return the field with format: {[field]: resourceId}
+  // to represent the newly created resource
+  // detail: keycloak/keycloak-nodejs-admin-client issue #11
+  returnResourceIdInLocationHeader?: {field: string};
 }
 
 export class Agent {
@@ -52,6 +61,7 @@ export class Agent {
     catchNotFound = false,
     keyTransform,
     payloadKey,
+    returnResourceIdInLocationHeader,
   }: RequestArgs) {
     return async (payload: any = {}) => {
       const baseParams = this.getBaseParams();
@@ -80,6 +90,7 @@ export class Agent {
         queryParams,
         catchNotFound,
         payloadKey,
+        returnResourceIdInLocationHeader,
       });
     };
   }
@@ -92,6 +103,7 @@ export class Agent {
     catchNotFound = false,
     keyTransform,
     payloadKey,
+    returnResourceIdInLocationHeader,
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
       const baseParams = this.getBaseParams();
@@ -119,6 +131,7 @@ export class Agent {
         queryParams,
         catchNotFound,
         payloadKey,
+        returnResourceIdInLocationHeader,
       });
     };
   }
@@ -131,6 +144,7 @@ export class Agent {
     queryParams,
     catchNotFound,
     payloadKey,
+    returnResourceIdInLocationHeader,
   }: {
     method: string;
     path: string;
@@ -139,6 +153,7 @@ export class Agent {
     queryParams?: Record<string, any> | null;
     catchNotFound: boolean;
     payloadKey?: string;
+    returnResourceIdInLocationHeader?: {field: string};
   }) {
     const newPath = urlJoin(this.basePath, path);
 
@@ -177,6 +192,34 @@ export class Agent {
 
     try {
       const res = await axios(requestConfig);
+
+      console.log(res.config.url);
+      // now we get the response of the http request
+      // if `resourceIdInLocationHeader` is true, we'll get the resourceId from the location header field
+      // todo: find a better way to find the id in path, maybe some kind of pattern matching
+      // for now, we simply split the last sub-path of the path returned in location header field
+      if (returnResourceIdInLocationHeader) {
+        const locationHeader = res.headers.location;
+        if (!locationHeader) {
+          throw new Error(
+            `location header is not found in request: ${res.config.url}`,
+          );
+        }
+        console.log(`locationHeader: ${locationHeader}`);
+        const resourceId: string = last(locationHeader.split(SLASH));
+        if (!resourceId) {
+          // throw an error to let users know the response is not expected
+          throw new Error(
+            `resourceId is not found in Location header from request: ${
+              res.config.url
+            }`,
+          );
+        }
+
+        // return with format {[field]: string}
+        const {field} = returnResourceIdInLocationHeader;
+        return {[field]: resourceId};
+      }
       return res.data;
     } catch (err) {
       if (err.response && err.response.status === 404 && catchNotFound) {

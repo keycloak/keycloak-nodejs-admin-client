@@ -20,10 +20,11 @@ describe('Identity providers', function() {
 
     // create idp
     const alias = faker.internet.userName();
-    await this.kcAdminClient.identityProviders.create({
+    const idp = await this.kcAdminClient.identityProviders.create({
       alias,
       providerId: 'saml',
     });
+    expect(idp.id).to.be.ok;
     this.currentIdpAlias = alias;
 
     // create idp mapper
@@ -33,10 +34,11 @@ describe('Identity providers', function() {
       identityProviderMapper: 'saml-user-attribute-idp-mapper',
       config: {},
     };
-    await this.kcAdminClient.identityProviders.createMapper({
+    const idpMapper = await this.kcAdminClient.identityProviders.createMapper({
       alias: this.currentIdpAlias,
       identityProviderMapper: mapper,
     });
+    expect(idpMapper.id).to.be.ok;
   });
 
   after(async () => {

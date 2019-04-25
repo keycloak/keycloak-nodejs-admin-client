@@ -12,9 +12,10 @@ export class Roles extends Resource<{realm?: string}> {
     path: '/roles',
   });
 
-  public create = this.makeRequest<RoleRepresentation, void>({
+  public create = this.makeRequest<RoleRepresentation, {roleName: string}>({
     method: 'POST',
     path: '/roles',
+    returnResourceIdInLocationHeader: {field: 'roleName'},
   });
 
   /**

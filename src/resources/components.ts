@@ -18,8 +18,9 @@ export class Components extends Resource<{realm?: string}> {
     method: 'GET',
   });
 
-  public create = this.makeRequest<ComponentRepresentation, void>({
+  public create = this.makeRequest<ComponentRepresentation, {id: string}>({
     method: 'POST',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({

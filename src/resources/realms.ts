@@ -12,8 +12,9 @@ export class Realms extends Resource {
     method: 'GET',
   });
 
-  public create = this.makeRequest<RealmRepresentation, void>({
+  public create = this.makeRequest<RealmRepresentation, {realmName: string}>({
     method: 'POST',
+    returnResourceIdInLocationHeader: {field: 'realmName'},
   });
 
   public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({

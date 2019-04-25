@@ -14,9 +14,13 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     path: '/instances',
   });
 
-  public create = this.makeRequest<IdentityProviderRepresentation, void>({
+  public create = this.makeRequest<
+    IdentityProviderRepresentation,
+    {id: string}
+  >({
     method: 'POST',
     path: '/instances',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   public findOne = this.makeRequest<
@@ -75,12 +79,13 @@ export class IdentityProviders extends Resource<{realm?: string}> {
       alias: string;
       identityProviderMapper: IdentityProviderMapperRepresentation;
     },
-    void
+    {id: string}
   >({
     method: 'POST',
     path: '/instances/{alias}/mappers',
     urlParamKeys: ['alias'],
     payloadKey: 'identityProviderMapper',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   public updateMapper = this.makeUpdateRequest<

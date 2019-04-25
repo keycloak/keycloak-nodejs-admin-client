@@ -26,11 +26,13 @@ describe('Roles', function() {
   });
 
   it('create roles and get by name', async () => {
-    await this.client.roles.create({
-      name: 'cool-role',
+    const roleName = 'cool-role';
+    const createdRole = await this.client.roles.create({
+      name: roleName,
     });
 
-    const role = await this.client.roles.findOneByName({name: 'cool-role'});
+    expect(createdRole.roleName).to.be.equal(roleName);
+    const role = await this.client.roles.findOneByName({name: roleName});
     expect(role).to.be.ok;
     this.currentRole = role;
   });
