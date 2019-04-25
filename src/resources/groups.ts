@@ -51,6 +51,22 @@ export class Groups extends Resource<{realm?: string}> {
   });
 
   /**
+   * Set or create child.
+   * This will just set the parent if it exists. Create it and set the parent if the group doesn’t exist.
+   */
+
+  public setOrCreateChild = this.makeUpdateRequest<
+    {id: string},
+    GroupRepresentation,
+    {id: string}
+  >({
+    method: 'POST',
+    path: '/{id}/children',
+    urlParamKeys: ['id'],
+    returnResourceIdInLocationHeader: {field: 'id'},
+  });
+
+  /**
    * Members
    */
 

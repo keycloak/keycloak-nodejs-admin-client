@@ -72,6 +72,26 @@ describe('Groups', function() {
     });
   });
 
+  it('set or create child', async () => {
+    const groupName = 'child-group';
+    const groupId = this.currentGroup.id;
+    const childGroup = await this.kcAdminClient.groups.setOrCreateChild(
+      {id: groupId},
+      {name: groupName},
+    );
+
+    expect(childGroup.id).to.be.ok;
+
+    const group = await this.kcAdminClient.groups.findOne({
+      id: groupId,
+    });
+    expect(group.subGroups[0]).to.deep.include({
+      id: childGroup.id,
+      name: groupName,
+      path: `/${group.name}/${groupName}`,
+    });
+  });
+
   /**
    * Role mappings
    */
