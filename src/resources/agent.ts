@@ -193,7 +193,6 @@ export class Agent {
     try {
       const res = await axios(requestConfig);
 
-      console.log(res.config.url);
       // now we get the response of the http request
       // if `resourceIdInLocationHeader` is true, we'll get the resourceId from the location header field
       // todo: find a better way to find the id in path, maybe some kind of pattern matching
@@ -205,7 +204,6 @@ export class Agent {
             `location header is not found in request: ${res.config.url}`,
           );
         }
-        console.log(`locationHeader: ${locationHeader}`);
         const resourceId: string = last(locationHeader.split(SLASH));
         if (!resourceId) {
           // throw an error to let users know the response is not expected
