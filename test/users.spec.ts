@@ -365,6 +365,73 @@ describe('Users', function() {
     });
   });
 
+  describe('User sessions', function() {
+    before(async () => {
+      this.kcAdminClient = new KeycloakAdminClient();
+      await this.kcAdminClient.auth(credentials);
+
+      // create user
+      const username = faker.internet.userName();
+      await this.kcAdminClient.users.create({
+        username,
+        email: 'wwwy3y3-federated@canner.io',
+        enabled: true,
+      });
+      const users = await this.kcAdminClient.users.find({ username });
+      expect(users[0]).to.be.ok;
+      this.currentUser = users[0];
+      this.federatedIdentity = {
+        identityProvider: 'foobar',
+        userId: 'userid1',
+        userName: 'username1',
+      };
+    });
+
+    after(async () => {
+      await this.kcAdminClient.users.del({
+        id: this.currentUser.id,
+      });
+    });
+
+    it('list user sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      const userSessions = await this.kcAdminClient.users.listSessions({ id: this.currentUser.id });
+
+      expect(userSessions).to.be.ok;
+    });
+
+    it('list users off-line sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      const userOfflineSessions = await this.kcAdminClient.users.listOfflineSessions(
+        { id: this.currentUser.id, clientId: this.currentClient.id },
+      );
+
+      expect(userOfflineSessions).to.be.ok;
+    });
+
+    it('logout user from all sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      await this.kcAdminClient.users.logout({ id: this.currentUser.id });
+    });
+
+    it('list consents granted by the user', async () => {
+      // @TODO: In order to test it, currentUser has to granted consent to client
+
+      const consents = await this.kcAdminClient.users.listConsents({ id: this.currentUser.id });
+
+      expect(consents).to.be.ok;
+    });
+
+    it('revoke consent and offline tokens for particular client', async () => {
+      // @TODO: In order to test it, currentUser has to granted consent to client
+
+      await this.kcAdminClient.users.revokeConsent({ id: this.currentUser.id, clientId: this.currentClient.id });
+    });
+  });
+
   describe('Federated Identity user integration', function() {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
@@ -430,43 +497,5 @@ describe('Users', function() {
       );
       expect(federatedIdentities).to.be.eql([]);
     });
-  });
-
-  it('list user sessions', async () => {
-    // @TODO: In order to test it, currentUser has to be logged in
-
-    const userSessions = await this.kcAdminClient.users.listSessions({ id: this.currentUser.id });
-
-    expect(userSessions).to.be.ok;
-  });
-
-  it('list users off-line sessions', async () => {
-    // @TODO: In order to test it, currentUser has to be logged in
-
-    const userOfflineSessions = await this.kcAdminClient.users.listOfflineSessions(
-      { id: this.currentUser.id, clientId: this.currentClient.id },
-    );
-
-    expect(userOfflineSessions).to.be.ok;
-  });
-
-  it('logout user from all sessions', async () => {
-    // @TODO: In order to test it, currentUser has to be logged in
-
-    await this.kcAdminClient.users.logout({ id: this.currentUser.id });
-  });
-
-  it('list consents granted by the user', async () => {
-    // @TODO: In order to test it, currentUser has to granted consent to client
-
-    const consents = await this.kcAdminClient.users.listConsents({ id: this.currentUser.id });
-
-    expect(consents).to.be.ok;
-  });
-
-  it('revoke consent and offline tokens for particular client', async () => {
-    // @TODO: In order to test it, currentUser has to granted consent to client
-
-    await this.kcAdminClient.users.revokeConsent({ id: this.currentUser.id, clientId: this.currentClient.id });
   });
 });
