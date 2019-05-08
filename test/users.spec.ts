@@ -380,16 +380,25 @@ describe('Users', function() {
       const users = await this.kcAdminClient.users.find({ username });
       expect(users[0]).to.be.ok;
       this.currentUser = users[0];
-      this.federatedIdentity = {
-        identityProvider: 'foobar',
-        userId: 'userid1',
-        userName: 'username1',
-      };
+
+      // create client
+      const clientId = faker.internet.userName();
+      await this.kcAdminClient.clients.create({
+        clientId,
+      });
+
+      const clients = await this.kcAdminClient.clients.find({ clientId });
+      expect(clients[0]).to.be.ok;
+      this.currentClient = clients[0];
     });
 
     after(async () => {
       await this.kcAdminClient.users.del({
         id: this.currentUser.id,
+      });
+
+      await this.kcAdminClient.clients.del({
+        id: this.currentClient.id,
       });
     });
 
