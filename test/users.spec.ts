@@ -440,10 +440,33 @@ describe('Users', function() {
     expect(userSessions).to.be.ok;
   });
 
+  it('list users off-line sessions', async () => {
+    // @TODO: In order to test it, currentUser has to be logged in
+
+    const userOfflineSessions = await this.kcAdminClient.users.listOfflineSessions(
+      { id: this.currentUser.id, clientId: this.currentClient.id },
+    );
+
+    expect(userOfflineSessions).to.be.ok;
+  });
+
   it('logout user from all sessions', async () => {
     // @TODO: In order to test it, currentUser has to be logged in
 
     await this.kcAdminClient.users.logout({ id: this.currentUser.id });
   });
 
+  it('list consents granted by the user', async () => {
+    // @TODO: In order to test it, currentUser has to granted consent to client
+
+    const consents = await this.kcAdminClient.users.listConsents({ id: this.currentUser.id });
+
+    expect(consents).to.be.ok;
+  });
+
+  it('revoke consent and offline tokens for particular client', async () => {
+    // @TODO: In order to test it, currentUser has to granted consent to client
+
+    await this.kcAdminClient.users.revokeConsent({ id: this.currentUser.id, clientId: this.currentClient.id });
+  });
 });

@@ -344,12 +344,12 @@ export class Users extends Resource<{ realm?: string }> {
    * revoke consent and offline tokens for particular client from user
    */
   public revokeConsent = this.makeRequest<
-    { id: string, client: string },
+    { id: string, clientId: string },
     void
   >({
     method: 'DELETE',
-    path: '/{id}/consents/{client}',
-    urlParamKeys: ['id', 'client'],
+    path: '/{id}/consents/{clientId}',
+    urlParamKeys: ['id', 'clientId'],
   });
 
   constructor(client: KeycloakAdminClient) {
