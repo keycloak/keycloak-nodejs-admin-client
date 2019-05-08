@@ -1,5 +1,6 @@
 import Resource from './resource';
 import UserRepresentation from '../defs/userRepresentation';
+import UserConsentRepresentation from '../defs/userConsentRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import { KeycloakAdminClient } from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
@@ -301,6 +302,18 @@ export class Users extends Resource<{ realm?: string }> {
     method: 'GET',
     path: '/{id}/sessions',
     urlParamKeys: ['id'],
+  });
+
+  /**
+   * list offline sessions associated with the user and client
+   */
+  public listOfflineSessions = this.makeRequest<
+    { id: string, clientId: string },
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/offline-sessions/{clientId}',
+    urlParamKeys: ['id', 'clientId'],
   });
 
   /**
