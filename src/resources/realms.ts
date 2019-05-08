@@ -51,7 +51,7 @@ export class Realms extends Resource {
     client?: string, dateFrom?: Date, dateTo?: Date,
     first?: number, ipAddress?: string, max?: number,
     type?: EventType, user?: string,
-  }, EventRepresentation>({
+  }, EventRepresentation[]>({
     method: 'GET',
     path: '/{realm}/events',
     urlParamKeys: ['realm'],
