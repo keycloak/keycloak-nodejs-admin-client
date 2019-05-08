@@ -304,7 +304,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   /**
-   * logouot user from all sessions
+   * logout user from all sessions
    */
   public logout = this.makeRequest<
     { id: string },

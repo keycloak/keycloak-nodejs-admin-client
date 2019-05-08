@@ -24,7 +24,7 @@ declare module 'mocha' {
   }
 }
 
-describe('Users', function () {
+describe('Users', function() {
   this.timeout(10000);
 
   before(async () => {
@@ -365,7 +365,7 @@ describe('Users', function () {
     });
   });
 
-  describe('Federated Identity user integration', function () {
+  describe('Federated Identity user integration', function() {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
@@ -438,6 +438,12 @@ describe('Users', function () {
     const userSessions = await this.kcAdminClient.users.listSessions({ id: this.currentUser.id });
 
     expect(userSessions).to.be.ok;
+  });
+
+  it('logout user from all sessions', async () => {
+    // @TODO: In order to test it, currentUser has to be logged in
+
+    await this.kcAdminClient.users.logout({ id: this.currentUser.id });
   });
 
 });
