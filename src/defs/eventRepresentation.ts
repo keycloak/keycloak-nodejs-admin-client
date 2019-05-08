@@ -1,3 +1,5 @@
+import EventType from './eventTypes';
+
 export default interface EventRepresentation {
     cllientId?: string;
     details?: Record<string, any>;
@@ -6,6 +8,6 @@ export default interface EventRepresentation {
     realmId?: string;
     sessionId?: string;
     time?: number;
-    type?: string;
+    type?: EventType;
     userId?: string;
 }

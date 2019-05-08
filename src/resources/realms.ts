@@ -1,6 +1,7 @@
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
+import EventType from '../defs/eventTypes';
 
 import { KeycloakAdminClient } from '../client';
 
@@ -49,7 +50,7 @@ export class Realms extends Resource {
     realm: string,
     client?: string, dateFrom?: Date, dateTo?: Date,
     first?: number, ipAddress?: string, max?: number,
-    type?: string, user?: string,
+    type?: EventType, user?: string,
   }, EventRepresentation>({
     method: 'GET',
     path: '/{realm}/events',
