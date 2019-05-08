@@ -328,6 +328,30 @@ export class Users extends Resource<{ realm?: string }> {
     urlParamKeys: ['id'],
   });
 
+  /**
+   * list consents granted by the user
+   */
+  public listConsents = this.makeRequest<
+    { id: string },
+    UserConsentRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/consents',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * revoke consent and offline tokens for particular client from user
+   */
+  public revokeConsent = this.makeRequest<
+    { id: string, client: string },
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/consents/{client}',
+    urlParamKeys: ['id', 'client'],
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/users',
