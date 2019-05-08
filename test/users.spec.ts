@@ -1,14 +1,15 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
+import { KeycloakAdminClient } from '../src/client';
+import { credentials } from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
+import UserSessionRepresentation from '../src/defs/userSessionRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
-import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
+import { RequiredActionAlias } from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
-import {omit} from 'lodash';
+import { omit } from 'lodash';
 
 const expect = chai.expect;
 
@@ -23,7 +24,7 @@ declare module 'mocha' {
   }
 }
 
-describe('Users', function() {
+describe('Users', function () {
   this.timeout(10000);
 
   before(async () => {
@@ -40,11 +41,11 @@ describe('Users', function() {
     });
 
     expect(user.id).to.be.ok;
-    this.currentUser = await this.kcAdminClient.users.findOne({id: user.id});
+    this.currentUser = await this.kcAdminClient.users.findOne({ id: user.id });
 
     // add smtp to realm
     await this.kcAdminClient.realms.update(
-      {realm: 'master'},
+      { realm: 'master' },
       {
         smtpServer: {
           auth: true,
@@ -85,7 +86,7 @@ describe('Users', function() {
   it('update single users', async () => {
     const userId = this.currentUser.id;
     await this.kcAdminClient.users.update(
-      {id: userId},
+      { id: userId },
       {
         firstName: 'william',
         lastName: 'chang',
@@ -182,7 +183,7 @@ describe('Users', function() {
     });
 
     after(async () => {
-      await this.kcAdminClient.roles.delByName({name: this.currentRole.name});
+      await this.kcAdminClient.roles.delByName({ name: this.currentRole.name });
     });
 
     it('add a role to user', async () => {
@@ -267,7 +268,7 @@ describe('Users', function() {
         clientId,
       });
 
-      const clients = await this.kcAdminClient.clients.find({clientId});
+      const clients = await this.kcAdminClient.clients.find({ clientId });
       expect(clients[0]).to.be.ok;
       this.currentClient = clients[0];
 
@@ -290,7 +291,7 @@ describe('Users', function() {
         id: this.currentClient.id,
         roleName: this.currentRole.name,
       });
-      await this.kcAdminClient.clients.del({id: this.currentClient.id});
+      await this.kcAdminClient.clients.del({ id: this.currentClient.id });
     });
 
     it('add a client role to user', async () => {
@@ -364,7 +365,7 @@ describe('Users', function() {
     });
   });
 
-  describe('Federated Identity user integration', function() {
+  describe('Federated Identity user integration', function () {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
@@ -376,7 +377,7 @@ describe('Users', function() {
         email: 'wwwy3y3-federated@canner.io',
         enabled: true,
       });
-      const users = await this.kcAdminClient.users.find({username});
+      const users = await this.kcAdminClient.users.find({ username });
       expect(users[0]).to.be.ok;
       this.currentUser = users[0];
       this.federatedIdentity = {
@@ -430,4 +431,13 @@ describe('Users', function() {
       expect(federatedIdentities).to.be.eql([]);
     });
   });
+
+  it('list user sessions', async () => {
+    // @TODO: In order to test it, currentUser has to be logged in
+
+    const userSessions = await this.kcAdminClient.users.listSessions({ id: this.currentUser.id });
+
+    expect(userSessions).to.be.ok;
+  });
+
 });
