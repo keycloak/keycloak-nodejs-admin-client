@@ -1,6 +1,8 @@
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
-import {KeycloakAdminClient} from '../client';
+import EventRepresentation from '../defs/eventRepresentation';
+
+import { KeycloakAdminClient } from '../client';
 
 export class Realms extends Resource {
   /**
@@ -12,12 +14,12 @@ export class Realms extends Resource {
     method: 'GET',
   });
 
-  public create = this.makeRequest<RealmRepresentation, {realmName: string}>({
+  public create = this.makeRequest<RealmRepresentation, { realmName: string }>({
     method: 'POST',
-    returnResourceIdInLocationHeader: {field: 'realmName'},
+    returnResourceIdInLocationHeader: { field: 'realmName' },
   });
 
-  public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
+  public findOne = this.makeRequest<{ realm: string }, RealmRepresentation>({
     method: 'GET',
     path: '/{realm}',
     urlParamKeys: ['realm'],
@@ -25,7 +27,7 @@ export class Realms extends Resource {
   });
 
   public update = this.makeUpdateRequest<
-    {realm: string},
+    { realm: string },
     RealmRepresentation,
     void
   >({
@@ -34,10 +36,25 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
-  public del = this.makeRequest<{realm: string}, void>({
+  public del = this.makeRequest<{ realm: string }, void>({
     method: 'DELETE',
     path: '/{realm}',
     urlParamKeys: ['realm'],
+  });
+
+  /**
+   * Get events Returns all events, or filters them based on URL query parameters listed here
+   */
+  public findEvents = this.makeRequest<{
+    realm: string,
+    client?: string, dateFrom?: Date, dateTo?: Date,
+    first?: number, ipAddress?: string, max?: number,
+    type?: string, user?: string,
+  }, EventRepresentation>({
+    method: 'GET',
+    path: '/{realm}/events',
+    urlParamKeys: ['realm'],
+    queryParamKeys: ['client', 'dateFrom', 'dateTo', 'first', 'ipAddress', 'max', 'type', 'user'],
   });
 
   constructor(client: KeycloakAdminClient) {

@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
+import { KeycloakAdminClient } from '../src/client';
+import { credentials } from './constants';
 import faker from 'faker';
 const expect = chai.expect;
 
@@ -49,7 +49,7 @@ describe('Realms', function() {
 
   it('update a realm', async () => {
     await this.kcAdminClient.realms.update(
-      {realm: this.currentRealmName},
+      { realm: this.currentRealmName },
       {
         displayName: 'test',
       },
@@ -65,10 +65,17 @@ describe('Realms', function() {
   });
 
   it('delete a realm', async () => {
-    await this.kcAdminClient.realms.del({realm: this.currentRealmName});
+    await this.kcAdminClient.realms.del({ realm: this.currentRealmName });
     const realm = await this.kcAdminClient.realms.findOne({
       realm: this.currentRealmName,
     });
     expect(realm).to.be.null;
+  });
+
+  it('list events of a realm', async () => {
+    // @TODO: In order to test it, there have to be events
+    const events = await this.kcAdminClient.realms.findEvents({ realm: this.currentRealmName });
+
+    expect(events).to.be.ok;
   });
 });
