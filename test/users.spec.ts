@@ -427,8 +427,6 @@ describe('Users', function() {
     });
 
     it('list consents granted by the user', async () => {
-      // @TODO: In order to test it, currentUser has to granted consent to client
-
       const consents = await this.kcAdminClient.users.listConsents({ id: this.currentUser.id });
 
       expect(consents).to.be.ok;
@@ -436,8 +434,13 @@ describe('Users', function() {
 
     it('revoke consent and offline tokens for particular client', async () => {
       // @TODO: In order to test it, currentUser has to granted consent to client
+      const consents = await this.kcAdminClient.users.listConsents({ id: this.currentUser.id });
 
-      await this.kcAdminClient.users.revokeConsent({ id: this.currentUser.id, clientId: this.currentClient.id });
+      if (consents.length) {
+        const consent = consents[0];
+
+        await this.kcAdminClient.users.revokeConsent({ id: this.currentUser.id, clientId: consent.clientId });
+      }
     });
   });
 
