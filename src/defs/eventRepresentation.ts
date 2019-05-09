@@ -1,7 +1,7 @@
 import EventType from './eventTypes';
 
 export default interface EventRepresentation {
-    cllientId?: string;
+    clientId?: string;
     details?: Record<string, any>;
     error?: string;
     ipAddress?: string;

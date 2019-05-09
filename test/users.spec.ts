@@ -384,7 +384,7 @@ describe('Users', function() {
       // create client
       const clientId = faker.internet.userName();
       await this.kcAdminClient.clients.create({
-        clientId, consentRequired: true
+        clientId, consentRequired: true,
       });
 
       const clients = await this.kcAdminClient.clients.find({ clientId });
