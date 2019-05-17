@@ -1,6 +1,7 @@
 import {getToken, Credentials} from './utils/auth';
 import {defaultBaseUrl, defaultRealm} from './utils/constants';
 import {Users} from './resources/users';
+import {Federation} from './resources/federation';
 import {Groups} from './resources/groups';
 import {Roles} from './resources/roles';
 import {Clients} from './resources/clients';
@@ -18,6 +19,7 @@ export interface ConnectionConfig {
 export class KeycloakAdminClient {
   // Resources
   public users: Users;
+  public federation: Federation;
   public groups: Groups;
   public roles: Roles;
   public clients: Clients;
@@ -41,6 +43,7 @@ export class KeycloakAdminClient {
 
     // Initialize resources
     this.users = new Users(this);
+    this.federation = new Federation(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
     this.clients = new Clients(this);
