@@ -15,7 +15,8 @@
     "coverage": "nyc npm run test",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "install": "tsc -p ./tsconfig.release.json --pretty"
   },
   "dependencies": {
     "@types/debug": "^0.0.30",
