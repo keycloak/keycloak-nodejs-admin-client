@@ -4,7 +4,8 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
-import BPromise from 'bluebird';
+import ProtocolMapperRepresentation from '../src/defs/protocolMapperRepresentation';
+import ClientScopeRepresentation from '../src/defs/clientScopeRepresentation';
 const expect = chai.expect;
 
 declare module 'mocha' {
@@ -12,6 +13,7 @@ declare module 'mocha' {
   interface ISuiteCallbackContext {
     kcAdminClient?: KeycloakAdminClient;
     currentClient?: ClientRepresentation;
+    currentClientScope?: ClientScopeRepresentation;
     currentRoleName?: string;
   }
 }
@@ -238,6 +240,363 @@ describe('Clients', function() {
       );
 
       expect(serviceAccountUser).to.be.ok;
+    });
+  });
+
+  describe('default client scopes', () => {
+    let dummyClientScope;
+
+    beforeEach(async () => {
+      dummyClientScope = {
+        name: 'does-anyone-read-this',
+        description: 'Oh - seems like you are reading this. Hey there!',
+        protocol: 'openid-connect',
+      };
+
+      // setup dummy client scope
+      await this.kcAdminClient.clientScopes.create(dummyClientScope);
+      this.currentClientScope = await this.kcAdminClient.clientScopes.findOneByName(
+        {name: dummyClientScope.name},
+      );
+    });
+
+    afterEach(async () => {
+      // cleanup default scopes
+      try {
+        const {id} = this.currentClient;
+        const {id: clientScopeId} = this.currentClientScope;
+        await this.kcAdminClient.clients.delDefaultClientScope({
+          clientScopeId,
+          id,
+        });
+      } catch (e) {
+        // ignore
+      }
+
+      // cleanup client scopes
+      try {
+        await this.kcAdminClient.clientScopes.delByName({
+          name: dummyClientScope.name,
+        });
+      } catch (e) {
+        // ignore
+      }
+    });
+
+    it('list default client scopes', async () => {
+      const defaultClientScopes = await this.kcAdminClient.clients.listDefaultClientScopes(
+        {id: this.currentClient.id},
+      );
+
+      expect(defaultClientScopes).to.be.ok;
+    });
+
+    it('add default client scope', async () => {
+      const {id} = this.currentClient;
+      const {id: clientScopeId} = this.currentClientScope;
+
+      await this.kcAdminClient.clients.addDefaultClientScope({
+        id,
+        clientScopeId,
+      });
+
+      const defaultScopes = await this.kcAdminClient.clients.listDefaultClientScopes(
+        {id},
+      );
+
+      expect(defaultScopes).to.be.ok;
+
+      const clientScope = defaultScopes.find(
+        scope => scope.id === clientScopeId,
+      );
+      expect(clientScope).to.be.ok;
+    });
+
+    it('delete default client scope', async () => {
+      const {id} = this.currentClient;
+      const {id: clientScopeId} = this.currentClientScope;
+
+      await this.kcAdminClient.clients.addDefaultClientScope({
+        id,
+        clientScopeId,
+      });
+
+      await this.kcAdminClient.clients.delDefaultClientScope({
+        id,
+        clientScopeId,
+      });
+      const defaultScopes = await this.kcAdminClient.clients.listDefaultClientScopes(
+        {id},
+      );
+
+      const clientScope = defaultScopes.find(
+        scope => scope.id === clientScopeId,
+      );
+      expect(clientScope).not.to.be.ok;
+    });
+  });
+
+  describe('optional client scopes', () => {
+    let dummyClientScope;
+
+    beforeEach(async () => {
+      dummyClientScope = {
+        name: 'i-hope-your-well',
+        description: 'Everyone has that one friend.',
+        protocol: 'openid-connect',
+      };
+
+      // setup dummy client scope
+      await this.kcAdminClient.clientScopes.create(dummyClientScope);
+      this.currentClientScope = await this.kcAdminClient.clientScopes.findOneByName(
+        {name: dummyClientScope.name},
+      );
+    });
+
+    afterEach(async () => {
+      // cleanup optional scopes
+      try {
+        const {id} = this.currentClient;
+        const {id: clientScopeId} = this.currentClientScope;
+        await this.kcAdminClient.clients.delOptionalClientScope({
+          clientScopeId,
+          id,
+        });
+      } catch (e) {
+        // ignore
+      }
+
+      // cleanup client scopes
+      try {
+        await this.kcAdminClient.clientScopes.delByName({
+          name: dummyClientScope.name,
+        });
+      } catch (e) {
+        // ignore
+      }
+    });
+
+    it('list optional client scopes', async () => {
+      const optionalClientScopes = await this.kcAdminClient.clients.listOptionalClientScopes(
+        {id: this.currentClient.id},
+      );
+
+      expect(optionalClientScopes).to.be.ok;
+    });
+
+    it('add optional client scope', async () => {
+      const {id} = this.currentClient;
+      const {id: clientScopeId} = this.currentClientScope;
+
+      await this.kcAdminClient.clients.addOptionalClientScope({
+        id,
+        clientScopeId,
+      });
+
+      const optionalScopes = await this.kcAdminClient.clients.listOptionalClientScopes(
+        {id},
+      );
+
+      expect(optionalScopes).to.be.ok;
+
+      const clientScope = optionalScopes.find(
+        scope => scope.id === clientScopeId,
+      );
+      expect(clientScope).to.be.ok;
+    });
+
+    it('delete optional client scope', async () => {
+      const {id} = this.currentClient;
+      const {id: clientScopeId} = this.currentClientScope;
+
+      await this.kcAdminClient.clients.addOptionalClientScope({
+        id,
+        clientScopeId,
+      });
+
+      await this.kcAdminClient.clients.delOptionalClientScope({
+        id,
+        clientScopeId,
+      });
+      const optionalScopes = await this.kcAdminClient.clients.listOptionalClientScopes(
+        {id},
+      );
+
+      const clientScope = optionalScopes.find(
+        scope => scope.id === clientScopeId,
+      );
+      expect(clientScope).not.to.be.ok;
+    });
+  });
+
+  describe('protocol mappers', () => {
+    let dummyMapper: ProtocolMapperRepresentation;
+
+    beforeEach(() => {
+      dummyMapper = {
+        name: 'become-a-farmer',
+        protocol: 'openid-connect',
+        protocolMapper: 'oidc-role-name-mapper',
+        config: {
+          role: 'admin',
+          'new.role.name': 'farmer',
+        },
+      };
+    });
+
+    afterEach(async () => {
+      try {
+        const {id: clientUniqueId} = this.currentClient;
+        const {
+          id: mapperId,
+        } = await this.kcAdminClient.clients.findProtocolMapperByName({
+          id: clientUniqueId,
+          name: dummyMapper.name,
+        });
+        await this.kcAdminClient.clients.delProtocolMapper({
+          id: clientUniqueId,
+          mapperId,
+        });
+      } catch (e) {
+        // ignore
+      }
+    });
+
+    it('list protocol mappers', async () => {
+      const {id} = this.currentClient;
+      const mapperList = await this.kcAdminClient.clients.listProtocolMappers({
+        id,
+      });
+      expect(mapperList).to.be.ok;
+    });
+
+    it('add multiple protocol mappers', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addMultipleProtocolMappers({id}, [
+        dummyMapper,
+      ]);
+
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+      expect(mapper).to.be.ok;
+      expect(mapper.protocol).to.eq(dummyMapper.protocol);
+      expect(mapper.protocolMapper).to.eq(dummyMapper.protocolMapper);
+    });
+
+    it('add single protocol mapper', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+      expect(mapper).to.be.ok;
+      expect(mapper.protocol).to.eq(dummyMapper.protocol);
+      expect(mapper.protocolMapper).to.eq(dummyMapper.protocolMapper);
+    });
+
+    it('find protocol mapper by id', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+
+      const {
+        id: mapperId,
+      } = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperById({
+        mapperId,
+        id,
+      });
+
+      expect(mapper).to.be.ok;
+      expect(mapper.id).to.eql(mapperId);
+    });
+
+    it('find protocol mapper by name', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+
+      expect(mapper).to.be.ok;
+      expect(mapper.name).to.eql(dummyMapper.name);
+    });
+
+    it('find protocol mappers by protocol', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+
+      const mapperList = await this.kcAdminClient.clients.findProtocolMappersByProtocol(
+        {
+          id,
+          protocol: dummyMapper.protocol,
+        },
+      );
+
+      expect(mapperList).to.be.ok;
+      expect(mapperList.length).to.be.gte(1);
+
+      const mapper = mapperList.find(item => item.name === dummyMapper.name);
+      expect(mapper).to.be.ok;
+    });
+
+    it('update protocol mapper', async () => {
+      const {id} = this.currentClient;
+
+      dummyMapper.config = {'access.token.claim': 'true'};
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+
+      expect(mapper.config['access.token.claim']).to.eq('true');
+
+      mapper.config = {'access.token.claim': 'false'};
+
+      await this.kcAdminClient.clients.updateProtocolMapper(
+        {id, mapperId: mapper.id},
+        mapper,
+      );
+
+      const updatedMapper = await this.kcAdminClient.clients.findProtocolMapperByName(
+        {
+          id,
+          name: dummyMapper.name,
+        },
+      );
+
+      expect(updatedMapper.config['access.token.claim']).to.eq('false');
+    });
+
+    it('delete protocol mapper', async () => {
+      const {id} = this.currentClient;
+      await this.kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+
+      const {
+        id: mapperId,
+      } = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+
+      await this.kcAdminClient.clients.delProtocolMapper({id, mapperId});
+
+      const mapper = await this.kcAdminClient.clients.findProtocolMapperByName({
+        id,
+        name: dummyMapper.name,
+      });
+
+      expect(mapper).not.to.be.ok;
     });
   });
 });

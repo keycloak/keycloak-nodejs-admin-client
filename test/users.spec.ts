@@ -392,7 +392,7 @@ describe('Users', function() {
       });
     });
 
-    it('should list user\'s federated identities and expect empty', async () => {
+    it("should list user's federated identities and expect empty", async () => {
       const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities(
         {
           id: this.currentUser.id,
