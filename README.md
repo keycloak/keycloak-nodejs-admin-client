@@ -326,7 +326,6 @@ Supported for [user federation](https://www.keycloak.org/docs/latest/server_admi
 - [Client Initial Access](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_initial_access_resource)
 - [Client Registration Policy](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_registration_policy_resource)
 - [Key](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_key_resource)
-- [Scope Mappings](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_scope_mappings_resource)
 - [User Storage Provider](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_user_storage_provider_resource)
 
 ## Maintainers
