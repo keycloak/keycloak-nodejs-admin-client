@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import ClientScopeRepresentation from '../src/defs/clientScopeRepresentation';
 import ProtocolMapperRepresentation from '../src/defs/protocolMapperRepresentation';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 
 const expect = chai.expect;
 
@@ -12,7 +13,8 @@ declare module 'mocha' {
   interface ISuiteCallbackContext {
     kcAdminClient?: KeycloakAdminClient;
     currentClientScope?: ClientScopeRepresentation;
-    clientScopeName?: string;
+    currentClientScopeName?: string;
+    currentClient?: ClientRepresentation;
   }
 }
 
@@ -23,11 +25,13 @@ describe('Client Scopes', () => {
   });
 
   beforeEach(async () => {
-    this.clientScopeName = 'best-of-the-bests-scope';
-    await this.kcAdminClient.clientScopes.create({name: this.clientScopeName});
+    this.currentClientScopeName = 'best-of-the-bests-scope';
+    await this.kcAdminClient.clientScopes.create({
+      name: this.currentClientScopeName,
+    });
     this.currentClientScope = await this.kcAdminClient.clientScopes.findOneByName(
       {
-        name: this.clientScopeName,
+        name: this.currentClientScopeName,
       },
     );
   });
@@ -54,7 +58,7 @@ describe('Client Scopes', () => {
     // cleanup client scopes
     try {
       await this.kcAdminClient.clientScopes.delByName({
-        name: this.clientScopeName,
+        name: this.currentClientScopeName,
       });
     } catch (e) {
       // ignore
@@ -70,19 +74,21 @@ describe('Client Scopes', () => {
     // ensure that the scope does not exist
     try {
       await this.kcAdminClient.clientScopes.delByName({
-        name: this.clientScopeName,
+        name: this.currentClientScopeName,
       });
     } catch (e) {
       // ignore
     }
 
-    await this.kcAdminClient.clientScopes.create({name: this.clientScopeName});
+    await this.kcAdminClient.clientScopes.create({
+      name: this.currentClientScopeName,
+    });
 
     const scope = await this.kcAdminClient.clientScopes.findOneByName({
-      name: this.clientScopeName,
+      name: this.currentClientScopeName,
     });
     expect(scope).to.be.ok;
-    expect(scope.name).to.equal(this.clientScopeName);
+    expect(scope.name).to.equal(this.currentClientScopeName);
   });
 
   it('find scope by id', async () => {
@@ -95,10 +101,10 @@ describe('Client Scopes', () => {
 
   it('find scope by name', async () => {
     const scope = await this.kcAdminClient.clientScopes.findOneByName({
-      name: this.clientScopeName,
+      name: this.currentClientScopeName,
     });
     expect(scope).to.be.ok;
-    expect(scope.name).to.eql(this.clientScopeName);
+    expect(scope.name).to.eql(this.currentClientScopeName);
   });
 
   it('return null if scope not found by id', async () => {
@@ -141,10 +147,10 @@ describe('Client Scopes', () => {
 
   it('delete single client scope by name', async () => {
     await this.kcAdminClient.clientScopes.delByName({
-      name: this.clientScopeName,
+      name: this.currentClientScopeName,
     });
     const scope = await this.kcAdminClient.clientScopes.findOneByName({
-      name: this.clientScopeName,
+      name: this.currentClientScopeName,
     });
     expect(scope).not.to.be.ok;
   });
@@ -390,6 +396,254 @@ describe('Client Scopes', () => {
       );
 
       expect(mapper).not.to.be.ok;
+    });
+  });
+
+  describe('scope mappings', () => {
+    it('list client and realm scope mappings', async () => {
+      const {id} = this.currentClientScope;
+      const scopes = await this.kcAdminClient.clientScopes.listScopeMappings({
+        id,
+      });
+      expect(scopes).to.be.ok;
+    });
+
+    describe('client', () => {
+      const dummyClientId = 'scopeMappings-dummy';
+      const dummyRoleName = 'scopeMappingsRole-dummy';
+
+      beforeEach(async () => {
+        const {id} = await this.kcAdminClient.clients.create({
+          clientId: dummyClientId,
+        });
+        this.currentClient = await this.kcAdminClient.clients.findOne({
+          id,
+        });
+
+        await this.kcAdminClient.clients.createRole({
+          id,
+          name: dummyRoleName,
+        });
+      });
+
+      afterEach(async () => {
+        try {
+          const {id} = this.currentClient;
+          await this.kcAdminClient.clients.delRole({
+            id,
+            roleName: dummyRoleName,
+          });
+        } catch (e) {
+          // ignore
+        }
+        try {
+          const {id} = this.currentClient;
+          await this.kcAdminClient.clients.del({id});
+        } catch (e) {
+          // ignore
+          console.log(e);
+        }
+      });
+
+      it('add scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const {id: clientUniqueId} = this.currentClient;
+
+        const availableRoles = await this.kcAdminClient.clientScopes.listAvailableClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+
+        await this.kcAdminClient.clientScopes.addClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+          availableRoles,
+        );
+
+        const roles = await this.kcAdminClient.clientScopes.listClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+
+        expect(roles).to.be.ok;
+        expect(roles).to.be.eql(availableRoles);
+      });
+
+      it('list scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clientScopes.listClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list available scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clientScopes.listAvailableClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list composite scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clientScopes.listCompositeClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('delete scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const {id: clientUniqueId} = this.currentClient;
+
+        const rolesBefore = await this.kcAdminClient.clientScopes.listClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+
+        await this.kcAdminClient.clientScopes.delClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+          rolesBefore,
+        );
+
+        const rolesAfter = await this.kcAdminClient.clientScopes.listClientScopeMappings(
+          {
+            id,
+            client: clientUniqueId,
+          },
+        );
+
+        expect(rolesAfter).to.be.ok;
+        expect(rolesAfter).to.eql([]);
+      });
+    });
+
+    describe('realm', () => {
+      const dummyRoleName = 'realmScopeMappingsRole-dummy';
+
+      beforeEach(async () => {
+        await this.kcAdminClient.roles.create({
+          name: dummyRoleName,
+        });
+      });
+
+      afterEach(async () => {
+        try {
+          await this.kcAdminClient.roles.delByName({
+            name: dummyRoleName,
+          });
+        } catch (e) {
+          // ignore
+        }
+      });
+
+      it('add scope mappings', async () => {
+        const {id} = this.currentClientScope;
+
+        const availableRoles = await this.kcAdminClient.clientScopes.listAvailableRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        await this.kcAdminClient.clientScopes.addRealmScopeMappings(
+          {
+            id,
+          },
+          availableRoles,
+        );
+
+        const roles = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        expect(roles).to.be.ok;
+        expect(roles.sort((a, b) => (a.name < b.name ? -1 : 1))).to.be.eql(
+          availableRoles.sort((a, b) => (a.name < b.name ? -1 : 1)),
+        );
+      });
+
+      it('list scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const roles = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list available scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const roles = await this.kcAdminClient.clientScopes.listAvailableRealmScopeMappings(
+          {
+            id,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list composite scope mappings', async () => {
+        const {id} = this.currentClientScope;
+        const roles = await this.kcAdminClient.clientScopes.listCompositeRealmScopeMappings(
+          {
+            id,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('delete scope mappings', async () => {
+        const {id} = this.currentClientScope;
+
+        const rolesBefore = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        await this.kcAdminClient.clientScopes.delRealmScopeMappings(
+          {
+            id,
+          },
+          rolesBefore,
+        );
+
+        const rolesAfter = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        expect(rolesAfter).to.be.ok;
+        expect(rolesAfter).to.eql([]);
+      });
     });
   });
 });

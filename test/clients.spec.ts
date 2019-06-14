@@ -599,4 +599,225 @@ describe('Clients', function() {
       expect(mapper).not.to.be.ok;
     });
   });
+
+  describe('scope mappings', () => {
+    it('list client and realm scope mappings', async () => {
+      const {id} = this.currentClient;
+      const scopes = await this.kcAdminClient.clients.listScopeMappings({
+        id,
+      });
+      expect(scopes).to.be.ok;
+    });
+
+    describe('client', () => {
+      const dummyRoleName = 'clientScopeMappingsRole-dummy';
+
+      beforeEach(async () => {
+        const {id} = this.currentClient;
+        await this.kcAdminClient.clients.createRole({
+          id,
+          name: dummyRoleName,
+        });
+      });
+
+      afterEach(async () => {
+        try {
+          const {id} = this.currentClient;
+          await this.kcAdminClient.clients.delRole({
+            id,
+            roleName: dummyRoleName,
+          });
+        } catch (e) {
+          // ignore
+        }
+      });
+
+      it('add scope mappings', async () => {
+        const {id: clientUniqueId} = this.currentClient;
+
+        const availableRoles = await this.kcAdminClient.clients.listAvailableClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+        );
+
+        await this.kcAdminClient.clients.addClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+          availableRoles,
+        );
+
+        const roles = await this.kcAdminClient.clients.listClientScopeMappings({
+          id: clientUniqueId,
+          client: clientUniqueId,
+        });
+
+        expect(roles).to.be.ok;
+        expect(roles).to.be.eql(availableRoles);
+      });
+
+      it('list scope mappings', async () => {
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listClientScopeMappings({
+          id: clientUniqueId,
+          client: clientUniqueId,
+        });
+        expect(roles).to.be.ok;
+      });
+
+      it('list available scope mappings', async () => {
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listAvailableClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list composite scope mappings', async () => {
+        const {id: clientUniqueId} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listCompositeClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('delete scope mappings', async () => {
+        const {id: clientUniqueId} = this.currentClient;
+
+        const rolesBefore = await this.kcAdminClient.clients.listClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+        );
+
+        await this.kcAdminClient.clients.delClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+          rolesBefore,
+        );
+
+        const rolesAfter = await this.kcAdminClient.clients.listClientScopeMappings(
+          {
+            id: clientUniqueId,
+            client: clientUniqueId,
+          },
+        );
+
+        expect(rolesAfter).to.be.ok;
+        expect(rolesAfter).to.eql([]);
+      });
+    });
+
+    describe('realm', () => {
+      const dummyRoleName = 'realmScopeMappingsRole-dummy';
+
+      beforeEach(async () => {
+        await this.kcAdminClient.roles.create({
+          name: dummyRoleName,
+        });
+      });
+
+      afterEach(async () => {
+        try {
+          await this.kcAdminClient.roles.delByName({
+            name: dummyRoleName,
+          });
+        } catch (e) {
+          // ignore
+        }
+      });
+
+      it('add scope mappings', async () => {
+        const {id} = this.currentClient;
+
+        const availableRoles = await this.kcAdminClient.clients.listAvailableRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        await this.kcAdminClient.clients.addRealmScopeMappings(
+          {
+            id,
+          },
+          availableRoles,
+        );
+
+        const roles = await this.kcAdminClient.clients.listRealmScopeMappings({
+          id,
+        });
+
+        expect(roles).to.be.ok;
+        expect(roles.sort((a, b) => (a.name < b.name ? -1 : 1))).to.be.eql(
+          availableRoles.sort((a, b) => (a.name < b.name ? -1 : 1)),
+        );
+      });
+
+      it('list scope mappings', async () => {
+        const {id} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listRealmScopeMappings({
+          id,
+        });
+        expect(roles).to.be.ok;
+      });
+
+      it('list available scope mappings', async () => {
+        const {id} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listAvailableRealmScopeMappings(
+          {
+            id,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('list composite scope mappings', async () => {
+        const {id} = this.currentClient;
+        const roles = await this.kcAdminClient.clients.listCompositeRealmScopeMappings(
+          {
+            id,
+          },
+        );
+        expect(roles).to.be.ok;
+      });
+
+      it('delete scope mappings', async () => {
+        const {id} = this.currentClient;
+
+        const rolesBefore = await this.kcAdminClient.clients.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        await this.kcAdminClient.clients.delRealmScopeMappings(
+          {
+            id,
+          },
+          rolesBefore,
+        );
+
+        const rolesAfter = await this.kcAdminClient.clients.listRealmScopeMappings(
+          {
+            id,
+          },
+        );
+
+        expect(rolesAfter).to.be.ok;
+        expect(rolesAfter).to.eql([]);
+      });
+    });
+  });
 });

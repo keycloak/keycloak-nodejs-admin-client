@@ -252,6 +252,38 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Add optional client scope (`PUT /{realm}/clients/{id}/optional-client-scopes/{clientScopeId}`)
 - Delete optional client scope (`DELETE /{realm}/clients/{id}/optional-client-scopes/{clientScopeId}`)
 
+### [Scope Mappings for client scopes](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_scope_mappings_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get all scope mappings for the client (`GET /{realm}/client-scopes/{id}/scope-mappings`)
+- Add client-level roles to the client’s scope (`POST /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- Get the roles associated with a client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- The available client-level roles (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}/available`)
+- Get effective client roles (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}/composite`)
+- Remove client-level roles from the client’s scope. (`DELETE /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- Add a set of realm-level roles to the client’s scope (`POST /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Get realm-level roles associated with the client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Remove a set of realm-level roles from the client’s scope (`DELETE /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Get realm-level roles that are available to attach to this client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm/available`)
+- Get effective realm-level roles associated with the client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm/composite`)
+
+### [Scope Mappings for clients](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_scope_mappings_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get all scope mappings for the client (`GET /{realm}/clients/{id}/scope-mappings`)
+- Add client-level roles to the client’s scope (`POST /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- Get the roles associated with a client’s scope (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- Remove client-level roles from the client’s scope. (`DELETE /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- The available client-level roles (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}/available`)
+- Get effective client roles (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}/composite`)
+- Add a set of realm-level roles to the client’s scope (`POST /{realm}/clients/{id}/scope-mappings/realm`)
+- Get realm-level roles associated with the client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm`)
+- Remove a set of realm-level roles from the client’s scope (`DELETE /{realm}/clients/{id}/scope-mappings/realm`)
+- Get realm-level roles that are available to attach to this client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm/available`)
+- Get effective realm-level roles associated with the client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm/composite`)
+
 ### [Protocol Mappers for client scopes](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_protocol_mappers_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts

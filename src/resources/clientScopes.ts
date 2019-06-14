@@ -2,6 +2,8 @@ import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import Resource from './resource';
 import {KeycloakAdminClient} from '../client';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
+import MappingsRepresentation from '../defs/mappingsRepresentation';
+import RoleRepresentation from '../defs/roleRepresentation';
 
 export class ClientScopes extends Resource<{realm?: string}> {
   public find = this.makeRequest<{}, ClientScopeRepresentation[]>({
@@ -162,6 +164,112 @@ export class ClientScopes extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/client-scopes/{id}/protocol-mappers/models/{mapperId}',
     urlParamKeys: ['id', 'mapperId'],
+  });
+
+  /**
+   * Scope Mappings
+   */
+  public listScopeMappings = this.makeRequest<
+    {id: string},
+    MappingsRepresentation
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings',
+    urlParamKeys: ['id'],
+  });
+
+  public addClientScopeMappings = this.makeUpdateRequest<
+    {id: string; client: string},
+    RoleRepresentation[],
+    void
+  >({
+    method: 'POST',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public listClientScopeMappings = this.makeRequest<
+    {id: string; client: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public listAvailableClientScopeMappings = this.makeRequest<
+    {id: string; client: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}/available',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public listCompositeClientScopeMappings = this.makeRequest<
+    {id: string; client: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}/available',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public delClientScopeMappings = this.makeUpdateRequest<
+    {id: string; client: string},
+    RoleRepresentation[],
+    void
+  >({
+    method: 'DELETE',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public addRealmScopeMappings = this.makeUpdateRequest<
+    {id: string},
+    RoleRepresentation[],
+    void
+  >({
+    method: 'POST',
+    path: '/client-scopes/{id}/scope-mappings/realm',
+    urlParamKeys: ['id', 'client'],
+  });
+
+  public listRealmScopeMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/realm',
+    urlParamKeys: ['id'],
+  });
+
+  public listAvailableRealmScopeMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/realm/available',
+    urlParamKeys: ['id'],
+  });
+
+  public listCompositeRealmScopeMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-scopes/{id}/scope-mappings/realm/available',
+    urlParamKeys: ['id'],
+  });
+
+  public delRealmScopeMappings = this.makeUpdateRequest<
+    {id: string},
+    RoleRepresentation[],
+    void
+  >({
+    method: 'DELETE',
+    path: '/client-scopes/{id}/scope-mappings/realm',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
