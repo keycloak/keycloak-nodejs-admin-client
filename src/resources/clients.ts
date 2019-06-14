@@ -278,11 +278,13 @@ export class Clients extends Resource<{realm?: string}> {
    * Find single protocol mapper by name.
    */
   public async findProtocolMapperByName(payload: {
+    realm?: string;
     id: string;
     name: string;
   }): Promise<ProtocolMapperRepresentation> {
     const allProtocolMappers = await this.listProtocolMappers({
       id: payload.id,
+      ...(payload.realm ? {realm: payload.realm} : {}),
     });
     const protocolMapper = allProtocolMappers.find(
       mapper => mapper.name === payload.name,

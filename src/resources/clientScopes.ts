@@ -4,7 +4,7 @@ import {KeycloakAdminClient} from '../client';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 
 export class ClientScopes extends Resource<{realm?: string}> {
-  public find = this.makeRequest<void, ClientScopeRepresentation[]>({
+  public find = this.makeRequest<{}, ClientScopeRepresentation[]>({
     method: 'GET',
     path: '/client-scopes',
   });
@@ -178,17 +178,23 @@ export class ClientScopes extends Resource<{realm?: string}> {
    * Find client scope by name.
    */
   public async findOneByName(payload: {
+    realm?: string;
     name: string;
   }): Promise<ClientScopeRepresentation> {
-    const allScopes = await this.find();
+    const allScopes = await this.find({
+      ...(payload.realm ? {realm: payload.realm} : {}),
+    });
     const scope = allScopes.find(item => item.name === payload.name);
     return scope ? scope : null;
   }
 
   /**
-   * Find client scope by name.
+   * Delete client scope by name.
    */
-  public async delByName(payload: {name: string}): Promise<void> {
+  public async delByName(payload: {
+    realm?: string;
+    name: string;
+  }): Promise<void> {
     const scope = await this.findOneByName(payload);
 
     if (!scope) {
@@ -202,11 +208,13 @@ export class ClientScopes extends Resource<{realm?: string}> {
    * Find single protocol mapper by name.
    */
   public async findProtocolMapperByName(payload: {
+    realm?: string;
     id: string;
     name: string;
   }): Promise<ProtocolMapperRepresentation> {
     const allProtocolMappers = await this.listProtocolMappers({
       id: payload.id,
+      ...(payload.realm ? {realm: payload.realm} : {}),
     });
     const protocolMapper = allProtocolMappers.find(
       mapper => mapper.name === payload.name,
