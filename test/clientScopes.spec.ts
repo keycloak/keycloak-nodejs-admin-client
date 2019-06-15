@@ -578,7 +578,7 @@ describe('Client Scopes', () => {
         );
 
         expect(roles).to.be.ok;
-        expect(roles).to.deep.members(availableRoles);
+        expect(roles).to.include.deep.members(availableRoles);
       });
 
       it('list scope mappings', async () => {
