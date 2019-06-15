@@ -565,28 +565,20 @@ describe('Client Scopes', () => {
         const {id} = this.currentClientScope;
 
         const availableRoles = await this.kcAdminClient.clientScopes.listAvailableRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
 
         await this.kcAdminClient.clientScopes.addRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
           availableRoles,
         );
 
         const roles = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
 
         expect(roles).to.be.ok;
-        expect(roles.sort((a, b) => (a.name < b.name ? -1 : 1))).to.be.eql(
-          availableRoles.sort((a, b) => (a.name < b.name ? -1 : 1)),
-        );
+        expect(roles).to.deep.members(availableRoles);
       });
 
       it('list scope mappings', async () => {

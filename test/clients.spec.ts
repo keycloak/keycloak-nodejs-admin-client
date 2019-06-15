@@ -438,7 +438,7 @@ describe('Clients', function() {
         protocol: 'openid-connect',
         protocolMapper: 'oidc-role-name-mapper',
         config: {
-          role: 'admin',
+          "role": 'admin',
           'new.role.name': 'farmer',
         },
       };
@@ -743,15 +743,11 @@ describe('Clients', function() {
         const {id} = this.currentClient;
 
         const availableRoles = await this.kcAdminClient.clients.listAvailableRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
 
         await this.kcAdminClient.clients.addRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
           availableRoles,
         );
 
@@ -760,9 +756,7 @@ describe('Clients', function() {
         });
 
         expect(roles).to.be.ok;
-        expect(roles.sort((a, b) => (a.name < b.name ? -1 : 1))).to.be.eql(
-          availableRoles.sort((a, b) => (a.name < b.name ? -1 : 1)),
-        );
+        expect(roles).to.deep.members(availableRoles);
       });
 
       it('list scope mappings', async () => {
@@ -776,9 +770,7 @@ describe('Clients', function() {
       it('list available scope mappings', async () => {
         const {id} = this.currentClient;
         const roles = await this.kcAdminClient.clients.listAvailableRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
         expect(roles).to.be.ok;
       });
@@ -786,9 +778,7 @@ describe('Clients', function() {
       it('list composite scope mappings', async () => {
         const {id} = this.currentClient;
         const roles = await this.kcAdminClient.clients.listCompositeRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
         expect(roles).to.be.ok;
       });
@@ -797,22 +787,16 @@ describe('Clients', function() {
         const {id} = this.currentClient;
 
         const rolesBefore = await this.kcAdminClient.clients.listRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
 
         await this.kcAdminClient.clients.delRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
           rolesBefore,
         );
 
         const rolesAfter = await this.kcAdminClient.clients.listRealmScopeMappings(
-          {
-            id,
-          },
+          {id},
         );
 
         expect(rolesAfter).to.be.ok;
