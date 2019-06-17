@@ -456,12 +456,14 @@ describe('Client Scopes', () => {
           },
         );
 
+        const filteredRoles = availableRoles.filter(role => !role.composite);
+
         await this.kcAdminClient.clientScopes.addClientScopeMappings(
           {
             id,
             client: clientUniqueId,
           },
-          availableRoles,
+          filteredRoles,
         );
 
         const roles = await this.kcAdminClient.clientScopes.listClientScopeMappings(
@@ -472,7 +474,7 @@ describe('Client Scopes', () => {
         );
 
         expect(roles).to.be.ok;
-        expect(roles).to.be.eql(availableRoles);
+        expect(roles).to.be.eql(filteredRoles);
       });
 
       it('list scope mappings', async () => {
@@ -568,9 +570,11 @@ describe('Client Scopes', () => {
           {id},
         );
 
+        const filteredRoles = availableRoles.filter(role => !role.composite);
+
         await this.kcAdminClient.clientScopes.addRealmScopeMappings(
           {id},
-          availableRoles,
+          filteredRoles,
         );
 
         const roles = await this.kcAdminClient.clientScopes.listRealmScopeMappings(
@@ -578,7 +582,7 @@ describe('Client Scopes', () => {
         );
 
         expect(roles).to.be.ok;
-        expect(roles).to.include.deep.members(availableRoles);
+        expect(roles).to.include.deep.members(filteredRoles);
       });
 
       it('list scope mappings', async () => {

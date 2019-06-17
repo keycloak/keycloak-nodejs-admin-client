@@ -232,7 +232,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
   >({
     method: 'POST',
     path: '/client-scopes/{id}/scope-mappings/realm',
-    urlParamKeys: ['id', 'client'],
+    urlParamKeys: ['id'],
   });
 
   public listRealmScopeMappings = this.makeRequest<

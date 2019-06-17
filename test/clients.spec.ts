@@ -438,7 +438,7 @@ describe('Clients', function() {
         protocol: 'openid-connect',
         protocolMapper: 'oidc-role-name-mapper',
         config: {
-          "role": 'admin',
+          role: 'admin',
           'new.role.name': 'farmer',
         },
       };
