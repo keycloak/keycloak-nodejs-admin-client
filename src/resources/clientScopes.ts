@@ -309,7 +309,10 @@ export class ClientScopes extends Resource<{realm?: string}> {
       throw new Error('Scope not found.');
     }
 
-    await this.delById({id: scope.id});
+    await this.delById({
+      ...(payload.realm ? {realm: payload.realm} : {}),
+      id: scope.id,
+    });
   }
 
   /**
