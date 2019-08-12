@@ -20,17 +20,14 @@ export class ClientScopes extends Resource<{realm?: string}> {
    * Client-Scopes by id
    */
 
-  public findOneById = this.makeRequest<
-    {id: string},
-    ClientScopeRepresentation
-  >({
+  public findOne = this.makeRequest<{id: string}, ClientScopeRepresentation>({
     method: 'GET',
     path: '/client-scopes/{id}',
     urlParamKeys: ['id'],
     catchNotFound: true,
   });
 
-  public updateById = this.makeUpdateRequest<
+  public update = this.makeUpdateRequest<
     {id: string},
     ClientScopeRepresentation,
     void
@@ -40,7 +37,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public delById = this.makeRequest<{id: string}, void>({
+  public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/client-scopes/{id}',
     urlParamKeys: ['id'],
@@ -127,7 +124,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public findProtocolMapperById = this.makeRequest<
+  public findProtocolMapper = this.makeRequest<
     {id: string; mapperId: string},
     ProtocolMapperRepresentation
   >({
@@ -309,7 +306,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
       throw new Error('Scope not found.');
     }
 
-    await this.delById({
+    await this.del({
       ...(payload.realm ? {realm: payload.realm} : {}),
       id: scope.id,
     });

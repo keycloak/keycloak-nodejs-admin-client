@@ -92,7 +92,7 @@ describe('Client Scopes', () => {
   });
 
   it('find scope by id', async () => {
-    const scope = await this.kcAdminClient.clientScopes.findOneById({
+    const scope = await this.kcAdminClient.clientScopes.findOne({
       id: this.currentClientScope.id,
     });
     expect(scope).to.be.ok;
@@ -108,7 +108,7 @@ describe('Client Scopes', () => {
   });
 
   it('return null if scope not found by id', async () => {
-    const scope = await this.kcAdminClient.clientScopes.findOneById({
+    const scope = await this.kcAdminClient.clientScopes.findOne({
       id: 'I do not exist',
     });
     expect(scope).to.be.null;
@@ -125,8 +125,8 @@ describe('Client Scopes', () => {
     const {id, description: oldDescription} = this.currentClientScope;
     const description = 'This scope is totally awesome.';
 
-    await this.kcAdminClient.clientScopes.updateById({id}, {description});
-    const updatedScope = await this.kcAdminClient.clientScopes.findOneById({
+    await this.kcAdminClient.clientScopes.update({id}, {description});
+    const updatedScope = await this.kcAdminClient.clientScopes.findOne({
       id,
     });
     expect(updatedScope).to.be.ok;
@@ -136,10 +136,10 @@ describe('Client Scopes', () => {
   });
 
   it('delete single client scope by id', async () => {
-    await this.kcAdminClient.clientScopes.delById({
+    await this.kcAdminClient.clientScopes.del({
       id: this.currentClientScope.id,
     });
-    const scope = await this.kcAdminClient.clientScopes.findOneById({
+    const scope = await this.kcAdminClient.clientScopes.findOne({
       id: this.currentClientScope.id,
     });
     expect(scope).not.to.be.ok;
@@ -306,9 +306,10 @@ describe('Client Scopes', () => {
         name: dummyMapper.name,
       });
 
-      const mapper = await this.kcAdminClient.clientScopes.findProtocolMapperById(
-        {id, mapperId},
-      );
+      const mapper = await this.kcAdminClient.clientScopes.findProtocolMapper({
+        id,
+        mapperId,
+      });
 
       expect(mapper).to.be.ok;
       expect(mapper.id).to.eql(mapperId);
