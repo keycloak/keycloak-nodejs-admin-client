@@ -2,12 +2,12 @@ import Resource from './resource';
 import UserRepresentation from '../defs/userRepresentation';
 import UserConsentRepresentation from '../defs/userConsentRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {
   RoleMappingPayload,
 } from '../defs/roleRepresentation';
-import { RequiredActionAlias } from '../defs/requiredActionProviderRepresentation';
+import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
@@ -22,21 +22,21 @@ export interface UserQuery {
   username?: string;
 }
 
-export class Users extends Resource<{ realm?: string }> {
+export class Users extends Resource<{realm?: string}> {
   public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET',
   });
 
-  public create = this.makeRequest<UserRepresentation, { id: string }>({
+  public create = this.makeRequest<UserRepresentation, {id: string}>({
     method: 'POST',
-    returnResourceIdInLocationHeader: { field: 'id' },
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   /**
    * Single user
    */
 
-  public findOne = this.makeRequest<{ id: string }, UserRepresentation>({
+  public findOne = this.makeRequest<{id: string}, UserRepresentation>({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -44,7 +44,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public update = this.makeUpdateRequest<
-    { id: string },
+    {id: string},
     UserRepresentation,
     void
   >({
@@ -53,7 +53,7 @@ export class Users extends Resource<{ realm?: string }> {
     urlParamKeys: ['id'],
   });
 
-  public del = this.makeRequest<{ id: string }, void>({
+  public del = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -64,7 +64,7 @@ export class Users extends Resource<{ realm?: string }> {
    */
 
   public listRoleMappings = this.makeRequest<
-    { id: string },
+    {id: string},
     MappingsRepresentation
   >({
     method: 'GET',
@@ -73,7 +73,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public addRealmRoleMappings = this.makeRequest<
-    { id: string; roles: RoleMappingPayload[] },
+    {id: string; roles: RoleMappingPayload[]},
     void
   >({
     method: 'POST',
@@ -83,7 +83,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public listRealmRoleMappings = this.makeRequest<
-    { id: string },
+    {id: string},
     RoleRepresentation[]
   >({
     method: 'GET',
@@ -92,7 +92,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public delRealmRoleMappings = this.makeRequest<
-    { id: string; roles: RoleMappingPayload[] },
+    {id: string; roles: RoleMappingPayload[]},
     void
   >({
     method: 'DELETE',
@@ -102,7 +102,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public listAvailableRealmRoleMappings = this.makeRequest<
-    { id: string },
+    {id: string},
     RoleRepresentation[]
   >({
     method: 'GET',
@@ -112,7 +112,7 @@ export class Users extends Resource<{ realm?: string }> {
 
   // Get effective realm-level role mappings This will recurse all composite roles to get the result.
   public listCompositeRealmRoleMappings = this.makeRequest<
-    { id: string },
+    {id: string},
     RoleRepresentation[]
   >({
     method: 'GET',
@@ -126,7 +126,7 @@ export class Users extends Resource<{ realm?: string }> {
    */
 
   public listClientRoleMappings = this.makeRequest<
-    { id: string; clientUniqueId: string },
+    {id: string; clientUniqueId: string},
     RoleRepresentation[]
   >({
     method: 'GET',
@@ -135,7 +135,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public addClientRoleMappings = this.makeRequest<
-    { id: string; clientUniqueId: string; roles: RoleMappingPayload[] },
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
     void
   >({
     method: 'POST',
@@ -145,7 +145,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public delClientRoleMappings = this.makeRequest<
-    { id: string; clientUniqueId: string; roles: RoleMappingPayload[] },
+    {id: string; clientUniqueId: string; roles: RoleMappingPayload[]},
     void
   >({
     method: 'DELETE',
@@ -155,7 +155,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public listAvailableClientRoleMappings = this.makeRequest<
-    { id: string; clientUniqueId: string },
+    {id: string; clientUniqueId: string},
     RoleRepresentation[]
   >({
     method: 'GET',
@@ -193,14 +193,14 @@ export class Users extends Resource<{ realm?: string }> {
    * Group
    */
 
-  public listGroups = this.makeRequest<{ id: string }, GroupRepresentation[]>({
+  public listGroups = this.makeRequest<{id: string}, GroupRepresentation[]>({
     method: 'GET',
     path: '/{id}/groups',
     urlParamKeys: ['id'],
   });
 
   public addToGroup = this.makeRequest<
-    { id: string; groupId: string },
+    {id: string; groupId: string},
     GroupRepresentation[]
   >({
     method: 'PUT',
@@ -209,7 +209,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public delFromGroup = this.makeRequest<
-    { id: string; groupId: string },
+    {id: string; groupId: string},
     GroupRepresentation[]
   >({
     method: 'DELETE',
@@ -222,7 +222,7 @@ export class Users extends Resource<{ realm?: string }> {
    */
 
   public listFederatedIdentities = this.makeRequest<
-    { id: string },
+    {id: string},
     FederatedIdentityRepresentation[]
   >({
     method: 'GET',
@@ -245,7 +245,7 @@ export class Users extends Resource<{ realm?: string }> {
   });
 
   public delFromFederatedIdentity = this.makeRequest<
-    { id: string; federatedIdentityId: string },
+    {id: string; federatedIdentityId: string},
     void
   >({
     method: 'DELETE',
@@ -256,7 +256,7 @@ export class Users extends Resource<{ realm?: string }> {
   /**
    * remove totp
    */
-  public removeTotp = this.makeRequest<{ id: string }, void>({
+  public removeTotp = this.makeRequest<{id: string}, void>({
     method: 'PUT',
     path: '/{id}/remove-totp',
     urlParamKeys: ['id'],
@@ -266,7 +266,7 @@ export class Users extends Resource<{ realm?: string }> {
    * reset password
    */
   public resetPassword = this.makeRequest<
-    { id: string; credential: CredentialRepresentation },
+    {id: string; credential: CredentialRepresentation},
     void
   >({
     method: 'PUT',
@@ -279,7 +279,7 @@ export class Users extends Resource<{ realm?: string }> {
    * send verify email
    */
   public sendVerifyEmail = this.makeRequest<
-    { id: string; clientId?: string; redirectUri?: string },
+    {id: string; clientId?: string; redirectUri?: string},
     void
   >({
     method: 'PUT',
@@ -296,7 +296,7 @@ export class Users extends Resource<{ realm?: string }> {
    * list user sessions
    */
   public listSessions = this.makeRequest<
-    { id: string },
+    {id: string},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -308,7 +308,7 @@ export class Users extends Resource<{ realm?: string }> {
    * list offline sessions associated with the user and client
    */
   public listOfflineSessions = this.makeRequest<
-    { id: string, clientId: string },
+    {id: string, clientId: string},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -320,7 +320,7 @@ export class Users extends Resource<{ realm?: string }> {
    * logout user from all sessions
    */
   public logout = this.makeRequest<
-    { id: string },
+    {id: string},
     void
   >({
     method: 'POST',
@@ -332,7 +332,7 @@ export class Users extends Resource<{ realm?: string }> {
    * list consents granted by the user
    */
   public listConsents = this.makeRequest<
-    { id: string },
+    {id: string},
     UserConsentRepresentation[]
   >({
     method: 'GET',
@@ -344,7 +344,7 @@ export class Users extends Resource<{ realm?: string }> {
    * revoke consent and offline tokens for particular client from user
    */
   public revokeConsent = this.makeRequest<
-    { id: string, clientId: string },
+    {id: string, clientId: string},
     void
   >({
     method: 'DELETE',

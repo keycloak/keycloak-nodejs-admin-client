@@ -3,7 +3,7 @@ import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
 
-import { KeycloakAdminClient } from '../client';
+import {KeycloakAdminClient} from '../client';
 
 export class Realms extends Resource {
   /**
@@ -15,12 +15,12 @@ export class Realms extends Resource {
     method: 'GET',
   });
 
-  public create = this.makeRequest<RealmRepresentation, { realmName: string }>({
+  public create = this.makeRequest<RealmRepresentation, {realmName: string}>({
     method: 'POST',
-    returnResourceIdInLocationHeader: { field: 'realmName' },
+    returnResourceIdInLocationHeader: {field: 'realmName'},
   });
 
-  public findOne = this.makeRequest<{ realm: string }, RealmRepresentation>({
+  public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
     method: 'GET',
     path: '/{realm}',
     urlParamKeys: ['realm'],
@@ -28,7 +28,7 @@ export class Realms extends Resource {
   });
 
   public update = this.makeUpdateRequest<
-    { realm: string },
+    {realm: string},
     RealmRepresentation,
     void
   >({
@@ -37,7 +37,7 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
-  public del = this.makeRequest<{ realm: string }, void>({
+  public del = this.makeRequest<{realm: string}, void>({
     method: 'DELETE',
     path: '/{realm}',
     urlParamKeys: ['realm'],
