@@ -290,6 +290,11 @@ export class Users extends Resource<{realm?: string}> {
     },
   });
 
+  public count = this.makeRequest({
+    method: 'GET',
+    path: '/count',
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/users',

@@ -165,6 +165,10 @@ describe('Users', function() {
     });
   });
 
+  it('should get the count of users', async () => {
+    const count = await this.kcAdminClient.users.count();
+    expect(count).to.be.ok;
+  });
   /**
    * Role mappings
    */
