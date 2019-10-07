@@ -13,3 +13,4 @@ before_install:
   - docker pull jboss/keycloak
   - docker run -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak:6.0.1
   - docker ps -a
+  - curl http://127.0.0.1:8080/auth/realms/master/
