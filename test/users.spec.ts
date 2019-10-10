@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
+import UserSessionRepresentation from '../src/defs/userSessionRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
@@ -23,7 +24,7 @@ declare module 'mocha' {
   }
 }
 
-describe('Users', function() {
+describe('Users', function () {
   this.timeout(10000);
 
   before(async () => {
@@ -364,7 +365,86 @@ describe('Users', function() {
     });
   });
 
-  describe('Federated Identity user integration', function() {
+  describe('User sessions', function () {
+    before(async () => {
+      this.kcAdminClient = new KeycloakAdminClient();
+      await this.kcAdminClient.auth(credentials);
+
+      // create user
+      const username = faker.internet.userName();
+      await this.kcAdminClient.users.create({
+        username,
+        email: 'wwwy3y3-federated@canner.io',
+        enabled: true,
+      });
+      const users = await this.kcAdminClient.users.find({username});
+      expect(users[0]).to.be.ok;
+      this.currentUser = users[0];
+
+      // create client
+      const clientId = faker.internet.userName();
+      await this.kcAdminClient.clients.create({
+        clientId, consentRequired: true,
+      });
+
+      const clients = await this.kcAdminClient.clients.find({clientId});
+      expect(clients[0]).to.be.ok;
+      this.currentClient = clients[0];
+    });
+
+    after(async () => {
+      await this.kcAdminClient.users.del({
+        id: this.currentUser.id,
+      });
+
+      await this.kcAdminClient.clients.del({
+        id: this.currentClient.id,
+      });
+    });
+
+    it('list user sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      const userSessions = await this.kcAdminClient.users.listSessions({id: this.currentUser.id});
+
+      expect(userSessions).to.be.ok;
+    });
+
+    it('list users off-line sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      const userOfflineSessions = await this.kcAdminClient.users.listOfflineSessions(
+        {id: this.currentUser.id, clientId: this.currentClient.id},
+      );
+
+      expect(userOfflineSessions).to.be.ok;
+    });
+
+    it('logout user from all sessions', async () => {
+      // @TODO: In order to test it, currentUser has to be logged in
+
+      await this.kcAdminClient.users.logout({id: this.currentUser.id});
+    });
+
+    it('list consents granted by the user', async () => {
+      const consents = await this.kcAdminClient.users.listConsents({id: this.currentUser.id});
+
+      expect(consents).to.be.ok;
+    });
+
+    it('revoke consent and offline tokens for particular client', async () => {
+      // @TODO: In order to test it, currentUser has to granted consent to client
+      const consents = await this.kcAdminClient.users.listConsents({id: this.currentUser.id});
+
+      if (consents.length) {
+        const consent = consents[0];
+
+        await this.kcAdminClient.users.revokeConsent({id: this.currentUser.id, clientId: consent.clientId});
+      }
+    });
+  });
+
+  describe('Federated Identity user integration', function () {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
