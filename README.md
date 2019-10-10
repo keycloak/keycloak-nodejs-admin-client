@@ -108,6 +108,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get a role by name (`GET /{realm}/roles/{role-name}`)
 - Update a role by name (`PUT /{realm}/roles/{role-name}`)
 - Delete a role by name (`DELETE /{realm}/roles/{role-name}`)
+- Get all users in a role by name for the realm (`GET /{realm}/roles/{role-name}/users`)
 
 ### [Roles (by ID)](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_by_id_resource)
 
