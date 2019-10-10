@@ -17,4 +17,3 @@ before_install:
   - sleep 30
   - docker ps -a
   - docker logs keycloak
-  - curl http://127.0.0.1:8080/auth/realms/master/ -v
