@@ -1,5 +1,7 @@
 import Resource from './resource';
 import UserRepresentation from '../defs/userRepresentation';
+import UserConsentRepresentation from '../defs/userConsentRepresentation';
+import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import {KeycloakAdminClient} from '../client';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation, {
@@ -293,6 +295,66 @@ export class Users extends Resource<{realm?: string}> {
   public count = this.makeRequest({
     method: 'GET',
     path: '/count',
+  });
+
+  /**
+   * list user sessions
+   */
+  public listSessions = this.makeRequest<
+    {id: string},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/sessions',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * list offline sessions associated with the user and client
+   */
+  public listOfflineSessions = this.makeRequest<
+    {id: string, clientId: string},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/offline-sessions/{clientId}',
+    urlParamKeys: ['id', 'clientId'],
+  });
+
+  /**
+   * logout user from all sessions
+   */
+  public logout = this.makeRequest<
+    {id: string},
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/logout',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * list consents granted by the user
+   */
+  public listConsents = this.makeRequest<
+    {id: string},
+    UserConsentRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/consents',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * revoke consent and offline tokens for particular client from user
+   */
+  public revokeConsent = this.makeRequest<
+    {id: string, clientId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/consents/{clientId}',
+    urlParamKeys: ['id', 'clientId'],
   });
 
   constructor(client: KeycloakAdminClient) {
