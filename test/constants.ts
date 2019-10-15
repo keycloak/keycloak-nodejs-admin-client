@@ -1,6 +1,6 @@
 export const credentials = {
-  username: 'wwwy3y3',
-  password: 'wwwy3y3',
+  username: 'admin',
+  password: 'admin',
   grantType: 'password',
   clientId: 'admin-cli',
 };

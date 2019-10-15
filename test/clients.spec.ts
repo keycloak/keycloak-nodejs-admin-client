@@ -4,7 +4,8 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
-import BPromise from 'bluebird';
+import {DecisionStrategy, Logic} from "../src/defs/policyRepresentation";
+
 const expect = chai.expect;
 
 declare module 'mocha' {
@@ -27,6 +28,9 @@ describe('Clients', function() {
     const clientId = faker.internet.userName();
     const createdClient = await this.kcAdminClient.clients.create({
       clientId,
+      secret: 'mysecret',
+      serviceAccountsEnabled: true,
+      authorizationServicesEnabled: true,
     });
     expect(createdClient.id).to.be.ok;
 
@@ -239,5 +243,100 @@ describe('Clients', function() {
 
       expect(serviceAccountUser).to.be.ok;
     });
+  });
+
+  // describe('client authorization resources', () => {
+  //     it('should create a resource', async () => {
+  //       const resource = {
+  //         // attributes?: Record<string, any>;
+  //         // displayName: faker.name,
+  //         owner: {
+  //           name: faker.name.
+  //         },
+  //         ownerManagedAccess: '',
+  //         scopes: '',
+  //         type: '',
+  //         uri: ''
+  //       };
+  //       await this.kcAdminClient.clients.createClientResource({id: this.currentClient.id}, )
+  //     })
+  // })
+
+  describe('authorization permissions', () => {
+      it('should return permissions', async () => {
+        const permissions = await this.kcAdminClient.clients.getClientPermissions({id: this.currentClient.id});
+        expect(permissions).to.be.ok;
+      });
+
+      it('should create a new permission', async () => {
+        const permission = await this.kcAdminClient.clients.createPermission({
+          id: this.currentClient.id,
+          name: faker.lorem.word(),
+          type: 'resource',
+          // logic: Logic.POSITIVE,
+          // decisionStrategy: DecisionStrategy.UNANIMOUS,
+          // policies: [],
+          // resources: [],
+        });
+        expect(permission).to.be.ok;
+      })
+  });
+
+  describe('authorization resources', () => {
+    it('should return resources', async () => {
+      const resources = await this.kcAdminClient.clients.getClientResources({id: this.currentClient.id});
+      expect(resources).to.be.ok;
+    });
+
+    it('should create a new resource', async () => {
+      const resource = await this.kcAdminClient.clients.createClientResource({
+        id: this.currentClient.id,
+        name: faker.lorem.word(),
+        displayName: faker.lorem.word(),
+        type: faker.lorem.word(),
+      });
+      expect(resource).to.be.ok;
+      expect(resource._id).to.be.not.null;
+    });
+
+    it('should remove a resource', async () => {
+      const resource = await this.kcAdminClient.clients.createClientResource({
+        id: this.currentClient.id,
+        name: faker.lorem.word(),
+        displayName: faker.lorem.word(),
+        type: faker.lorem.word(),
+      });
+      await this.kcAdminClient.clients.deleteResource({id: this.currentClient.id, resourceId: resource._id});
+    });
+  });
+
+
+  describe('authorization policies', () => {
+    it('should return policies', async () => {
+      const policies = await this.kcAdminClient.clients.getPolicies({id: this.currentClient.id});
+      expect(policies).to.be.ok;
+    });
+
+    it('should create a new policy', async () => {
+      const resource = await this.kcAdminClient.clients.createPolicy({
+        id: this.currentClient.id,
+        name: faker.lorem.word(),
+        description: faker.lorem.sentence(),
+        logic: Logic.POSITIVE,
+        type: 'js',
+        decisionStrategy: DecisionStrategy.UNANIMOUS
+      });
+      expect(resource).to.be.ok;
+    });
+    //
+    // it('should remove a policy', async () => {
+    //   const resource = await this.kcAdminClient.clients.createClientResource({
+    //     id: this.currentClient.id,
+    //     name: faker.lorem.word(),
+    //     displayName: faker.lorem.word(),
+    //     type: faker.lorem.word(),
+    //   });
+    //   await this.kcAdminClient.clients.deleteResource({id: this.currentClient.id, resourceId: resource._id});
+    // });
   });
 });
