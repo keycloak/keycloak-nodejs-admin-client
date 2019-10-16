@@ -221,6 +221,94 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete the identity provider mapper (`DELETE /{realm}/identity-provider/instances/{alias}/mappers/{id}`)
 - Find the identity provider mapper types (`GET /{realm}/identity-provider/instances/{alias}/mapper-types`)
 
+### [Client Scopes](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_client_scopes_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Create a new client scope (`POST /{realm}/client-scopes`)
+- Get client scopes belonging to the realm (`GET /{realm}/client-scopes`)
+- Get representation of the client scope (`GET /{realm}/client-scopes/{id}`)
+- Update the client scope (`PUT /{realm}/client-scopes/{id}`)
+- Delete the client scope (`DELETE /{realm}/client-scopes/{id}`)
+
+### [Client Scopes for realm](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_client_scopes_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get realm default client scopes (`GET /{realm}/default-default-client-scopes`)
+- Add realm default client scope (`PUT /{realm}/default-default-client-scopes/{id}`)
+- Delete realm default client scope (`DELETE /{realm}/default-default-client-scopes/{id}`)
+- Get realm optional client scopes (`GET /{realm}/default-optional-client-scopes`)
+- Add realm optional client scope (`PUT /{realm}/default-optional-client-scopes/{id}`)
+- Delete realm optional client scope (`DELETE /{realm}/default-optional-client-scopes/{id}`)
+
+### [Client Scopes for client](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_client_scopes_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get default client scopes (`GET /{realm}/clients/{id}/default-client-scopes`)
+- Add default client scope (`PUT /{realm}/clients/{id}/default-client-scopes/{clientScopeId}`)
+- Delete default client scope (`DELETE /{realm}/clients/{id}/default-client-scopes/{clientScopeId}`)
+- Get optional client scopes (`GET /{realm}/clients/{id}/optional-client-scopes`)
+- Add optional client scope (`PUT /{realm}/clients/{id}/optional-client-scopes/{clientScopeId}`)
+- Delete optional client scope (`DELETE /{realm}/clients/{id}/optional-client-scopes/{clientScopeId}`)
+
+### [Scope Mappings for client scopes](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_scope_mappings_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get all scope mappings for the client (`GET /{realm}/client-scopes/{id}/scope-mappings`)
+- Add client-level roles to the client’s scope (`POST /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- Get the roles associated with a client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- The available client-level roles (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}/available`)
+- Get effective client roles (`GET /{realm}/client-scopes/{id}/scope-mappings/clients/{client}/composite`)
+- Remove client-level roles from the client’s scope. (`DELETE /{realm}/client-scopes/{id}/scope-mappings/clients/{client}`)
+- Add a set of realm-level roles to the client’s scope (`POST /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Get realm-level roles associated with the client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Remove a set of realm-level roles from the client’s scope (`DELETE /{realm}/client-scopes/{id}/scope-mappings/realm`)
+- Get realm-level roles that are available to attach to this client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm/available`)
+- Get effective realm-level roles associated with the client’s scope (`GET /{realm}/client-scopes/{id}/scope-mappings/realm/composite`)
+
+### [Scope Mappings for clients](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_scope_mappings_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Get all scope mappings for the client (`GET /{realm}/clients/{id}/scope-mappings`)
+- Add client-level roles to the client’s scope (`POST /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- Get the roles associated with a client’s scope (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- Remove client-level roles from the client’s scope. (`DELETE /{realm}/clients/{id}/scope-mappings/clients/{client}`)
+- The available client-level roles (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}/available`)
+- Get effective client roles (`GET /{realm}/clients/{id}/scope-mappings/clients/{client}/composite`)
+- Add a set of realm-level roles to the client’s scope (`POST /{realm}/clients/{id}/scope-mappings/realm`)
+- Get realm-level roles associated with the client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm`)
+- Remove a set of realm-level roles from the client’s scope (`DELETE /{realm}/clients/{id}/scope-mappings/realm`)
+- Get realm-level roles that are available to attach to this client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm/available`)
+- Get effective realm-level roles associated with the client’s scope (`GET /{realm}/clients/{id}/scope-mappings/realm/composite`)
+
+### [Protocol Mappers for client scopes](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_protocol_mappers_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clientScopes.spec.ts
+
+- Create multiple mappers (`POST /{realm}/client-scopes/{id}/protocol-mappers/add-models`)
+- Create a mapper (`POST /{realm}/client-scopes/{id}/protocol-mappers/models`)
+- Get mappers (`GET /{realm}/client-scopes/{id}/protocol-mappers/models`)
+- Get mapper by id (`GET /{realm}/client-scopes/{id}/protocol-mappers/models/{mapperId}`)
+- Update the mapper (`PUT /{realm}/client-scopes/{id}/protocol-mappers/models/{mapperId}`)
+- Delete the mapper (`DELETE /{realm}/client-scopes/{id}/protocol-mappers/models/{mapperId}`)
+- Get mappers by name for a specific protocol (`GET /{realm}/client-scopes/{id}/protocol-mappers/protocol/{protocol}`)
+
+### [Protocol Mappers for clients](https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_protocol_mappers_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create multiple mappers (`POST /{realm}/clients/{id}/protocol-mappers/add-models`)
+- Create a mapper (`POST /{realm}/clients/{id}/protocol-mappers/models`)
+- Get mappers (`GET /{realm}/clients/{id}/protocol-mappers/models`)
+- Get mapper by id (`GET /{realm}/clients/{id}/protocol-mappers/models/{mapperId}`)
+- Update the mapper (`PUT /{realm}/clients/{id}/protocol-mappers/models/{mapperId}`)
+- Delete the mapper (`DELETE /{realm}/clients/{id}/protocol-mappers/models/{mapperId}`)
+- Get mappers by name for a specific protocol (`GET /{realm}/clients/{id}/protocol-mappers/protocol/{protocol}`)
+
 ### [Component]()
 
 Supported for [user federation](https://www.keycloak.org/docs/latest/server_admin/index.html#_user-storage-federation). Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/components.spec.ts
@@ -238,10 +326,7 @@ Supported for [user federation](https://www.keycloak.org/docs/latest/server_admi
 - [Client Attribute Certificate](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_attribute_certificate_resource)
 - [Client Initial Access](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_initial_access_resource)
 - [Client Registration Policy](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_registration_policy_resource)
-- [Client Scopes](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_scopes_resource)
 - [Key](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_key_resource)
-- [Protocol Mappers](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_protocol_mappers_resource)
-- [Scope Mappings](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_scope_mappings_resource)
 - [User Storage Provider](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_user_storage_provider_resource)
 
 ## Maintainers
