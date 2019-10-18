@@ -804,4 +804,38 @@ describe('Clients', function() {
       });
     });
   });
+
+  describe('sessions', () => {
+    it('list clients user sessions', async () => {
+      const clientUniqueId = this.currentClient.id;
+      const userSessions = await this.kcAdminClient.clients.listSessions({
+        id: clientUniqueId,
+      });
+      expect(userSessions).to.be.ok;
+    });
+
+    it('list clients offline user sessions', async () => {
+      const clientUniqueId = this.currentClient.id;
+      const userSessions = await this.kcAdminClient.clients.listOfflineSessions({
+        id: clientUniqueId,
+      });
+      expect(userSessions).to.be.ok;
+    });
+
+    it('list clients user session count', async () => {
+      const clientUniqueId = this.currentClient.id;
+      const userSessions = await this.kcAdminClient.clients.getSessionCount({
+        id: clientUniqueId,
+      });
+      expect(userSessions).to.be.ok;
+    });
+
+    it('list clients offline user session count', async () => {
+      const clientUniqueId = this.currentClient.id;
+      const userSessions = await this.kcAdminClient.clients.getOfflineSessionCount({
+        id: clientUniqueId,
+      });
+      expect(userSessions).to.be.ok;
+    });
+  });
 });
