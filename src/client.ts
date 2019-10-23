@@ -6,6 +6,7 @@ import {Groups} from './resources/groups';
 import {Roles} from './resources/roles';
 import {Clients} from './resources/clients';
 import {Realms} from './resources/realms';
+import {ClientScopes} from './resources/clientScopes';
 import {IdentityProviders} from './resources/identityProviders';
 import {Components} from './resources/components';
 import {AxiosRequestConfig} from 'axios';
@@ -24,6 +25,7 @@ export class KeycloakAdminClient {
   public roles: Roles;
   public clients: Clients;
   public realms: Realms;
+  public clientScopes: ClientScopes;
   public identityProviders: IdentityProviders;
   public components: Components;
 
@@ -48,6 +50,7 @@ export class KeycloakAdminClient {
     this.roles = new Roles(this);
     this.clients = new Clients(this);
     this.realms = new Realms(this);
+    this.clientScopes = new ClientScopes(this);
     this.identityProviders = new IdentityProviders(this);
     this.components = new Components(this);
   }

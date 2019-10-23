@@ -1,0 +1,8 @@
+# NODE
+node_modules
+
+# IDE
+.vscode
+
+# GITHUB
+.github

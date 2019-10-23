@@ -48,7 +48,7 @@ describe('Group user integration', function() {
     });
   });
 
-  it('should list user\'s group and expect empty', async () => {
+  it("should list user's group and expect empty", async () => {
     const groups = await this.kcAdminClient.users.listGroups({
       id: this.currentUser.id,
     });

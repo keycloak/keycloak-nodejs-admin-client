@@ -1,5 +1,8 @@
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
+import EventRepresentation from '../defs/eventRepresentation';
+import EventType from '../defs/eventTypes';
+
 import {KeycloakAdminClient} from '../client';
 
 export class Realms extends Resource {
@@ -38,6 +41,21 @@ export class Realms extends Resource {
     method: 'DELETE',
     path: '/{realm}',
     urlParamKeys: ['realm'],
+  });
+
+  /**
+   * Get events Returns all events, or filters them based on URL query parameters listed here
+   */
+  public findEvents = this.makeRequest<{
+    realm: string,
+    client?: string, dateFrom?: Date, dateTo?: Date,
+    first?: number, ipAddress?: string, max?: number,
+    type?: EventType, user?: string,
+  }, EventRepresentation[]>({
+    method: 'GET',
+    path: '/{realm}/events',
+    urlParamKeys: ['realm'],
+    queryParamKeys: ['client', 'dateFrom', 'dateTo', 'first', 'ipAddress', 'max', 'type', 'user'],
   });
 
   constructor(client: KeycloakAdminClient) {
