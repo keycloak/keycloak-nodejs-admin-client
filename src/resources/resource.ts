@@ -2,25 +2,21 @@ import {KeycloakAdminClient} from '../client';
 import {Agent, RequestArgs} from './agent';
 
 export default class Resource<ParamType = {}> {
-  private agent: Agent;
-  constructor(
-    client: KeycloakAdminClient,
-    settings: {
-      path?: string;
-      getUrlParams?: () => Record<string, any>;
-      getBaseUrl?: () => string;
-    } = {},
-  ) {
-    this.agent = new Agent({
-      client,
-      ...settings,
-    });
+  public agent: Agent;
+  public basePath: string;
+
+  constructor(agent: Agent, basePath: string = '') {
+    this.agent = agent;
+    this.basePath = basePath;
   }
 
   public makeRequest = <PayloadType = any, ResponseType = any>(
     args: RequestArgs,
   ): ((payload?: PayloadType & ParamType) => Promise<ResponseType>) => {
-    return this.agent.request(args);
+    return this.agent.request({
+      basePath: this.basePath,
+      ...args,
+    });
   };
 
   // update request will take three types: query, payload and response
@@ -34,6 +30,9 @@ export default class Resource<ParamType = {}> {
     query: QueryType & ParamType,
     payload: PayloadType,
   ) => Promise<ResponseType>) => {
-    return this.agent.updateRequest(args);
+    return this.agent.updateRequest({
+      basePath: this.basePath,
+      ...args,
+    });
   };
 }

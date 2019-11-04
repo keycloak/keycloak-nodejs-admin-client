@@ -1,5 +1,6 @@
 import {getToken, Credentials} from './utils/auth';
 import {defaultBaseUrl, defaultRealm} from './utils/constants';
+import {Agent} from './resources/agent';
 import {Users} from './resources/users';
 import {Groups} from './resources/groups';
 import {Roles} from './resources/roles';
@@ -8,7 +9,7 @@ import {Realms} from './resources/realms';
 import {ClientScopes} from './resources/clientScopes';
 import {IdentityProviders} from './resources/identityProviders';
 import {Components} from './resources/components';
-import {AxiosRequestConfig} from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -34,22 +35,34 @@ export class KeycloakAdminClient {
   public refreshToken: string;
   private requestConfig?: AxiosRequestConfig;
 
-  constructor(connectionConfig?: ConnectionConfig) {
+  constructor(connectionConfig?: ConnectionConfig, agentInjection?: Agent) {
     this.baseUrl =
       (connectionConfig && connectionConfig.baseUrl) || defaultBaseUrl;
     this.realmName =
       (connectionConfig && connectionConfig.realmName) || defaultRealm;
     this.requestConfig = connectionConfig && connectionConfig.requestConfig;
 
+    const agent =
+      agentInjection ||
+      new Agent({
+        getUrlParams: client => ({
+          realm: client.realmName,
+        }),
+        getBaseUrl: client => client.baseUrl,
+        axios,
+      });
+
+    agent.setClient(this);
+
     // Initialize resources
-    this.users = new Users(this);
-    this.groups = new Groups(this);
-    this.roles = new Roles(this);
-    this.clients = new Clients(this);
-    this.realms = new Realms(this);
-    this.clientScopes = new ClientScopes(this);
-    this.identityProviders = new IdentityProviders(this);
-    this.components = new Components(this);
+    this.users = new Users(agent);
+    this.groups = new Groups(agent);
+    this.roles = new Roles(agent);
+    this.clients = new Clients(agent);
+    this.realms = new Realms(agent);
+    this.clientScopes = new ClientScopes(agent);
+    this.identityProviders = new IdentityProviders(agent);
+    this.components = new Components(agent);
   }
 
   public async auth(credentials: Credentials) {

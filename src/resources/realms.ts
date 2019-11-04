@@ -3,7 +3,7 @@ import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
 
-import {KeycloakAdminClient} from '../client';
+import {Agent} from './agent';
 
 export class Realms extends Resource {
   /**
@@ -46,22 +46,36 @@ export class Realms extends Resource {
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */
-  public findEvents = this.makeRequest<{
-    realm: string,
-    client?: string, dateFrom?: Date, dateTo?: Date,
-    first?: number, ipAddress?: string, max?: number,
-    type?: EventType, user?: string,
-  }, EventRepresentation[]>({
+  public findEvents = this.makeRequest<
+    {
+      realm: string;
+      client?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+      first?: number;
+      ipAddress?: string;
+      max?: number;
+      type?: EventType;
+      user?: string;
+    },
+    EventRepresentation[]
+  >({
     method: 'GET',
     path: '/{realm}/events',
     urlParamKeys: ['realm'],
-    queryParamKeys: ['client', 'dateFrom', 'dateTo', 'first', 'ipAddress', 'max', 'type', 'user'],
+    queryParamKeys: [
+      'client',
+      'dateFrom',
+      'dateTo',
+      'first',
+      'ipAddress',
+      'max',
+      'type',
+      'user',
+    ],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms',
-      getBaseUrl: () => client.baseUrl,
-    });
+  constructor(agent: Agent, basePath: string = '/admin/realms') {
+    super(agent, basePath);
   }
 }

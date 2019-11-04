@@ -1,6 +1,6 @@
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import Resource from './resource';
-import {KeycloakAdminClient} from '../client';
+import {Agent} from './agent';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation from '../defs/roleRepresentation';
@@ -269,14 +269,8 @@ export class ClientScopes extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms/{realm}',
-      getUrlParams: () => ({
-        realm: client.realmName,
-      }),
-      getBaseUrl: () => client.baseUrl,
-    });
+  constructor(agent: Agent, basePath: string = '/admin/realms/{realm}') {
+    super(agent, basePath);
   }
 
   /**

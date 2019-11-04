@@ -1,6 +1,6 @@
 import Resource from './resource';
 import ComponentRepresentation from '../defs/componentRepresentation';
-import {KeycloakAdminClient} from '../client';
+import {Agent} from './agent';
 
 export interface ComponentQuery {
   name?: string;
@@ -46,13 +46,10 @@ export class Components extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms/{realm}/components',
-      getUrlParams: () => ({
-        realm: client.realmName,
-      }),
-      getBaseUrl: () => client.baseUrl,
-    });
+  constructor(
+    agent: Agent,
+    basePath: string = '/admin/realms/{realm}/components',
+  ) {
+    super(agent, basePath);
   }
 }

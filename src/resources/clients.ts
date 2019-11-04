@@ -1,6 +1,6 @@
 import Resource from './resource';
 import ClientRepresentation from '../defs/clientRepresentation';
-import {KeycloakAdminClient} from '../client';
+import {Agent} from './agent';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
@@ -371,14 +371,11 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms/{realm}/clients',
-      getUrlParams: () => ({
-        realm: client.realmName,
-      }),
-      getBaseUrl: () => client.baseUrl,
-    });
+  constructor(
+    agent: Agent,
+    basePath: string = '/admin/realms/{realm}/clients',
+  ) {
+    super(agent, basePath);
   }
 
   /**
