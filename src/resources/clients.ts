@@ -7,6 +7,7 @@ import CredentialRepresentation from '../defs/credentialRepresentation';
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
+import UserSessionRepresentation from '../defs/userSessionRepresentation';
 
 export interface ClientQuery {
   clientId?: string;
@@ -368,6 +369,42 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'DELETE',
     path: '/{id}/scope-mappings/realm',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * Sessions
+   */
+  public listSessions = this.makeRequest<
+    {id: string; first?: number; max?: number},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/user-sessions',
+    urlParamKeys: ['id'],
+  });
+
+  public listOfflineSessions = this.makeRequest<
+    {id: string; first?: number; max?: number},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/offline-sessions',
+    urlParamKeys: ['id'],
+  });
+
+  public getSessionCount = this.makeRequest<{id: string}, {count: number}>({
+    method: 'GET',
+    path: '/{id}/session-count',
+    urlParamKeys: ['id'],
+  });
+
+  public getOfflineSessionCount = this.makeRequest<
+    {id: string},
+    {count: number}
+  >({
+    method: 'GET',
+    path: '/{id}/offline-session-count',
     urlParamKeys: ['id'],
   });
 

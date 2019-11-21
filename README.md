@@ -319,6 +319,15 @@ Supported for [user federation](https://www.keycloak.org/docs/latest/server_admi
 - Update (`PUT /{realm}/components/{id}`)
 - Delete (`DELETE /{realm}/components/{id}`)
 
+### [Sessions for clients]()
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- List user sessions for a specific client (`GET /{realm}/clients/{id}/user-sessions`)
+- List offline sessions for a specific client (`GET /{realm}/clients/{id}/offline-sessions`)
+- Get user session count for a specific client (`GET /{realm}/clients/{id}/session-count`)
+- List offline session count for a specific client (`GET /{realm}/clients/{id}/offline-session-count`)
+
 ## Not yet supported
 
 - [Attack Detection](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_attack_detection_resource)
