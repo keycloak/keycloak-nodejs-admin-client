@@ -13,6 +13,7 @@ export default interface RoleRepresentation {
   description?: string;
   id?: string;
   name?: string;
+  attributes?: Record<string, Array<string>>;
 }
 
 // when requesting to role-mapping api (create, delete), id and name are required
