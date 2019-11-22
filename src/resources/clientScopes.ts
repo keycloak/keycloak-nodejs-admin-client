@@ -6,6 +6,8 @@ import MappingsRepresentation from '../defs/mappingsRepresentation';
 import RoleRepresentation from '../defs/roleRepresentation';
 
 export class ClientScopes extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}';
+
   public find = this.makeRequest<{}, ClientScopeRepresentation[]>({
     method: 'GET',
     path: '/client-scopes',
@@ -268,10 +270,6 @@ export class ClientScopes extends Resource<{realm?: string}> {
     path: '/client-scopes/{id}/scope-mappings/realm',
     urlParamKeys: ['id'],
   });
-
-  constructor(agent: Agent, basePath: string = '/admin/realms/{realm}') {
-    super(agent, basePath);
-  }
 
   /**
    * Find client scope by name.

@@ -4,6 +4,8 @@ import UserRepresentation from '../defs/userRepresentation';
 import {Agent} from './agent';
 
 export class Roles extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}';
+
   /**
    * Realm roles
    */
@@ -82,8 +84,4 @@ export class Roles extends Resource<{realm?: string}> {
     path: '/roles-by-id/{id}',
     urlParamKeys: ['id'],
   });
-
-  constructor(agent: Agent, basePath: string = '/admin/realms/{realm}') {
-    super(agent, basePath);
-  }
 }

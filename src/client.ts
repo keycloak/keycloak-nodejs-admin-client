@@ -42,15 +42,7 @@ export class KeycloakAdminClient {
       (connectionConfig && connectionConfig.realmName) || defaultRealm;
     this.requestConfig = connectionConfig && connectionConfig.requestConfig;
 
-    const agent =
-      agentInjection ||
-      new Agent({
-        getUrlParams: client => ({
-          realm: client.realmName,
-        }),
-        getBaseUrl: client => client.baseUrl,
-        axios,
-      });
+    const agent = agentInjection || new Agent(axios);
 
     agent.setClient(this);
 

@@ -15,6 +15,8 @@ export interface ClientQuery {
 }
 
 export class Clients extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}/clients';
+
   public find = this.makeRequest<ClientQuery, ClientRepresentation[]>({
     method: 'GET',
   });
@@ -407,13 +409,6 @@ export class Clients extends Resource<{realm?: string}> {
     path: '/{id}/offline-session-count',
     urlParamKeys: ['id'],
   });
-
-  constructor(
-    agent: Agent,
-    basePath: string = '/admin/realms/{realm}/clients',
-  ) {
-    super(agent, basePath);
-  }
 
   /**
    * Find single protocol mapper by name.

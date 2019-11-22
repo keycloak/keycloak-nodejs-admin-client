@@ -1,20 +1,32 @@
+import urlJoin from 'url-join';
 import {KeycloakAdminClient} from '../client';
 import {Agent, RequestArgs} from './agent';
 
 export default class Resource<ParamType = {}> {
   public agent: Agent;
-  public basePath: string;
+  public basePath: string = '';
 
-  constructor(agent: Agent, basePath: string = '') {
+  constructor(agent: Agent) {
     this.agent = agent;
-    this.basePath = basePath;
   }
+
+  public getBaseUrl = (client: KeycloakAdminClient): string => {
+    if (this.basePath) {
+      return urlJoin(client.baseUrl, this.basePath);
+    }
+
+    return client.baseUrl;
+  };
+
+  public getUrlParams = (client: KeycloakAdminClient): Record<string, any> => ({
+    realm: client.realmName,
+  });
 
   public makeRequest = <PayloadType = any, ResponseType = any>(
     args: RequestArgs,
   ): ((payload?: PayloadType & ParamType) => Promise<ResponseType>) => {
     return this.agent.request({
-      basePath: this.basePath,
+      resource: this,
       ...args,
     });
   };
@@ -31,7 +43,7 @@ export default class Resource<ParamType = {}> {
     payload: PayloadType,
   ) => Promise<ResponseType>) => {
     return this.agent.updateRequest({
-      basePath: this.basePath,
+      resource: this,
       ...args,
     });
   };

@@ -14,6 +14,8 @@ export interface GroupQuery {
 }
 
 export class Groups extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}/groups';
+
   public find = this.makeRequest<GroupQuery, GroupRepresentation[]>({
     method: 'GET',
   });
@@ -174,8 +176,4 @@ export class Groups extends Resource<{realm?: string}> {
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParamKeys: ['id', 'clientUniqueId'],
   });
-
-  constructor(agent: Agent, basePath: string = '/admin/realms/{realm}/groups') {
-    super(agent, basePath);
-  }
 }

@@ -3,6 +3,7 @@ import template from 'url-template';
 import {AxiosInstance, AxiosRequestConfig} from 'axios';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
+import Resource from './resource';
 
 // constants
 const SLASH = '/';
@@ -10,7 +11,7 @@ const SLASH = '/';
 // interface
 export interface RequestArgs {
   method: string;
-  basePath?: string;
+  resource?: Resource;
   path?: string;
   // Keys of url params to be applied
   urlParamKeys?: string[];
@@ -31,21 +32,9 @@ export interface RequestArgs {
 
 export class Agent {
   private client: KeycloakAdminClient;
-  private getBaseParams?: (client: KeycloakAdminClient) => Record<string, any>;
-  private getBaseUrl?: (client: KeycloakAdminClient) => string;
   private axios: AxiosInstance;
 
-  constructor({
-    getUrlParams = () => ({}),
-    getBaseUrl = client => client.baseUrl,
-    axios,
-  }: {
-    getUrlParams?: (client: KeycloakAdminClient) => Record<string, any>;
-    getBaseUrl?: (client: KeycloakAdminClient) => string;
-    axios: AxiosInstance;
-  }) {
-    this.getBaseParams = getUrlParams;
-    this.getBaseUrl = getBaseUrl;
+  constructor(axios: AxiosInstance) {
     this.axios = axios;
   }
 
@@ -62,8 +51,8 @@ export class Agent {
   }
 
   public request({
+    resource,
     method,
-    basePath = '',
     path = '',
     urlParamKeys = [],
     queryParamKeys = [],
@@ -73,7 +62,7 @@ export class Agent {
     returnResourceIdInLocationHeader,
   }: RequestArgs) {
     return async (payload: any = {}) => {
-      const baseParams = this.getBaseParams(this.client);
+      const baseParams = resource.getUrlParams(this.client);
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(payload, queryParamKeys) : null;
@@ -92,8 +81,8 @@ export class Agent {
       }
 
       return this.requestWithParams({
+        resource,
         method,
-        basePath,
         path,
         payload,
         urlParams,
@@ -106,8 +95,8 @@ export class Agent {
   }
 
   public updateRequest({
+    resource,
     method,
-    basePath = '',
     path = '',
     urlParamKeys = [],
     queryParamKeys = [],
@@ -117,7 +106,7 @@ export class Agent {
     returnResourceIdInLocationHeader,
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
-      const baseParams = this.getBaseParams(this.client);
+      const baseParams = resource.getUrlParams(this.client);
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(query, queryParamKeys) : null;
@@ -135,8 +124,8 @@ export class Agent {
       }
 
       return this.requestWithParams({
+        resource,
         method,
-        basePath,
         path,
         payload,
         urlParams,
@@ -149,8 +138,8 @@ export class Agent {
   }
 
   private async requestWithParams({
+    resource,
     method,
-    basePath,
     path,
     payload,
     urlParams,
@@ -159,8 +148,8 @@ export class Agent {
     payloadKey,
     returnResourceIdInLocationHeader,
   }: {
+    resource: Resource;
     method: string;
-    basePath: string;
     path: string;
     payload: any;
     urlParams: any;
@@ -169,12 +158,11 @@ export class Agent {
     payloadKey?: string;
     returnResourceIdInLocationHeader?: {field: string};
   }) {
-    const newPath = urlJoin(basePath, path);
+    const newPath = urlJoin(resource.getBaseUrl(this.client), path);
 
     // Parse template and replace with values from urlParams
     const pathTemplate = template.parse(newPath);
-    const parsedPath = pathTemplate.expand(urlParams);
-    const url = `${this.getBaseUrl(this.client)}${parsedPath}`;
+    const url = pathTemplate.expand(urlParams);
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {

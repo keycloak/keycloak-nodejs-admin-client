@@ -23,6 +23,8 @@ export interface UserQuery {
 }
 
 export class Users extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}/users';
+
   public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET',
   });
@@ -347,8 +349,4 @@ export class Users extends Resource<{realm?: string}> {
       urlParamKeys: ['id', 'clientId'],
     },
   );
-
-  constructor(agent: Agent, basePath: string = '/admin/realms/{realm}/users') {
-    super(agent, basePath);
-  }
 }

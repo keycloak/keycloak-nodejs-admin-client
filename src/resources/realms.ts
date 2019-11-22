@@ -1,3 +1,4 @@
+import {KeycloakAdminClient} from '../client';
 import Resource from './resource';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
@@ -6,6 +7,8 @@ import EventType from '../defs/eventTypes';
 import {Agent} from './agent';
 
 export class Realms extends Resource {
+  public basePath = '/admin/realms';
+
   /**
    * Realm
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_realms_admin_resource
@@ -75,7 +78,8 @@ export class Realms extends Resource {
     ],
   });
 
-  constructor(agent: Agent, basePath: string = '/admin/realms') {
-    super(agent, basePath);
-  }
+  // Return empty params so the realm name is transmitted as data.
+  public getUrlParams = (
+    client: KeycloakAdminClient,
+  ): Record<string, any> => ({});
 }

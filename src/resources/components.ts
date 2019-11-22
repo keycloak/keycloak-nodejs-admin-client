@@ -9,6 +9,8 @@ export interface ComponentQuery {
 }
 
 export class Components extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}/components';
+
   /**
    * components
    * https://www.keycloak.org/docs-api/4.1/rest-api/#_component_resource
@@ -45,11 +47,4 @@ export class Components extends Resource<{realm?: string}> {
     path: '/{id}',
     urlParamKeys: ['id'],
   });
-
-  constructor(
-    agent: Agent,
-    basePath: string = '/admin/realms/{realm}/components',
-  ) {
-    super(agent, basePath);
-  }
 }
