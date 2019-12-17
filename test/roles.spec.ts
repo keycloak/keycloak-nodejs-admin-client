@@ -104,4 +104,12 @@ describe('Roles', function() {
     });
     expect(roleDelByName).to.be.null;
   });
+
+  it('get users with role by name in realm', async () => {
+    const users = await this.client.roles.findUsersWithRole({
+      name: 'admin',
+    });
+    expect(users).to.be.ok;
+    expect(users).to.be.an('array');
+  })
 });

@@ -1,5 +1,6 @@
 import Resource from './resource';
 import RoleRepresentation from '../defs/roleRepresentation';
+import UserRepresentation from '../defs/userRepresentation';
 import {KeycloakAdminClient} from '../client';
 
 export class Roles extends Resource<{realm?: string}> {
@@ -43,6 +44,13 @@ export class Roles extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/roles/{name}',
     urlParamKeys: ['name'],
+  });
+
+  public findUsersWithRole = this.makeRequest<{name: string}, UserRepresentation[]>({
+    method: 'GET',
+    path: '/roles/{name}/users',
+    urlParamKeys: ['name'],
+    catchNotFound: true,
   });
 
   /**
