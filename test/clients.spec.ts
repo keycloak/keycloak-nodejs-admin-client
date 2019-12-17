@@ -4,7 +4,8 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
-import {DecisionStrategy, Logic} from "../src/defs/policyRepresentation";
+import {DecisionStrategy, Logic} from '../src/defs/policyRepresentation';
+import {type} from "os";
 
 const expect = chai.expect;
 
@@ -268,6 +269,79 @@ describe('Clients', function() {
         expect(permissions).to.be.ok;
       });
 
+      it('should return a permission by id', async () => {
+
+        const newPermission = await this.kcAdminClient.clients.createPermission({
+          id: this.currentClient.id,
+          name: faker.lorem.word(),
+          type: 'resource',
+        });
+
+        const permission = await this.kcAdminClient.clients.getPermission(
+            {
+              id: this.currentClient.id,
+              permissionId: newPermission.id,
+            });
+        expect(permission).to.be.ok;
+        expect(permission.id).to.be.equal(newPermission.id);
+      });
+
+      it('should update permission', async () => {
+        const name = faker.lorem.word();
+        const description = 'fake-description';
+        const newDescription = 'fake-description-new';
+        const permission = await this.kcAdminClient.clients.createPermission({
+          id: this.currentClient.id,
+          name,
+          description,
+          type: 'resource',
+        });
+
+        await this.kcAdminClient.clients.updatePermission({
+          id: this.currentClient.id,
+          permissionId: permission.id
+        },{
+          name,
+          description: newDescription,
+          type: 'resource',
+        });
+
+        const updatedPermission = await this.kcAdminClient.clients.getPermission({id: this.currentClient.id, permissionId: permission.id});
+        expect(updatedPermission.description).to.be.equal(newDescription);
+
+      });
+
+      it ('should return resources of a permission', async () => {
+        const permission = await this.kcAdminClient.clients.createPermission({
+          id: this.currentClient.id,
+          name: faker.lorem.word(),
+          type: 'resource',
+        });
+        const resources = await this.kcAdminClient.clients.getPermissionResources(
+            {
+              id: this.currentClient.id,
+              permissionId: permission.id,
+            });
+        expect(resources).to.be.ok;
+        expect(resources).to.be.an('array').that.is.empty;
+      });
+
+      it('should return policies of a permission', async () => {
+        const permission = await this.kcAdminClient.clients.createPermission({
+          id: this.currentClient.id,
+          name: faker.lorem.word(),
+          type: 'resource',
+        });
+        const resources = await this.kcAdminClient.clients.getPermissionPolicies(
+            {
+              id: this.currentClient.id,
+              permissionId: permission.id,
+            });
+        expect(resources).to.be.ok;
+        expect(resources).to.be.an('array').that.is.empty;
+      });
+
+
       it('should create a new permission', async () => {
         const permission = await this.kcAdminClient.clients.createPermission({
           id: this.currentClient.id,
@@ -279,7 +353,7 @@ describe('Clients', function() {
           // resources: [],
         });
         expect(permission).to.be.ok;
-      })
+      });
   });
 
   describe('authorization resources', () => {
@@ -308,8 +382,36 @@ describe('Clients', function() {
       });
       await this.kcAdminClient.clients.deleteResource({id: this.currentClient.id, resourceId: resource._id});
     });
-  });
 
+    it('should update resource', async () => {
+      const displayName = faker.lorem.word();
+      const name = faker.lorem.word();
+      const type = faker.lorem.word();
+      const newDisplayName = 'newDisplayName';
+      const {_id: id} = await this.kcAdminClient.clients.createClientResource({
+        id: this.currentClient.id,
+        name,
+        displayName,
+        type,
+      });
+      // const resource = await
+
+      // resource.displayName = newDisplayName;
+      // resource.id = resource._id;
+      // delete resource._id;
+      // await this.kcAdminClient.clients.updateResource({
+      //   id: this.currentClient.id,
+      //   resourceId: resource.id
+      // }, {...resource});
+      //
+      // const updatedResource = await this.kcAdminClient.clients.getClientResources({
+      //   id: this.currentClient.id
+      // });
+
+      // expect(updatedResource.name).to.be.equal(newDisplayName);
+    });
+
+  });
 
   describe('authorization policies', () => {
     it('should return policies', async () => {
@@ -323,20 +425,22 @@ describe('Clients', function() {
         name: faker.lorem.word(),
         description: faker.lorem.sentence(),
         logic: Logic.POSITIVE,
-        type: 'js',
-        decisionStrategy: DecisionStrategy.UNANIMOUS
+        type: 'user',
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
       });
       expect(resource).to.be.ok;
     });
     //
-    // it('should remove a policy', async () => {
-    //   const resource = await this.kcAdminClient.clients.createClientResource({
-    //     id: this.currentClient.id,
-    //     name: faker.lorem.word(),
-    //     displayName: faker.lorem.word(),
-    //     type: faker.lorem.word(),
-    //   });
-    //   await this.kcAdminClient.clients.deleteResource({id: this.currentClient.id, resourceId: resource._id});
-    // });
+    it('should remove a policy', async () => {
+      const policy = await this.kcAdminClient.clients.createPolicy({
+          id: this.currentClient.id,
+          name: faker.lorem.word(),
+          description: faker.lorem.sentence(),
+          logic: Logic.POSITIVE,
+          type: 'user',
+          decisionStrategy: DecisionStrategy.UNANIMOUS,
+      });
+      await this.kcAdminClient.clients.deletePolicy({id: this.currentClient.id, policyId: policy.id});
+    });
   });
 });

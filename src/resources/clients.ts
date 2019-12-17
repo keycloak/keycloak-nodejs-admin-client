@@ -7,7 +7,7 @@ import CredentialRepresentation from '../defs/credentialRepresentation';
 import ResourceRepresentation from '../defs/resourceRepresentation';
 import PolicyRepresentation from '../defs/policyRepresentation';
 import ResourcePermissionRepresentation from '../defs/resourcePermissionRepresentation';
-import {stringify} from "querystring";
+import {stringify} from 'querystring';
 
 export interface ClientQuery {
   clientId?: string;
@@ -143,6 +143,34 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public getPermission = this.makeRequest<{id: string, permissionId: string}>({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/permission/resource/{permissionId}',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getPermissionResources = this.makeRequest<{id: string, permissionId: string}>({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/permission/{permissionId}/resources',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getPermissionPolicies = this.makeRequest<{id: string, permissionId: string}>({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public updatePermission = this.makeUpdateRequest<
+      {id: string, permissionId: string},
+      ResourcePermissionRepresentation,
+      void
+      >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/permission/{permissionId}',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
   public createPermission = this.makeRequest<ResourcePermissionRepresentation, {id: string}>({
     method: 'POST',
     path: '/{id}/authz/resource-server/permission/',
@@ -170,6 +198,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public updateResource = this.makeUpdateRequest<
+      {id: string, resourceId: string},
+      ResourceRepresentation,
+      void
+      >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/resource/{resourceId}',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
   public deleteResource = this.makeRequest<{id: string, resourceId: string}, void> ({
     method: 'DELETE',
     path: '/{id}/authz/resource-server/resource/{resourceId}',
@@ -184,7 +222,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public deletePolicy = this.makeRequest<{id: string, policyId: string}>({
     method: 'DELETE',
-    path: '/{id}/authz/resource-server/policy/{resourceId}',
+    path: '/{id}/authz/resource-server/policy/{policyId}',
     urlParamKeys: ['id', 'policyId'],
   });
 
@@ -194,6 +232,11 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'type'],
   });
 
+  public updatePolicy = this.makeUpdateRequest< {id: string, type: string ,policyId: string} , PolicyRepresentation, void>({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/policy/{type}/{policyId}',
+    urlParamKeys: ['id', 'type', 'policyId'],
+  });
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
