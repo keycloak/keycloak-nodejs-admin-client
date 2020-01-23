@@ -46,16 +46,33 @@ export class Realms extends Resource {
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */
-  public findEvents = this.makeRequest<{
-    realm: string,
-    client?: string, dateFrom?: Date, dateTo?: Date,
-    first?: number, ipAddress?: string, max?: number,
-    type?: EventType, user?: string,
-  }, EventRepresentation[]>({
+  public findEvents = this.makeRequest<
+    {
+      realm: string;
+      client?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+      first?: number;
+      ipAddress?: string;
+      max?: number;
+      type?: EventType;
+      user?: string;
+    },
+    EventRepresentation[]
+  >({
     method: 'GET',
     path: '/{realm}/events',
     urlParamKeys: ['realm'],
-    queryParamKeys: ['client', 'dateFrom', 'dateTo', 'first', 'ipAddress', 'max', 'type', 'user'],
+    queryParamKeys: [
+      'client',
+      'dateFrom',
+      'dateTo',
+      'first',
+      'ipAddress',
+      'max',
+      'type',
+      'user',
+    ],
   });
 
   constructor(client: KeycloakAdminClient) {
@@ -64,4 +81,24 @@ export class Realms extends Resource {
       getBaseUrl: () => client.baseUrl,
     });
   }
+
+  /**
+   * User management permissions
+   */
+  public getUserManagementPermissions = this.makeRequest<{realm: string}, void>(
+    {
+      method: 'GET',
+      path: '/{realm}/users-management-permissions',
+      urlParamKeys: ['realm'],
+    },
+  );
+
+  public updateUserManagementPermissions = this.makeRequest<
+    {realm: string; enabled: boolean},
+    void
+  >({
+    method: 'PUT',
+    path: '/{realm}/users-management-permissions',
+    urlParamKeys: ['realm'],
+  });
 }

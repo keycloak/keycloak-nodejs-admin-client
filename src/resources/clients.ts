@@ -8,6 +8,7 @@ import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
+import PolicyRepresentation from '../defs/policyRepresentation';
 
 export interface ClientQuery {
   clientId?: string;
@@ -376,7 +377,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Sessions
    */
   public listSessions = this.makeRequest<
-    {id: string, first?: number; max?: number},
+    {id: string; first?: number; max?: number},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -385,7 +386,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   public listOfflineSessions = this.makeRequest<
-    {id: string, first?: number; max?: number},
+    {id: string; first?: number; max?: number},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -393,10 +394,7 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public getSessionCount = this.makeRequest<
-    {id: string},
-    { "count": number }
-  >({
+  public getSessionCount = this.makeRequest<{id: string}, {count: number}>({
     method: 'GET',
     path: '/{id}/session-count',
     urlParamKeys: ['id'],
@@ -404,7 +402,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getOfflineSessionCount = this.makeRequest<
     {id: string},
-    { "count": number }
+    {count: number}
   >({
     method: 'GET',
     path: '/{id}/offline-session-count',
@@ -438,4 +436,69 @@ export class Clients extends Resource<{realm?: string}> {
     );
     return protocolMapper ? protocolMapper : null;
   }
+
+  /**
+   * Fine Grain Permissions
+   */
+
+  public createPermission = this.makeRequest<
+    PolicyRepresentation,
+    {id: string; type: string}
+  >({
+    method: 'POST',
+    path: '/{id}/authz/resource-server/permission/{type}',
+    urlParamKeys: ['id', 'type'],
+  });
+
+  public getPermission = this.makeRequest<{
+    id: string;
+    type: string;
+    permissionId: string;
+  }>({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
+    urlParamKeys: ['id', 'type', 'permissionId'],
+  });
+
+  public updatePermission = this.makeUpdateRequest<
+    {id: string; type: string; permissionId: string},
+    void
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
+    urlParamKeys: ['id', 'type', 'permissionId'],
+  });
+
+  public deletePolicy = this.makeRequest<{id: string; policyId: string}, void>({
+    method: 'DELETE',
+    path: '/{id}/authz/resource-server/policy/{policyId}',
+    urlParamKeys: ['id', 'policyId'],
+  });
+
+  public createPolicy = this.makeRequest<
+    PolicyRepresentation,
+    {id: string; type: string}
+  >({
+    method: 'POST',
+    path: '/{id}/authz/resource-server/policy/{type}',
+    urlParamKeys: ['id', 'type'],
+  });
+
+  public updatePolicy = this.makeRequest<
+    PolicyRepresentation,
+    {id: string; type: string; policyId: string}
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/policy/{type}/{policyId}',
+    urlParamKeys: ['id', 'type', 'policyId'],
+  });
+
+  public getPolicy = this.makeRequest<
+    {id: string; type: string; policyId: string},
+    void
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{type}/{policyId}',
+    urlParamKeys: ['id', 'type', 'policyId'],
+  });
 }
