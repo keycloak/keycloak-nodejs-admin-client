@@ -75,13 +75,6 @@ export class Realms extends Resource {
     ],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms',
-      getBaseUrl: () => client.baseUrl,
-    });
-  }
-
   /**
    * User management permissions
    */
@@ -101,4 +94,11 @@ export class Realms extends Resource {
     path: '/{realm}/users-management-permissions',
     urlParamKeys: ['realm'],
   });
+
+  constructor(client: KeycloakAdminClient) {
+    super(client, {
+      path: '/admin/realms',
+      getBaseUrl: () => client.baseUrl,
+    });
+  }
 }

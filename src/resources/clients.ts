@@ -409,34 +409,6 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms/{realm}/clients',
-      getUrlParams: () => ({
-        realm: client.realmName,
-      }),
-      getBaseUrl: () => client.baseUrl,
-    });
-  }
-
-  /**
-   * Find single protocol mapper by name.
-   */
-  public async findProtocolMapperByName(payload: {
-    realm?: string;
-    id: string;
-    name: string;
-  }): Promise<ProtocolMapperRepresentation> {
-    const allProtocolMappers = await this.listProtocolMappers({
-      id: payload.id,
-      ...(payload.realm ? {realm: payload.realm} : {}),
-    });
-    const protocolMapper = allProtocolMappers.find(
-      mapper => mapper.name === payload.name,
-    );
-    return protocolMapper ? protocolMapper : null;
-  }
-
   /**
    * Fine Grain Permissions
    */
@@ -501,4 +473,32 @@ export class Clients extends Resource<{realm?: string}> {
     path: '/{id}/authz/resource-server/policy/{type}/{policyId}',
     urlParamKeys: ['id', 'type', 'policyId'],
   });
+
+  constructor(client: KeycloakAdminClient) {
+    super(client, {
+      path: '/admin/realms/{realm}/clients',
+      getUrlParams: () => ({
+        realm: client.realmName,
+      }),
+      getBaseUrl: () => client.baseUrl,
+    });
+  }
+
+  /**
+   * Find single protocol mapper by name.
+   */
+  public async findProtocolMapperByName(payload: {
+    realm?: string;
+    id: string;
+    name: string;
+  }): Promise<ProtocolMapperRepresentation> {
+    const allProtocolMappers = await this.listProtocolMappers({
+      id: payload.id,
+      ...(payload.realm ? {realm: payload.realm} : {}),
+    });
+    const protocolMapper = allProtocolMappers.find(
+      mapper => mapper.name === payload.name,
+    );
+    return protocolMapper ? protocolMapper : null;
+  }
 }
