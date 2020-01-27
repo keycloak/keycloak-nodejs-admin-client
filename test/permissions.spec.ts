@@ -34,7 +34,7 @@ describe('authorization permissions and policies for realm management', () => {
     this.currentRealm = realmName;
 
     // enable user management permissions
-    await this.kcAdminClient.realms.updateUserManagementPermissions({
+    await this.kcAdminClient.realms.updateUsersManagementPermissions({
       realm: realmName,
       enabled: true,
     });

@@ -8,13 +8,13 @@ export class AuthenticationManagement extends Resource {
    * https://www.keycloak.org/docs-api/8.0/rest-api/index.html#_authentication_management_resource
    */
 
-  //   Register a new required actions
+  //   Register a new required action
   public registerRequiredAction = this.makeRequest<Record<string, any>>({
     method: 'POST',
     path: '/register-required-action',
   });
 
-  // Get required actions Returns a list of required actions.
+  // Get required actions. Returns a list of required actions.
   public getRequiredActions = this.makeRequest<void>({
     method: 'GET',
     path: '/required-actions',
