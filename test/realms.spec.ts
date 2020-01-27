@@ -14,7 +14,7 @@ declare module 'mocha' {
   }
 }
 
-describe('Realms', function () {
+describe('Realms', function() {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
     await this.kcAdminClient.auth(credentials);
@@ -72,7 +72,7 @@ describe('Realms', function () {
     expect(realm).to.be.null;
   });
 
-  describe('Realm Events', function () {
+  describe('Realm Events', function() {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
@@ -90,9 +90,55 @@ describe('Realms', function () {
 
     it('list events of a realm', async () => {
       // @TODO: In order to test it, there have to be events
-      const events = await this.kcAdminClient.realms.findEvents({realm: this.currentRealmName});
+      const events = await this.kcAdminClient.realms.findEvents({
+        realm: this.currentRealmName,
+      });
 
       expect(events).to.be.ok;
+    });
+
+    after(async () => {
+      await this.kcAdminClient.realms.del({realm: this.currentRealmName});
+      const realm = await this.kcAdminClient.realms.findOne({
+        realm: this.currentRealmName,
+      });
+      expect(realm).to.be.null;
+    });
+  });
+
+  describe('Realm Users Management Permissions', function() {
+    before(async () => {
+      this.kcAdminClient = new KeycloakAdminClient();
+      await this.kcAdminClient.auth(credentials);
+
+      const realmId = faker.internet.userName().toLowerCase();
+      const realmName = faker.internet.userName().toLowerCase();
+      const realm = await this.kcAdminClient.realms.create({
+        id: realmId,
+        realm: realmName,
+      });
+      expect(realm.realmName).to.be.equal(realmName);
+      this.currentRealmId = realmId;
+      this.currentRealmName = realmName;
+    });
+
+    it('get users management permissions', async () => {
+      const managementPermissions = await this.kcAdminClient.realms.getUsersManagementPermissions(
+        {
+          realm: this.currentRealmName,
+        },
+      );
+      expect(managementPermissions).to.be.ok;
+    });
+
+    it('enable users management permissions', async () => {
+      const managementPermissions = await this.kcAdminClient.realms.updateUsersManagementPermissions(
+        {
+          realm: this.currentRealmName,
+          enabled: true,
+        },
+      );
+      expect(managementPermissions).to.include({enabled: true});
     });
 
     after(async () => {

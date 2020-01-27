@@ -98,6 +98,8 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get the top-level representation of the realm (`GET /{realm}`)
 - Update the top-level information of the realm (`PUT /{realm}`)
 - Delete the realm (`DELETE /{realm}`)
+- Get users management permissions
+- Enable users management permissions
 
 ### [Role](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
 

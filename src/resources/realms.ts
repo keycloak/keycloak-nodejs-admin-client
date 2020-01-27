@@ -76,17 +76,18 @@ export class Realms extends Resource {
   });
 
   /**
-   * User management permissions
+   * Users management permissions
    */
-  public getUserManagementPermissions = this.makeRequest<{realm: string}, void>(
-    {
-      method: 'GET',
-      path: '/{realm}/users-management-permissions',
-      urlParamKeys: ['realm'],
-    },
-  );
+  public getUsersManagementPermissions = this.makeRequest<
+    {realm: string},
+    void
+  >({
+    method: 'GET',
+    path: '/{realm}/users-management-permissions',
+    urlParamKeys: ['realm'],
+  });
 
-  public updateUserManagementPermissions = this.makeRequest<
+  public updateUsersManagementPermissions = this.makeRequest<
     {realm: string; enabled: boolean},
     void
   >({
