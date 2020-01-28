@@ -430,6 +430,7 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
     urlParamKeys: ['id', 'type', 'permissionId'],
+    catchNotFound: true,
   });
 
   public updatePermission = this.makeUpdateRequest<
@@ -472,6 +473,7 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/policy/{type}/{policyId}',
     urlParamKeys: ['id', 'type', 'policyId'],
+    catchNotFound: true,
   });
 
   constructor(client: KeycloakAdminClient) {

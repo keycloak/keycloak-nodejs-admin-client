@@ -942,6 +942,13 @@ describe('Authorization: Permission and Policy Management', () => {
       policyId: this.currentPermissionId,
       realm: this.currentRealm,
     });
+    const permission = await this.kcAdminClient.clients.getPermission({
+      id: this.currentClient.id,
+      type: 'scope',
+      realm: this.currentRealm,
+      permissionId: this.currentPermissionId,
+    });
+    expect(permission).to.be.null;
   });
 
   it('should delete group policy', async () => {
@@ -950,6 +957,13 @@ describe('Authorization: Permission and Policy Management', () => {
       policyId: this.currentPolicyId,
       realm: this.currentRealm,
     });
+    const policy = await this.kcAdminClient.clients.getPolicy({
+      id: this.currentClient.id,
+      policyId: this.currentPolicyId,
+      type: 'group',
+      realm: this.currentRealm,
+    });
+    expect(policy).to.be.null;
   });
 
   after(async () => {
