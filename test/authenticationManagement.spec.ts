@@ -88,26 +88,10 @@ describe('Authentication management', function() {
         {
           ...requiredAction,
           enabled: true,
-          priority: 30,
+          priority: 10,
         },
       );
       expect(response).to.be.empty;
-    });
-
-    it('should raise required action priority', async () => {
-      const requiredAction = await this.kcAdminClient.authenticationManagement.getRequiredActionForAlias(
-        {alias: this.requiredActionProvider.providerId},
-      );
-      const response = await this.kcAdminClient.authenticationManagement.raiseRequiredActionPriority(
-        {alias: this.requiredActionProvider.providerId},
-      );
-      expect(response).to.be.empty;
-      const requiredActionUpdated = await this.kcAdminClient.authenticationManagement.getRequiredActionForAlias(
-        {alias: this.requiredActionProvider.providerId},
-      );
-      expect(requiredActionUpdated.priority).to.be.lessThan(
-        requiredAction.priority,
-      );
     });
 
     it('should lower required action priority', async () => {
@@ -122,6 +106,22 @@ describe('Authentication management', function() {
         {alias: this.requiredActionProvider.providerId},
       );
       expect(requiredActionUpdated.priority).to.be.greaterThan(
+        requiredAction.priority,
+      );
+    });
+
+    it('should raise required action priority', async () => {
+      const requiredAction = await this.kcAdminClient.authenticationManagement.getRequiredActionForAlias(
+        {alias: this.requiredActionProvider.providerId},
+      );
+      const response = await this.kcAdminClient.authenticationManagement.raiseRequiredActionPriority(
+        {alias: this.requiredActionProvider.providerId},
+      );
+      expect(response).to.be.empty;
+      const requiredActionUpdated = await this.kcAdminClient.authenticationManagement.getRequiredActionForAlias(
+        {alias: this.requiredActionProvider.providerId},
+      );
+      expect(requiredActionUpdated.priority).to.be.lessThan(
         requiredAction.priority,
       );
     });
