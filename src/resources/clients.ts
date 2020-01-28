@@ -410,7 +410,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   /**
-   * Fine Grain Permissions
+   * Authorization: Permission and Policy Management
    */
 
   public createPermission = this.makeRequest<

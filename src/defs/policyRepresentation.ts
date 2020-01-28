@@ -1,3 +1,5 @@
+import GroupRepresentation from './groupRepresentation';
+
 /**
  * https://www.keycloak.org/docs-api/4.1/rest-api/#_policyrepresentation
  */
@@ -25,4 +27,5 @@ export default interface PolicyRepresentation {
   resources?: string[];
   scopes?: string[];
   type?: string;
+  groups?: GroupRepresentation[];
 }
