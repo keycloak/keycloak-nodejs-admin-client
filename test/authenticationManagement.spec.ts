@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
+import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 const expect = chai.expect;
 
 declare module 'mocha' {
@@ -43,6 +44,12 @@ describe('Authentication management', function() {
    * Required Actions
    */
   describe('Required Actions', () => {
+    it('should delete required action by alias', async () => {
+      await this.kcAdminClient.authenticationManagement.deleteRequiredAction({
+        alias: RequiredActionAlias.UPDATE_PROFILE,
+      });
+    });
+
     it('should get unregistered required actions', async () => {
       const unregisteredReqActions = await this.kcAdminClient.authenticationManagement.getUnregisteredRequiredActions();
       expect(unregisteredReqActions).to.be.an('array');
@@ -80,10 +87,8 @@ describe('Authentication management', function() {
         {alias: this.requiredActionProvider.providerId},
         {
           ...requiredAction,
-          enabled: false,
-          defaultAction: false,
+          enabled: true,
           priority: 30,
-          config: {},
         },
       );
       expect(response).to.be.empty;
@@ -119,12 +124,6 @@ describe('Authentication management', function() {
       expect(requiredActionUpdated.priority).to.be.greaterThan(
         requiredAction.priority,
       );
-    });
-
-    it('should delete required action by alias', async () => {
-      await this.kcAdminClient.authenticationManagement.deleteRequiredAction({
-        alias: this.requiredActionProvider.providerId,
-      });
     });
   });
 });
