@@ -1,17 +1,22 @@
-import Resource from './resource';
-import ClientRepresentation from '../defs/clientRepresentation';
 import {KeycloakAdminClient} from '../client';
+import ClientRepresentation from '../defs/clientRepresentation';
+import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
+import CredentialRepresentation from '../defs/credentialRepresentation';
+import MappingsRepresentation from '../defs/mappingsRepresentation';
+import PolicyRepresentation from '../defs/policyRepresentation';
+import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
-import CredentialRepresentation from '../defs/credentialRepresentation';
-import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
-import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
-import MappingsRepresentation from '../defs/mappingsRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
+import Resource from './resource';
 
 export interface ClientQuery {
   clientId?: string;
   viewableOnly?: boolean;
+}
+
+export interface PolicyQuery {
+  name: string;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -395,16 +400,77 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getSessionCount = this.makeRequest<
     {id: string},
-    { "count": number }
+    {"count": number}
   >({
     method: 'GET',
     path: '/{id}/session-count',
     urlParamKeys: ['id'],
   });
 
+  /**
+   * Policy
+   */
+  public findOneUserPolicy = this.makeRequest<
+    {id: string, policyQuery: PolicyQuery, policy: PolicyRepresentation},
+    PolicyRepresentation
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/policy/user',
+    urlParamKeys: ['id'],
+  });
+
+  public updateUserPolicy = this.makeRequest<
+    {id: string, policyId: string, policy: PolicyRepresentation},
+    void
+  >({
+    method: 'PUT',
+    path: '{id}/authz/resource-server/policy/user/{policyId}',
+    urlParamKeys: ['id', 'policyId'],
+  });
+
+  public createUserPolicy = this.makeRequest<
+    {id: string, policy: PolicyRepresentation},
+    PolicyRepresentation
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/policy/user',
+    urlParamKeys: ['id'],
+  });
+
+  public async createOrUpdateUserPolicy(id: string, policyName: string, policy: PolicyRepresentation): Promise<PolicyRepresentation> {
+    const policyFound = await this.findOneUserPolicy({id: id, policyQuery: {name: policyName}, policy});
+    if (policyFound) {
+      await this.updateUserPolicy({id: id, policyId: policyFound.id, policy: policy})
+      return this.findOneUserPolicy({id: id, policyQuery: {name: policyName}, policy});
+    } else {
+      return this.createUserPolicy({id: id, policy});
+    }
+  }
+
+  /**
+   * Scopes
+   */
+  public listScope = this.makeRequest<
+    {id: string, ressourceName: string},
+    Record<string, string>
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/resource/{ressourceName}/scopes',
+    urlParamKeys: ['id', 'ressourceName'],
+  });
+
+  public updateScopePermission = this.makeRequest<
+    {id: string, scopePermissionId: string, scopePermissionName: string, policy: PolicyRepresentation},
+    PolicyRepresentation
+  >({
+    method: 'PUT',
+    path: '{id}/authz/resource-server/permission/scope/{scopePermissionId}`',
+    urlParamKeys: ['id', 'scopePermissionId'],
+  });
+
   public getOfflineSessionCount = this.makeRequest<
     {id: string},
-    { "count": number }
+    {"count": number}
   >({
     method: 'GET',
     path: '/{id}/offline-session-count',

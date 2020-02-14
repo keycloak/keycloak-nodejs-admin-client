@@ -1,11 +1,10 @@
-import Resource from './resource';
-import GroupRepresentation from '../defs/groupRepresentation';
 import {KeycloakAdminClient} from '../client';
-import UserRepresentation from '../defs/userRepresentation';
+import GroupRepresentation from '../defs/groupRepresentation';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {
-  RoleMappingPayload,
-} from '../defs/roleRepresentation';
+import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import UserRepresentation from '../defs/userRepresentation';
+import Resource from './resource';
 
 export interface GroupQuery {
   first?: number;
@@ -173,6 +172,18 @@ export class Groups extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
+  /**
+   * Authorization permissions
+   */
+  public updatePermission = this.makeRequest<
+    {id: string, management: ManagementPermissionReference},
+    ManagementPermissionReference
+  >({
+    method: 'UPDATE',
+    path: '{id}/management/permissions',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
