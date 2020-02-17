@@ -177,12 +177,22 @@ export class Groups extends Resource<{realm?: string}> {
   /**
    * Authorization permissions
    */
-  public updatePermission = this.makeRequest<
-    {id: string, management: ManagementPermissionReference},
+  public updatePermission = this.makeUpdateRequest<
+    {id: string},
+    ManagementPermissionReference,
     ManagementPermissionReference
   >({
-    method: 'UPDATE',
-    path: '{id}/management/permissions',
+    method: 'PUT',
+    path: '/{id}/management/permissions',
+    urlParamKeys: ['id'],
+  });
+
+  public listPermissions = this.makeRequest<
+    {id: string},
+    ManagementPermissionReference
+  >({
+    method: 'GET',
+    path: '/{id}/management/permissions',
     urlParamKeys: ['id'],
   });
 

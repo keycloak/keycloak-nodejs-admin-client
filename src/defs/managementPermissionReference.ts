@@ -1,5 +1,5 @@
 export interface ManagementPermissionReference {
-    enabled: boolean;
-    ressource: string;
-    scopePermissions: Record<string, string>;
+    enabled?: boolean;
+    resource?: string;
+    scopePermissions?: Record<string, string>;
 }

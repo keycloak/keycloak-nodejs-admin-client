@@ -1,11 +1,13 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import {pick, omit} from 'lodash';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
 import faker from 'faker';
-import UserRepresentation from '../src/defs/userRepresentation';
+import {omit, pick} from 'lodash';
+import {KeycloakAdminClient} from '../src/client';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 import GroupRepresentation from '../src/defs/groupRepresentation';
+import PolicyRepresentation, {DecisionStrategy, Logic} from '../src/defs/policyRepresentation';
+import UserRepresentation from '../src/defs/userRepresentation';
+import {credentials} from './constants';
 
 const expect = chai.expect;
 
@@ -13,12 +15,15 @@ declare module 'mocha' {
   // tslint:disable-next-line:interface-name
   interface ISuiteCallbackContext {
     kcAdminClient?: KeycloakAdminClient;
+    managementClient?: ClientRepresentation;
     currentGroup?: GroupRepresentation;
     currentUser?: UserRepresentation;
+    currentUserPolicy: PolicyRepresentation;
+    currentPolicy: PolicyRepresentation;
   }
 }
 
-describe('Group user integration', function() {
+describe('Group user integration', function () {
   before(async () => {
     const groupName = faker.internet.userName();
     this.kcAdminClient = new KeycloakAdminClient();
@@ -88,5 +93,99 @@ describe('Group user integration', function() {
       id: this.currentUser.id,
     });
     expect(groups).to.be.eql([]);
+  });
+
+  /**
+  * Authorization permissions
+  */
+  describe('authorization permissions', () => {
+    before(async () => {
+      const clients = await this.kcAdminClient.clients.find();
+      this.managementClient = clients.find(client => client.clientId === 'realm-management')
+    });
+
+    after(async () => {
+      await this.kcAdminClient.clients.delPolicy({
+        id: this.managementClient.id,
+        policyId: this.currentUserPolicy.id
+      });
+    });
+
+    it('Enable permissions', async () => {
+      const permission = await this.kcAdminClient.groups.updatePermission({id: this.currentGroup.id}, {enabled: true});
+      expect(permission).to.include({
+        enabled: true,
+      });
+    });
+
+    it('list of users in policy management', async () => {
+      const userPolicyData: PolicyRepresentation = {
+        type: 'user',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        name: `policy.manager.${this.currentGroup.id}`,
+        users: [this.currentUser.id],
+      };
+      this.currentUserPolicy = await this.kcAdminClient.clients.createUserPolicy({id: this.managementClient.id}, userPolicyData)
+
+      expect(this.currentUserPolicy).to.include({
+        type: 'user',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        name: `policy.manager.${this.currentGroup.id}`
+      });
+    });
+
+    it('list the roles available for this group', async () => {
+      const permissions = await this.kcAdminClient.groups.listPermissions({id: this.currentGroup.id});
+
+      expect(permissions.scopePermissions).to.be.an('object');
+
+      const scopes = await this.kcAdminClient.clients.listScopes({
+        id: this.managementClient.id,
+        ressourceName: permissions.resource,
+      });
+
+      expect(scopes).to.have.length(5);
+
+      // Search for the id of the management role
+      const roleId = scopes.find(scope => scope.name === 'manage').id;
+
+      const userPolicy = await this.kcAdminClient.clients.findByName({id: this.managementClient.id, name: `policy.manager.${this.currentGroup.id}`})
+
+      expect(userPolicy).to.deep.include({
+        name: `policy.manager.${this.currentGroup.id}`
+      });
+
+      // Update of the role with the above modifications
+      const policyData: PolicyRepresentation = {
+        id: permissions.scopePermissions.manage,
+        name: `manage.permission.group.${this.currentGroup.id}`,
+        type: 'scope',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        resources: [permissions.resource],
+        scopes: [roleId],
+        policies: [userPolicy.id],
+      };
+      await this.kcAdminClient.clients.updateScopePermission(
+        {
+          id: this.managementClient.id,
+          scopePermissionId: permissions.scopePermissions.manage,
+        },
+        policyData,
+      );
+      this.currentPolicy = await this.kcAdminClient.clients.findOneScopePermission({
+        id: this.managementClient.id,
+        scopePermissionId: permissions.scopePermissions.manage,
+      })
+      expect(this.currentPolicy).to.deep.include({
+        id: permissions.scopePermissions.manage,
+        name: `manage.permission.group.${this.currentGroup.id}`,
+        type: 'scope',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+      });
+    });
   });
 });

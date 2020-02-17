@@ -2,6 +2,7 @@ import {KeycloakAdminClient} from '../client';
 import ClientRepresentation from '../defs/clientRepresentation';
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import PolicyRepresentation from '../defs/policyRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
@@ -400,7 +401,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getSessionCount = this.makeRequest<
     {id: string},
-    {"count": number}
+    {'count': number}
   >({
     method: 'GET',
     path: '/{id}/session-count',
@@ -410,17 +411,18 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Policy
    */
-  public findOneUserPolicy = this.makeRequest<
-    {id: string, policyQuery: PolicyQuery, policy: PolicyRepresentation},
+  public findByName = this.makeRequest<
+    {id: string, name: string},
     PolicyRepresentation
   >({
     method: 'GET',
-    path: '{id}/authz/resource-server/policy/user',
+    path: '{id}/authz/resource-server/policy/search',
     urlParamKeys: ['id'],
   });
 
-  public updateUserPolicy = this.makeRequest<
-    {id: string, policyId: string, policy: PolicyRepresentation},
+  public updateUserPolicy = this.makeUpdateRequest<
+    {id: string, policyId: string},
+    PolicyRepresentation,
     void
   >({
     method: 'PUT',
@@ -428,8 +430,9 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'policyId'],
   });
 
-  public createUserPolicy = this.makeRequest<
-    {id: string, policy: PolicyRepresentation},
+  public createUserPolicy = this.makeUpdateRequest<
+    {id: string},
+    PolicyRepresentation,
     PolicyRepresentation
   >({
     method: 'POST',
@@ -437,34 +440,67 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public async createOrUpdateUserPolicy(id: string, policyName: string, policy: PolicyRepresentation): Promise<PolicyRepresentation> {
-    const policyFound = await this.findOneUserPolicy({id: id, policyQuery: {name: policyName}, policy});
+  public delPolicy = this.makeRequest<
+    {id: string, policyId: string},
+    void
+  >({
+    method: 'Delete',
+    path: '{id}/authz/resource-server/policy/{policyId}',
+    urlParamKeys: ['id', 'policyId'],
+  });
+
+  public async createOrUpdateUserPolicy(
+    payload: {id: string; policyName: string; policy: PolicyRepresentation}
+  ): Promise<PolicyRepresentation> {
+    const policyFound = await this.findByName(
+      {id: payload.id, name: payload.policyName}
+    );
     if (policyFound) {
-      await this.updateUserPolicy({id: id, policyId: policyFound.id, policy: policy})
-      return this.findOneUserPolicy({id: id, policyQuery: {name: policyName}, policy});
+      await this.updateUserPolicy({id: payload.id, policyId: policyFound.id}, payload.policy);
+      return this.findByName({id: payload.id, name: payload.policyName});
     } else {
-      return this.createUserPolicy({id: id, policy});
+      return this.createUserPolicy({id: payload.id}, payload.policy);
     }
   }
 
   /**
    * Scopes
    */
-  public listScope = this.makeRequest<
+  public listScopes = this.makeRequest<
     {id: string, ressourceName: string},
-    Record<string, string>
+    {id: string, name: string}[]
   >({
     method: 'GET',
-    path: '{id}/authz/resource-server/resource/{ressourceName}/scopes',
+    path: '/{id}/authz/resource-server/resource/{ressourceName}/scopes',
     urlParamKeys: ['id', 'ressourceName'],
   });
 
-  public updateScopePermission = this.makeRequest<
-    {id: string, scopePermissionId: string, scopePermissionName: string, policy: PolicyRepresentation},
-    PolicyRepresentation
+  public updateScopePermission = this.makeUpdateRequest<
+    {id: string, scopePermissionId: string},
+    PolicyRepresentation,
+    void
   >({
     method: 'PUT',
-    path: '{id}/authz/resource-server/permission/scope/{scopePermissionId}`',
+    path: '/{id}/authz/resource-server/permission/scope/{scopePermissionId}',
+    urlParamKeys: ['id', 'scopePermissionId'],
+  });
+
+  public delScopePermission = this.makeUpdateRequest<
+    {id: string, scopePermissionId: string},
+    PolicyRepresentation,
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/authz/resource-server/permission/scope/{scopePermissionId}',
+    urlParamKeys: ['id', 'scopePermissionId'],
+  });
+
+  public findOneScopePermission = this.makeRequest<
+    {id: string, scopePermissionId: string},
+    PolicyRepresentation
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/permission/scope/{scopePermissionId}',
     urlParamKeys: ['id', 'scopePermissionId'],
   });
 
@@ -474,6 +510,19 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/offline-session-count',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * Authorization permissions
+   */
+  public updatePermission = this.makeUpdateRequest<
+    {id: string},
+    ManagementPermissionReference,
+    ManagementPermissionReference
+  >({
+    method: 'PUT',
+    path: '/{id}/management/permissions',
     urlParamKeys: ['id'],
   });
 
