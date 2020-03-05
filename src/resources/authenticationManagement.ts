@@ -27,6 +27,7 @@ export class AuthenticationManagement extends Resource {
     method: 'GET',
     path: '/required-actions/{alias}',
     urlParamKeys: ['alias'],
+    catchNotFound: true,
   });
 
   // Update required action
