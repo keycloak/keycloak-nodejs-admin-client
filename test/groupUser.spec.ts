@@ -119,13 +119,14 @@ describe('Group user integration', function () {
 
     it('list of users in policy management', async () => {
       const userPolicyData: PolicyRepresentation = {
+        id: this.managementClient.id,
         type: 'user',
         logic: Logic.POSITIVE,
         decisionStrategy: DecisionStrategy.UNANIMOUS,
         name: `policy.manager.${this.currentGroup.id}`,
         users: [this.currentUser.id],
       };
-      this.currentUserPolicy = await this.kcAdminClient.clients.createUserPolicy({id: this.managementClient.id}, userPolicyData)
+      this.currentUserPolicy = await this.kcAdminClient.clients.createPolicy(userPolicyData)
 
       expect(this.currentUserPolicy).to.include({
         type: 'user',
@@ -140,9 +141,9 @@ describe('Group user integration', function () {
 
       expect(permissions.scopePermissions).to.be.an('object');
 
-      const scopes = await this.kcAdminClient.clients.listScopes({
+      const scopes = await this.kcAdminClient.clients.listScopesByResource({
         id: this.managementClient.id,
-        ressourceName: permissions.resource,
+        resourceName: permissions.resource,
       });
 
       expect(scopes).to.have.length(5);
@@ -167,16 +168,18 @@ describe('Group user integration', function () {
         scopes: [roleId],
         policies: [userPolicy.id],
       };
-      await this.kcAdminClient.clients.updateScopePermission(
+      await this.kcAdminClient.clients.updatePermission(
         {
           id: this.managementClient.id,
-          scopePermissionId: permissions.scopePermissions.manage,
+          permissionId: permissions.scopePermissions.manage,
+          type: 'scope'
         },
         policyData,
       );
-      this.currentPolicy = await this.kcAdminClient.clients.findOneScopePermission({
+      this.currentPolicy = await this.kcAdminClient.clients.findOnePermission({
         id: this.managementClient.id,
-        scopePermissionId: permissions.scopePermissions.manage,
+        permissionId: permissions.scopePermissions.manage,
+        type: 'scope'
       })
       expect(this.currentPolicy).to.deep.include({
         id: permissions.scopePermissions.manage,
