@@ -101,9 +101,8 @@ describe('Group user integration', function () {
   describe('authorization permissions', () => {
     before(async () => {
       const clients = await this.kcAdminClient.clients.find();
-      this.managementClient = clients.find(client => client.clientId === 'realm-management')
+      this.managementClient = clients.find(client => client.clientId === 'master-realm')
     });
-
     after(async () => {
       await this.kcAdminClient.clients.delPolicy({
         id: this.managementClient.id,
