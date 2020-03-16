@@ -430,9 +430,10 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'type', 'policyId'],
   });
 
-  public createPolicy = this.makeRequest<
+  public createPolicy = this.makeUpdateRequest<
+    {id: string, type: string},
     PolicyRepresentation,
-    {id: string; type: string}
+    PolicyRepresentation
   >({
     method: 'POST',
     path: '/{id}/authz/resource-server/policy/{type}',
@@ -466,7 +467,7 @@ export class Clients extends Resource<{realm?: string}> {
       await this.updatePolicy({id: payload.id, policyId: policyFound.id, type: payload.policy.type}, payload.policy);
       return this.findByName({id: payload.id, name: payload.policyName});
     } else {
-      await this.createPolicy({...payload.policy, id: payload.id});
+      return this.createPolicy({id: payload.id, type: payload.policy.type}, payload.policy);
     }
   }
 

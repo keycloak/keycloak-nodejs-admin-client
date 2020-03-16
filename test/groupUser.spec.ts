@@ -119,14 +119,13 @@ describe('Group user integration', function () {
 
     it('list of users in policy management', async () => {
       const userPolicyData: PolicyRepresentation = {
-        id: this.managementClient.id,
         type: 'user',
         logic: Logic.POSITIVE,
         decisionStrategy: DecisionStrategy.UNANIMOUS,
         name: `policy.manager.${this.currentGroup.id}`,
         users: [this.currentUser.id],
       };
-      this.currentUserPolicy = await this.kcAdminClient.clients.createPolicy(userPolicyData)
+      this.currentUserPolicy = await this.kcAdminClient.clients.createPolicy({id: this.managementClient.id, type: userPolicyData.type}, userPolicyData)
 
       expect(this.currentUserPolicy).to.include({
         type: 'user',
