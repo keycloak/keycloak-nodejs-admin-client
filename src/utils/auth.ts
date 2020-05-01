@@ -9,6 +9,7 @@ export interface Credentials {
   grantType: string;
   clientId: string;
   clientSecret?: string;
+  totp?: string;
 }
 
 export interface Settings {
@@ -43,6 +44,7 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     password: credentials.password,
     grant_type: credentials.grantType,
     client_id: credentials.clientId,
+    totp: credentials.totp,
   });
   const config: AxiosRequestConfig = {
     ...settings.requestConfig,
