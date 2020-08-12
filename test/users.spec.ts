@@ -114,7 +114,7 @@ describe('Users', function () {
   });
 
   /**
-   * exeute actions email
+   * execute actions email
    */
   it('should send user execute actions email', async () => {
     if (process.env.CI) return; // not possible inside CI
