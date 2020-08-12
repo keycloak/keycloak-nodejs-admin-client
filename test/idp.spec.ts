@@ -90,9 +90,9 @@ describe('Identity providers', () => {
     await kcAdminClient.identityProviders.update(
       {alias: currentIdpAlias},
       {
-        // alias and internalId are requried to update
+        // alias and providerId are required to update
         alias: idp.alias,
-        internalId: idp.internalId,
+        providerId: idp.providerId,
         displayName: 'test',
       },
     );
