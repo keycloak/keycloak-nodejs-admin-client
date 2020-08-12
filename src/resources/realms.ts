@@ -9,7 +9,7 @@ import {KeycloakAdminClient} from '../client';
 export class Realms extends Resource {
   /**
    * Realm
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_realms_admin_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_realms_admin_resource
    */
 
   public find = this.makeRequest<{}, RealmRepresentation[]>({

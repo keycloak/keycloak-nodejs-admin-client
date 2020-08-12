@@ -127,7 +127,7 @@ export class Users extends Resource<{realm?: string}> {
 
   /**
    * Client role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
    */
 
   public listClientRoleMappings = this.makeRequest<
