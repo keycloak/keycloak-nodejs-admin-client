@@ -3,7 +3,6 @@
 ## The team
 
 - William Chang [@wwwy3y3](https://github.com/wwwy3y3)
-- Karl Horky [@karlhorky](https://github.com/karlhorky)
 - Michael Schmid [@Schnitzel](https://github.com/Schnitzel)
 - Alex [@zagaria](https://github.com/zagaria)
 
