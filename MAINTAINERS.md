@@ -5,7 +5,6 @@
 - William Chang [@wwwy3y3](https://github.com/wwwy3y3)
 - Karl Horky [@karlhorky](https://github.com/karlhorky)
 - Michael Schmid [@Schnitzel](https://github.com/Schnitzel)
-- Stian Thorgersen [@stianst](https://github.com/stianst)
 - Alex [@zagaria](https://github.com/zagaria)
 
 ## Originally developed by
