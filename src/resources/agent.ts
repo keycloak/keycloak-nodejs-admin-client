@@ -167,9 +167,12 @@ export class Agent {
       ...this.requestConfig,
       method,
       url,
-      headers: {
-        Authorization: `bearer ${this.client.getAccessToken()}`,
-      },
+    };
+
+    // Headers
+    requestConfig.headers = {
+      ...requestConfig.headers,
+      Authorization: `bearer ${this.client.getAccessToken()}`,
     };
 
     // Put payload into querystring if method is GET
@@ -184,9 +187,9 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-            ...requestConfig.params,
-            ...queryParams,
-          }
+          ...requestConfig.params,
+          ...queryParams,
+        }
         : queryParams;
     }
 
@@ -209,7 +212,7 @@ export class Agent {
           // throw an error to let users know the response is not expected
           throw new Error(
             `resourceId is not found in Location header from request: ${
-              res.config.url
+            res.config.url
             }`,
           );
         }
