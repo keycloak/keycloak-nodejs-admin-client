@@ -23,6 +23,7 @@
     "bluebird": "^3.5.1",
     "camelize": "^1.0.0",
     "debug": "^3.1.0",
+    "keycloak-js": "^11.0.2",
     "lodash": "^4.17.10",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"

@@ -10,6 +10,7 @@ import {IdentityProviders} from './resources/identityProviders';
 import {Components} from './resources/components';
 import {AuthenticationManagement} from './resources/authenticationManagement';
 import {AxiosRequestConfig} from 'axios';
+import Keycloak, {KeycloakConfig, KeycloakInitOptions, KeycloakInstance} from 'keycloak-js';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -36,6 +37,8 @@ export class KeycloakAdminClient {
   public refreshToken: string;
   private requestConfig?: AxiosRequestConfig;
 
+  private keycloak: KeycloakInstance;
+
   constructor(connectionConfig?: ConnectionConfig) {
     this.baseUrl =
       (connectionConfig && connectionConfig.baseUrl) || defaultBaseUrl;
@@ -53,6 +56,7 @@ export class KeycloakAdminClient {
     this.identityProviders = new IdentityProviders(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
+
   }
 
   public async auth(credentials: Credentials) {
@@ -66,11 +70,25 @@ export class KeycloakAdminClient {
     this.refreshToken = refreshToken;
   }
 
+  public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
+    this.keycloak = Keycloak(config);
+    await this.keycloak.init(init);
+    this.baseUrl = this.keycloak.authServerUrl;
+  }
+
   public setAccessToken(token: string) {
     this.accessToken = token;
   }
 
-  public getAccessToken() {
+  public async getAccessToken() {
+    if (this.keycloak) {
+      try {
+        await this.keycloak.updateToken(5);
+      } catch (error) {
+        this.keycloak.login();
+      }
+      return this.keycloak.token;
+    }
     return this.accessToken;
   }
 
