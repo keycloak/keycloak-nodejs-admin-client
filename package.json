@@ -10,7 +10,7 @@
     "clean": "rimraf lib",
     "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
     "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
-    "test": "DEBUG=kc-admin mocha --require ts-node/register --recursive \"test/**/*.spec.ts\"",
+    "test": "DEBUG=kc-admin mocha --require \"test/setup.js\" --require ts-node/register --recursive \"test/**/*.spec.ts\"",
     "test:grep": "DEBUG=kc-admin mocha --require ts-node/register",
     "coverage": "nyc npm run test",
     "watch": "npm run build -- --watch",
@@ -25,6 +25,7 @@
     "debug": "^3.1.0",
     "keycloak-js": "^11.0.2",
     "lodash": "^4.17.10",
+    "node-window-polyfill": "^1.0.0",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"
   },
