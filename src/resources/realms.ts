@@ -1,4 +1,5 @@
 import Resource from './resource';
+import AdminEventRepresentation from '../defs/adminEventRepresentation';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
@@ -72,6 +73,44 @@ export class Realms extends Resource {
       'max',
       'type',
       'user',
+    ],
+  });
+
+  /**
+   * Get admin events Returns all admin events, or filters events based on URL query parameters listed here
+   */
+  public findAdminEvents = this.makeRequest<
+    {
+      realm: string;
+      authClient?: string;
+      authIpAddress?: string;
+      authRealm?: string;
+      authUser?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+      first?: number;
+      max?: number;
+      operationTypes?: string;
+      resourcePath?: string;
+      resourceTypes?: string;
+    },
+    AdminEventRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{realm}/admin-events',
+    urlParamKeys: ['realm'],
+    queryParamKeys: [
+      'authClient',
+      'authIpAddress',
+      'authRealm',
+      'authUser',
+      'dateFrom',
+      'dateTo',
+      'max',
+      'first',
+      'operationTypes',
+      'resourcePath',
+      'resourceTypes',
     ],
   });
 
