@@ -10,6 +10,8 @@ import MappingsRepresentation from '../defs/mappingsRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
 
 export interface ClientQuery {
+  first?: number;
+  max?: number;
   clientId?: string;
   viewableOnly?: boolean;
 }
@@ -395,7 +397,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getSessionCount = this.makeRequest<
     {id: string},
-    { "count": number }
+    {'count': number}
   >({
     method: 'GET',
     path: '/{id}/session-count',
@@ -404,7 +406,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getOfflineSessionCount = this.makeRequest<
     {id: string},
-    { "count": number }
+    {'count': number}
   >({
     method: 'GET',
     path: '/{id}/offline-session-count',

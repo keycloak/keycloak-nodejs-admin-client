@@ -1,5 +1,5 @@
 /**
- * https://www.keycloak.org/docs-api/4.1/rest-api/#_credentialrepresentation
+ * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_credentialrepresentation
  */
 
 export default interface CredentialRepresentation {
