@@ -176,7 +176,7 @@ describe('Realms', function () {
     it('deletes session', async () => {
       await this.kcAdminClient.realms.deleteSession({
         realm: this.currentRealmName,
-        session: faker.internet.userName().toLowerCase(),
+        session: "",
       });
     });
 
