@@ -173,13 +173,6 @@ describe('Realms', function () {
       expect(logout).to.be.ok;
     });
 
-    it('deletes session', async () => {
-      await this.kcAdminClient.realms.deleteSession({
-        realm: this.currentRealmName,
-        session: "",
-      });
-    });
-
     after(async () => {
       await this.kcAdminClient.realms.del({realm: this.currentRealmName});
       const realm = await this.kcAdminClient.realms.findOne({
