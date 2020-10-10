@@ -182,7 +182,7 @@ describe('Realms', function () {
           session: faker.internet.userName().toLowerCase(),
         },
       );
-      expect(deletedSession).to.be.ok;
+      expect(deletedSession).to.be.null;
     });
 
     after(async () => {
