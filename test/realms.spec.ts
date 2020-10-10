@@ -167,22 +167,17 @@ describe('Realms', function () {
     });
 
     it('log outs all sessions', async () => {
-      const logout = await this.kcAdminClient.realms.logoutAll(
-        {
-          realm: this.currentRealmName,
-        },
-      );
+      const logout = await this.kcAdminClient.realms.logoutAll({
+        realm: this.currentRealmName,
+      });
       expect(logout).to.be.ok;
     });
 
     it('deletes session', async () => {
-      const deletedSession = await this.kcAdminClient.realms.deleteSession(
-        {
-          realm: this.currentRealmName,
-          session: faker.internet.userName().toLowerCase(),
-        },
-      );
-      expect(deletedSession).to.be.null;
+      await this.kcAdminClient.realms.deleteSession({
+        realm: this.currentRealmName,
+        session: faker.internet.userName().toLowerCase(),
+      });
     });
 
     after(async () => {
