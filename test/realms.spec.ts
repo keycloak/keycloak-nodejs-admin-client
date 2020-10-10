@@ -14,7 +14,7 @@ declare module 'mocha' {
   }
 }
 
-describe('Realms', function() {
+describe('Realms', function () {
   before(async () => {
     this.kcAdminClient = new KeycloakAdminClient();
     await this.kcAdminClient.auth(credentials);
@@ -72,7 +72,7 @@ describe('Realms', function() {
     expect(realm).to.be.null;
   });
 
-  describe('Realm Events', function() {
+  describe('Realm Events', function () {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
@@ -106,7 +106,7 @@ describe('Realms', function() {
     });
   });
 
-  describe('Realm Users Management Permissions', function() {
+  describe('Realm Users Management Permissions', function () {
     before(async () => {
       this.kcAdminClient = new KeycloakAdminClient();
       await this.kcAdminClient.auth(credentials);
@@ -149,4 +149,49 @@ describe('Realms', function() {
       expect(realm).to.be.null;
     });
   });
+
+  describe('Realm Session Management', function () {
+    before(async () => {
+      this.kcAdminClient = new KeycloakAdminClient();
+      await this.kcAdminClient.auth(credentials);
+
+      const realmId = faker.internet.userName().toLowerCase();
+      const realmName = faker.internet.userName().toLowerCase();
+      const realm = await this.kcAdminClient.realms.create({
+        id: realmId,
+        realm: realmName,
+      });
+      expect(realm.realmName).to.be.equal(realmName);
+      this.currentRealmId = realmId;
+      this.currentRealmName = realmName;
+    });
+
+    it('log outs all sessions', async () => {
+      const logout = await this.kcAdminClient.realms.logoutAll(
+        {
+          realm: this.currentRealmName,
+        },
+      );
+      expect(logout).to.be.ok;
+    });
+
+    it('deletes session', async () => {
+      const deletedSession = await this.kcAdminClient.realms.deleteSession(
+        {
+          realm: this.currentRealmName,
+          session: faker.internet.userName().toLowerCase(),
+        },
+      );
+      expect(deletedSession).to.be.ok;
+    });
+
+    after(async () => {
+      await this.kcAdminClient.realms.del({realm: this.currentRealmName});
+      const realm = await this.kcAdminClient.realms.findOne({
+        realm: this.currentRealmName,
+      });
+      expect(realm).to.be.null;
+    });
+  });
+
 });
