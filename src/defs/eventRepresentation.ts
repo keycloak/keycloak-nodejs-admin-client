@@ -1,3 +1,6 @@
+/**
+ * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_eventrepresentation
+ */
 import EventType from './eventTypes';
 
 export default interface EventRepresentation {

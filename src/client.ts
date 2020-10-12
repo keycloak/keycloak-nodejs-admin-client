@@ -9,6 +9,8 @@ import {ClientScopes} from './resources/clientScopes';
 import {IdentityProviders} from './resources/identityProviders';
 import {Components} from './resources/components';
 import {AuthenticationManagement} from './resources/authenticationManagement';
+import {ServerInfo} from './resources/serverInfo';
+import {WhoAmI} from './resources/whoAmI';
 import {AxiosRequestConfig} from 'axios';
 import Keycloak, {KeycloakConfig, KeycloakInitOptions, KeycloakInstance} from 'keycloak-js';
 
@@ -28,6 +30,8 @@ export class KeycloakAdminClient {
   public clientScopes: ClientScopes;
   public identityProviders: IdentityProviders;
   public components: Components;
+  public serverInfo: ServerInfo;
+  public whoAmI: WhoAmI;
   public authenticationManagement: AuthenticationManagement;
 
   // Members
@@ -35,9 +39,9 @@ export class KeycloakAdminClient {
   public realmName: string;
   public accessToken: string;
   public refreshToken: string;
-  private requestConfig?: AxiosRequestConfig;
+  public keycloak: KeycloakInstance;
 
-  private keycloak: KeycloakInstance;
+  private requestConfig?: AxiosRequestConfig;
 
   constructor(connectionConfig?: ConnectionConfig) {
     this.baseUrl =
@@ -56,7 +60,8 @@ export class KeycloakAdminClient {
     this.identityProviders = new IdentityProviders(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
-
+    this.serverInfo = new ServerInfo(this);
+    this.whoAmI = new WhoAmI(this);
   }
 
   public async auth(credentials: Credentials) {

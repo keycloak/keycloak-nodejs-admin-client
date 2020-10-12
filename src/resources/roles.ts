@@ -8,7 +8,7 @@ export class Roles extends Resource<{realm?: string}> {
    * Realm roles
    */
 
-  public find = this.makeRequest<void, RoleRepresentation[]>({
+  public find = this.makeRequest<{}, RoleRepresentation[]>({
     method: 'GET',
     path: '/roles',
   });
