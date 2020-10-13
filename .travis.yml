@@ -7,12 +7,30 @@ node_js:
   - "10"
   - "12"
 
+env:
+  - KC=7.0.1
+  - KC=8.0.2
+  - KC=9.0.3
+  - KC=10.0.2
+  - KC=11.0.2
+
+jobs:
+  allow_failures:
+    - env:
+      - KC=8.0.2
+    - env:
+      - KC=9.0.3
+    - env:
+      - KC=10.0.2
+    - env:
+      - KC=11.0.2
+
 services:
   - docker
 
 before_install:
-  - docker pull jboss/keycloak:7.0.1
-  - docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak:7.0.1
+  - docker pull jboss/keycloak:$KC
+  - docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak:$KC
   - docker ps -a
   - docker logs keycloak
   - sleep 30
