@@ -3,7 +3,6 @@
 ## The team
 
 - William Chang [@wwwy3y3](https://github.com/wwwy3y3)
-- Michael Schmid [@Schnitzel](https://github.com/Schnitzel)
 
 ## Originally developed by
 
