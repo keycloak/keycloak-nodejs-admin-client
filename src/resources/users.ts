@@ -308,7 +308,7 @@ export class Users extends Resource<{realm?: string}> {
    * list offline sessions associated with the user and client
    */
   public listOfflineSessions = this.makeRequest<
-    {id: string, clientId: string},
+    {id: string; clientId: string},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -319,10 +319,7 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * logout user from all sessions
    */
-  public logout = this.makeRequest<
-    {id: string},
-    void
-  >({
+  public logout = this.makeRequest<{id: string}, void>({
     method: 'POST',
     path: '/{id}/logout',
     urlParamKeys: ['id'],
@@ -343,14 +340,13 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * revoke consent and offline tokens for particular client from user
    */
-  public revokeConsent = this.makeRequest<
-    {id: string, clientId: string},
-    void
-  >({
-    method: 'DELETE',
-    path: '/{id}/consents/{clientId}',
-    urlParamKeys: ['id', 'clientId'],
-  });
+  public revokeConsent = this.makeRequest<{id: string; clientId: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/consents/{clientId}',
+      urlParamKeys: ['id', 'clientId'],
+    },
+  );
 
   constructor(client: KeycloakAdminClient) {
     super(client, {

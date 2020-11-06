@@ -378,7 +378,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Sessions
    */
   public listSessions = this.makeRequest<
-    {id: string, first?: number; max?: number},
+    {id: string; first?: number; max?: number},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -387,7 +387,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   public listOfflineSessions = this.makeRequest<
-    {id: string, first?: number; max?: number},
+    {id: string; first?: number; max?: number},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -395,10 +395,7 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public getSessionCount = this.makeRequest<
-    {id: string},
-    {'count': number}
-  >({
+  public getSessionCount = this.makeRequest<{id: string}, {count: number}>({
     method: 'GET',
     path: '/{id}/session-count',
     urlParamKeys: ['id'],
@@ -406,7 +403,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getOfflineSessionCount = this.makeRequest<
     {id: string},
-    {'count': number}
+    {count: number}
   >({
     method: 'GET',
     path: '/{id}/offline-session-count',
@@ -436,7 +433,7 @@ export class Clients extends Resource<{realm?: string}> {
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
     const protocolMapper = allProtocolMappers.find(
-      mapper => mapper.name === payload.name,
+      (mapper) => mapper.name === payload.name,
     );
     return protocolMapper ? protocolMapper : null;
   }
