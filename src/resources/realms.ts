@@ -76,6 +76,17 @@ export class Realms extends Resource {
   });
 
   /**
+   * Remove a specific user session.
+   */
+  public removeSession = this.makeRequest<{realm: string, sessionId: string}, void>({
+    method: 'GET',
+    path: '/{realm}/sessions/{session}',
+    urlParamKeys: ['realm','session'],
+    catchNotFound: true,
+  });
+
+
+  /**
    * Users management permissions
    */
   public getUsersManagementPermissions = this.makeRequest<
