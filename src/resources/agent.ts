@@ -211,9 +211,7 @@ export class Agent {
         if (!resourceId) {
           // throw an error to let users know the response is not expected
           throw new Error(
-            `resourceId is not found in Location header from request: ${res.config.url
-            res.config.url
-            }`,
+            `resourceId is not found in Location header from request: ${res.config.url}`,
           );
         }
 
