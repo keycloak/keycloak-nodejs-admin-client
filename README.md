@@ -100,6 +100,8 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete the realm (`DELETE /{realm}`)
 - Get users management permissions (`GET /{realm}/users-management-permissions`)
 - Enable users management permissions (`PUT /{realm}/users-management-permissions`)
+- Get events (`GET /{realm}/events`)
+- Get admin events (`GET /{realm}/admin-events`)
 
 ### [Role](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
 
