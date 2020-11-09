@@ -6,6 +6,7 @@
   "files": [
     "lib"
   ],
+  "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rimraf lib",
     "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
