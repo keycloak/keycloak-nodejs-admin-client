@@ -72,6 +72,7 @@ const keycloakIssuer = await Issuer.discover(
 
 const client = new keycloakIssuer.Client({
   client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  token_endpoint_auth_method: 'none', // to send only client_id in the header
 });
 
 // Use the grant type 'password'
