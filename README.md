@@ -38,6 +38,7 @@ await kcAdminClient.auth({
   password: 'wwwy3y3',
   grantType: 'password',
   clientId: 'admin-cli',
+  totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
 });
 
 // List all users
