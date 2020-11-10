@@ -135,6 +135,27 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  /**
+   * Sessions
+   */
+  public logoutAll = this.makeRequest<
+    {realm: string},
+    void
+  >({
+    method: 'POST',
+    path: '/{realm}/logout-all',
+    urlParamKeys: ['realm'],
+  });
+
+  public deleteSession = this.makeRequest<
+    {realm: string; session: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{realm}/sessions/{session}',
+    urlParamKeys: ['realm', 'session'],
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms',

@@ -178,4 +178,37 @@ describe('Realms', () => {
       expect(realm).to.be.null;
     });
   });
+
+  describe('Realm Session Management', () => {
+    before(async () => {
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
+
+      const realmId = faker.internet.userName().toLowerCase();
+      const realmName = faker.internet.userName().toLowerCase();
+      const realm = await kcAdminClient.realms.create({
+        id: realmId,
+        realm: realmName,
+      });
+      expect(realm.realmName).to.be.equal(realmName);
+      currentRealmId = realmId;
+      currentRealmName = realmName;
+    });
+
+    it('log outs all sessions', async () => {
+      const logout = await kcAdminClient.realms.logoutAll({
+        realm: currentRealmName,
+      });
+      expect(logout).to.be.ok;
+    });
+
+    after(async () => {
+      await kcAdminClient.realms.del({realm: currentRealmName});
+      const realm = await kcAdminClient.realms.findOne({
+        realm: currentRealmName,
+      });
+      expect(realm).to.be.null;
+    });
+  });
+
 });
