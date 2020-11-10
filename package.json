@@ -23,7 +23,6 @@
     "camelize": "^1.0.0",
     "keycloak-js": "^11.0.3",
     "lodash": "^4.17.20",
-    "node-window-polyfill": "^1.0.0",
     "query-string": "^6.13.7",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"

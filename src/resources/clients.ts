@@ -128,15 +128,19 @@ export class Clients extends Resource<{realm?: string}> {
    * Client secret
    */
 
-  public generateNewClientSecret = this.makeRequest<{id: string}, CredentialRepresentation>(
-    {
-      method: 'POST',
-      path: '/{id}/client-secret',
-      urlParamKeys: ['id'],
-    },
-  );
+  public generateNewClientSecret = this.makeRequest<
+    {id: string},
+    CredentialRepresentation
+  >({
+    method: 'POST',
+    path: '/{id}/client-secret',
+    urlParamKeys: ['id'],
+  });
 
-  public generateRegistrationAccessToken = this.makeRequest<{id: string}, {registrationAccessToken: string}>({
+  public generateRegistrationAccessToken = this.makeRequest<
+    {id: string},
+    {registrationAccessToken: string}
+  >({
     method: 'POST',
     path: '/{id}/registration-access-token',
     urlParamKeys: ['id'],
@@ -417,7 +421,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Policy
    */
   public findByName = this.makeRequest<
-    {id: string, name: string},
+    {id: string; name: string},
     PolicyRepresentation
   >({
     method: 'GET',
@@ -436,7 +440,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   public createPolicy = this.makeUpdateRequest<
-    {id: string, type: string},
+    {id: string; type: string},
     PolicyRepresentation,
     PolicyRepresentation
   >({
@@ -455,24 +459,32 @@ export class Clients extends Resource<{realm?: string}> {
     catchNotFound: true,
   });
 
-  public delPolicy = this.makeRequest<
-    {id: string, policyId: string},
-    void
-  >({
+  public delPolicy = this.makeRequest<{id: string; policyId: string}, void>({
     method: 'DELETE',
     path: '{id}/authz/resource-server/policy/{policyId}',
     urlParamKeys: ['id', 'policyId'],
   });
 
-  public async createOrUpdatePolicy(
-    payload: {id: string; policyName: string; policy: PolicyRepresentation}
-  ): Promise<PolicyRepresentation> {
-    const policyFound = await this.findByName({id: payload.id, name: payload.policyName});
+  public async createOrUpdatePolicy(payload: {
+    id: string;
+    policyName: string;
+    policy: PolicyRepresentation;
+  }): Promise<PolicyRepresentation> {
+    const policyFound = await this.findByName({
+      id: payload.id,
+      name: payload.policyName,
+    });
     if (policyFound) {
-      await this.updatePolicy({id: payload.id, policyId: policyFound.id, type: payload.policy.type}, payload.policy);
+      await this.updatePolicy(
+        {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
+        payload.policy,
+      );
       return this.findByName({id: payload.id, name: payload.policyName});
     } else {
-      return this.createPolicy({id: payload.id, type: payload.policy.type}, payload.policy);
+      return this.createPolicy(
+        {id: payload.id, type: payload.policy.type},
+        payload.policy,
+      );
     }
   }
 
@@ -480,8 +492,8 @@ export class Clients extends Resource<{realm?: string}> {
    * Scopes
    */
   public listScopesByResource = this.makeRequest<
-    {id: string, resourceName: string},
-    {id: string, name: string}[]
+    {id: string; resourceName: string},
+    {id: string; name: string}[]
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/resource/{resourceName}/scopes',
@@ -528,13 +540,19 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'type', 'permissionId'],
   });
 
-  public getOfflineSessionCount = this.makeRequest<{id: string}, {count: number}>({
+  public getOfflineSessionCount = this.makeRequest<
+    {id: string},
+    {count: number}
+  >({
     method: 'GET',
     path: '/{id}/offline-session-count',
     urlParamKeys: ['id'],
   });
 
-  public getInstallationProviders = this.makeRequest<{id: string, providerId: string}, string>({
+  public getInstallationProviders = this.makeRequest<
+    {id: string; providerId: string},
+    string
+  >({
     method: 'GET',
     path: '/{id}/installation/providers/{providerId}',
     urlParamKeys: ['id', 'providerId'],

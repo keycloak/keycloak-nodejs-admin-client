@@ -12,7 +12,7 @@ import {AuthenticationManagement} from './resources/authenticationManagement';
 import {ServerInfo} from './resources/serverInfo';
 import {WhoAmI} from './resources/whoAmI';
 import {AxiosRequestConfig} from 'axios';
-import 'node-window-polyfill/register';
+import './utils/window-polyfill';
 import Keycloak, {
   KeycloakConfig,
   KeycloakInitOptions,
