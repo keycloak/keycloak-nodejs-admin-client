@@ -26,7 +26,6 @@
         "esSpecCompliant": true
       }
     ],
-    "arrow-parens": [true, "ban-single-arg-parens"],
     "interface-name": [true, "never-prefix"]
   }
 }

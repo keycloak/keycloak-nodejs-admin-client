@@ -1,4 +1,3 @@
-
 export default interface WhoAmIRepresentation {
   userId: string;
   realm: string;

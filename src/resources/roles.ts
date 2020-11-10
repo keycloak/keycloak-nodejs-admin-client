@@ -46,7 +46,10 @@ export class Roles extends Resource<{realm?: string}> {
     urlParamKeys: ['name'],
   });
 
-  public findUsersWithRole = this.makeRequest<{name: string}, UserRepresentation[]>({
+  public findUsersWithRole = this.makeRequest<
+    {name: string},
+    UserRepresentation[]
+  >({
     method: 'GET',
     path: '/roles/{name}/users',
     urlParamKeys: ['name'],

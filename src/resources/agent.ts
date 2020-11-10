@@ -1,6 +1,6 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
-import axios, {AxiosRequestConfig} from 'axios';
+import axios, {AxiosRequestConfig, Method} from 'axios';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
 
@@ -9,7 +9,7 @@ const SLASH = '/';
 
 // interface
 export interface RequestArgs {
-  method: string;
+  method: Method;
   path?: string;
   // Keys of url params to be applied
   urlParamKeys?: string[];
@@ -146,7 +146,7 @@ export class Agent {
     payloadKey,
     returnResourceIdInLocationHeader,
   }: {
-    method: string;
+    method: Method;
     path: string;
     payload: any;
     urlParams: any;
@@ -187,9 +187,9 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-          ...requestConfig.params,
-          ...queryParams,
-        }
+            ...requestConfig.params,
+            ...queryParams,
+          }
         : queryParams;
     }
 
@@ -233,7 +233,7 @@ export class Agent {
       return;
     }
 
-    Object.keys(keyMapping).some(key => {
+    Object.keys(keyMapping).some((key) => {
       if (isUndefined(payload[key])) {
         // Skip if undefined
         return false;

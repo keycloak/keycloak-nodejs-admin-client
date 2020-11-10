@@ -13,9 +13,9 @@ export interface ServerInfoRepresentation {
   memoryInfo?: MemoryInfoRepresentation;
   profileInfo?: ProfileInfoRepresentation;
   themes?: {[index: string]: ThemeInfoRepresentation[]};
-  socialProviders?: Array<{[index: string]: string}>;
-  identityProviders?: Array<{[index: string]: string}>;
-  clientImporters?: Array<{[index: string]: string}>;
+  socialProviders?: {[index: string]: string}[];
+  identityProviders?: {[index: string]: string}[];
+  clientImporters?: {[index: string]: string}[];
   providers?: {[index: string]: SpiInfoRepresentation};
   protocolMapperTypes?: {[index: string]: ProtocolMapperTypeRepresentation[]};
   builtinProtocolMappers?: {[index: string]: ProtocolMapperRepresentation[]};
