@@ -90,7 +90,7 @@ setInterval(async () => {
 
 ## Supported APIs
 
-### [Realm admin](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_realms_admin_resource)
+### [Realm admin](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_realms_admin_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/realms.spec.ts
 
@@ -102,6 +102,8 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Enable users management permissions (`PUT /{realm}/users-management-permissions`)
 - Get events (`GET /{realm}/events`)
 - Get admin events (`GET /{realm}/admin-events`)
+- Remove all user sessions (`POST /{realm}/logout-all`)
+- Remove a specific user session (`DELETE /{realm}/sessions/{session}`)
 
 ### [Role](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
 
