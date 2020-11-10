@@ -289,7 +289,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
     const allScopes = await this.find({
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    const scope = allScopes.find(item => item.name === payload.name);
+    const scope = allScopes.find((item) => item.name === payload.name);
     return scope ? scope : null;
   }
 
@@ -325,7 +325,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
     const protocolMapper = allProtocolMappers.find(
-      mapper => mapper.name === payload.name,
+      (mapper) => mapper.name === payload.name,
     );
     return protocolMapper ? protocolMapper : null;
   }

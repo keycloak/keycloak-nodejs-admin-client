@@ -1,4 +1,5 @@
 import Resource from './resource';
+import AdminEventRepresentation from '../defs/adminEventRepresentation';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
@@ -79,12 +80,50 @@ export class Realms extends Resource {
    * Remove a specific user session.
    */
   public removeSession = this.makeRequest<{realm: string, sessionId: string}, void>({
-    method: 'GET',
+    method: 'DELETE',
     path: '/{realm}/sessions/{session}',
     urlParamKeys: ['realm','session'],
     catchNotFound: true,
   });
 
+
+  /**
+   * Get admin events Returns all admin events, or filters events based on URL query parameters listed here
+   */
+  public findAdminEvents = this.makeRequest<
+    {
+      realm: string;
+      authClient?: string;
+      authIpAddress?: string;
+      authRealm?: string;
+      authUser?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+      first?: number;
+      max?: number;
+      operationTypes?: string;
+      resourcePath?: string;
+      resourceTypes?: string;
+    },
+    AdminEventRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{realm}/admin-events',
+    urlParamKeys: ['realm'],
+    queryParamKeys: [
+      'authClient',
+      'authIpAddress',
+      'authRealm',
+      'authUser',
+      'dateFrom',
+      'dateTo',
+      'max',
+      'first',
+      'operationTypes',
+      'resourcePath',
+      'resourceTypes',
+    ],
+  });
 
   /**
    * Users management permissions
@@ -105,6 +144,27 @@ export class Realms extends Resource {
     method: 'PUT',
     path: '/{realm}/users-management-permissions',
     urlParamKeys: ['realm'],
+  });
+
+  /**
+   * Sessions
+   */
+  public logoutAll = this.makeRequest<
+    {realm: string},
+    void
+  >({
+    method: 'POST',
+    path: '/{realm}/logout-all',
+    urlParamKeys: ['realm'],
+  });
+
+  public deleteSession = this.makeRequest<
+    {realm: string; session: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{realm}/sessions/{session}',
+    urlParamKeys: ['realm', 'session'],
   });
 
   constructor(client: KeycloakAdminClient) {

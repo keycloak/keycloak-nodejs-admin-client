@@ -6,22 +6,17 @@ import faker from 'faker';
 import ComponentRepresentation from '../src/defs/componentRepresentation';
 const expect = chai.expect;
 
-declare module 'mocha' {
-  // tslint:disable-next-line:interface-name
-  interface ISuiteCallbackContext {
-    kcAdminClient?: KeycloakAdminClient;
-    currentUserFed?: ComponentRepresentation;
-  }
-}
+describe('User federation using component api', () => {
+  let kcAdminClient: KeycloakAdminClient;
+  let currentUserFed: ComponentRepresentation;
 
-describe('User federation using component api', function() {
   before(async () => {
-    this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(credentials);
+    kcAdminClient = new KeycloakAdminClient();
+    await kcAdminClient.auth(credentials);
 
     // create user fed
     const name = faker.internet.userName();
-    const component = await this.kcAdminClient.components.create({
+    const component = await kcAdminClient.components.create({
       name,
       parentId: 'master',
       providerId: 'ldap',
@@ -30,26 +25,26 @@ describe('User federation using component api', function() {
     expect(component.id).to.be.ok;
 
     // assign current user fed
-    const fed = await this.kcAdminClient.components.findOne({
+    const fed = await kcAdminClient.components.findOne({
       id: component.id,
     });
-    this.currentUserFed = fed;
+    currentUserFed = fed;
   });
 
   after(async () => {
-    await this.kcAdminClient.components.del({
-      id: this.currentUserFed.id,
+    await kcAdminClient.components.del({
+      id: currentUserFed.id,
     });
 
     // check deleted
-    const idp = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id,
+    const idp = await kcAdminClient.components.findOne({
+      id: currentUserFed.id,
     });
     expect(idp).to.be.null;
   });
 
   it('list user federations', async () => {
-    const feds = await this.kcAdminClient.components.find({
+    const feds = await kcAdminClient.components.find({
       parent: 'master',
       type: 'org.keycloak.storage.UserStorageProvider',
     });
@@ -57,17 +52,17 @@ describe('User federation using component api', function() {
   });
 
   it('get a user federation', async () => {
-    const fed = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id,
+    const fed = await kcAdminClient.components.findOne({
+      id: currentUserFed.id,
     });
     expect(fed).to.include({
-      id: this.currentUserFed.id,
+      id: currentUserFed.id,
     });
   });
 
   it('update a user federation', async () => {
-    await this.kcAdminClient.components.update(
-      {id: this.currentUserFed.id},
+    await kcAdminClient.components.update(
+      {id: currentUserFed.id},
       {
         // parentId, providerId, providerType required for update
         parentId: 'master',
@@ -76,12 +71,12 @@ describe('User federation using component api', function() {
         name: 'cool-name',
       },
     );
-    const updated = await this.kcAdminClient.components.findOne({
-      id: this.currentUserFed.id,
+    const updated = await kcAdminClient.components.findOne({
+      id: currentUserFed.id,
     });
 
     expect(updated).to.include({
-      id: this.currentUserFed.id,
+      id: currentUserFed.id,
       name: 'cool-name',
     });
   });

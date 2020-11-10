@@ -38,6 +38,7 @@ await kcAdminClient.auth({
   password: 'wwwy3y3',
   grantType: 'password',
   clientId: 'admin-cli',
+  totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
 });
 
 // List all users
@@ -71,6 +72,7 @@ const keycloakIssuer = await Issuer.discover(
 
 const client = new keycloakIssuer.Client({
   client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  token_endpoint_auth_method: 'none', // to send only client_id in the header
 });
 
 // Use the grant type 'password'
@@ -90,7 +92,7 @@ setInterval(async () => {
 
 ## Supported APIs
 
-### [Realm admin](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_realms_admin_resource)
+### [Realm admin](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_realms_admin_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/realms.spec.ts
 
@@ -100,6 +102,10 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete the realm (`DELETE /{realm}`)
 - Get users management permissions (`GET /{realm}/users-management-permissions`)
 - Enable users management permissions (`PUT /{realm}/users-management-permissions`)
+- Get events (`GET /{realm}/events`)
+- Get admin events (`GET /{realm}/admin-events`)
+- Remove all user sessions (`POST /{realm}/logout-all`)
+- Remove a specific user session (`DELETE /{realm}/sessions/{session}`)
 
 ### [Role](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
 
@@ -342,6 +348,25 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Lower required action’s priority (`POST /{realm}/authentication/required-actions/{alias}/lower-priority`)
 - Raise required action’s priority (`POST /{realm}/authentication/required-actions/{alias}/raise-priority`)
 - Get unregistered required actions Returns a list of unregistered required actions. (`GET /{realm}/authentication/unregistered-required-actions`)
+
+### [Authorization: Permission](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create permission (`POST /{realm}/clients/{id}/authz/resource-server/permission/{type}`)
+- Get permission (`GET /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Update permission (`PUT /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Delete permission (`DELETE /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+
+### [Authorization: Policy](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create policy (`POST /{realm}/clients/{id}/authz/resource-server/policy/{type}`)
+- Get policy (`GET /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Get policy by name (`GET /{realm}/clients/{id}/authz/resource-server/policy/search`)
+- Update policy (`PUT /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Delete policy (`DELETE /{realm}/clients/{id}/authz/resource-server/policy/{policyId}`)
 
 ## Not yet supported
 

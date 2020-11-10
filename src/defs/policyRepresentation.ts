@@ -25,4 +25,5 @@ export default interface PolicyRepresentation {
   resources?: string[];
   scopes?: string[];
   type?: string;
+  users?: string[];
 }

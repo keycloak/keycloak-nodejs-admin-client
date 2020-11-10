@@ -6,48 +6,43 @@ import RoleRepresentation from '../src/defs/roleRepresentation';
 
 const expect = chai.expect;
 
-declare module 'mocha' {
-  // tslint:disable-next-line:interface-name
-  interface ISuiteCallbackContext {
-    client?: KeycloakAdminClient;
-    currentRole?: RoleRepresentation;
-  }
-}
+describe('Roles', () => {
+  let client: KeycloakAdminClient;
+  let currentRole: RoleRepresentation;
 
-describe('Roles', function() {
   before(async () => {
-    this.client = new KeycloakAdminClient();
-    await this.client.auth(credentials);
+    client = new KeycloakAdminClient();
+    await client.auth(credentials);
   });
 
   it('list roles', async () => {
-    const roles = await this.client.roles.find();
+    const roles = await client.roles.find();
     expect(roles).to.be.ok;
   });
 
   it('create roles and get by name', async () => {
     const roleName = 'cool-role';
-    const createdRole = await this.client.roles.create({
+    const createdRole = await client.roles.create({
       name: roleName,
     });
 
     expect(createdRole.roleName).to.be.equal(roleName);
-    const role = await this.client.roles.findOneByName({name: roleName});
+    const role = await client.roles.findOneByName({name: roleName});
     expect(role).to.be.ok;
-    this.currentRole = role;
+    currentRole = role;
   });
 
   it('get single roles by id', async () => {
-    const roleId = this.currentRole.id;
-    const role = await this.client.roles.findOneById({
+    const roleId = currentRole.id;
+    const role = await client.roles.findOneById({
       id: roleId,
     });
-    expect(role).to.deep.include(this.currentRole);
+    expect(role).to.deep.include(currentRole);
   });
 
   it('update single role by name & by id', async () => {
-    await this.client.roles.updateByName(
-      {name: this.currentRole.name},
+    await client.roles.updateByName(
+      {name: currentRole.name},
       {
         // dont know why if role name not exist in payload, role name will be overriden with empty string
         // todo: open an issue on keycloak
@@ -56,22 +51,22 @@ describe('Roles', function() {
       },
     );
 
-    const role = await this.client.roles.findOneByName({
-      name: this.currentRole.name,
+    const role = await client.roles.findOneByName({
+      name: currentRole.name,
     });
     expect(role).to.include({
       description: 'cool',
     });
 
-    await this.client.roles.updateById(
-      {id: this.currentRole.id},
+    await client.roles.updateById(
+      {id: currentRole.id},
       {
         description: 'another description',
       },
     );
 
-    const roleById = await this.client.roles.findOneById({
-      id: this.currentRole.id,
+    const roleById = await client.roles.findOneById({
+      id: currentRole.id,
     });
     expect(roleById).to.include({
       description: 'another description',
@@ -79,37 +74,37 @@ describe('Roles', function() {
   });
 
   it('delete single roles by id', async () => {
-    const roleId = this.currentRole.id;
-    await this.client.roles.create({
+    const roleId = currentRole.id;
+    await client.roles.create({
       name: 'for-delete',
     });
 
-    await this.client.roles.delByName({
+    await client.roles.delByName({
       name: 'for-delete',
     });
 
     // delete the currentRole with id
-    await this.client.roles.delById({
+    await client.roles.delById({
       id: roleId,
     });
 
     // both should be null
-    const role = await this.client.roles.findOneById({
+    const role = await client.roles.findOneById({
       id: roleId,
     });
     expect(role).to.be.null;
 
-    const roleDelByName = await this.client.roles.findOneByName({
+    const roleDelByName = await client.roles.findOneByName({
       name: 'for-delete',
     });
     expect(roleDelByName).to.be.null;
   });
 
   it('get users with role by name in realm', async () => {
-    const users = await this.client.roles.findUsersWithRole({
+    const users = await client.roles.findUsersWithRole({
       name: 'admin',
     });
     expect(users).to.be.ok;
     expect(users).to.be.an('array');
-  })
+  });
 });
