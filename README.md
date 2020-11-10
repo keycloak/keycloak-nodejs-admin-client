@@ -347,6 +347,25 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Raise required action’s priority (`POST /{realm}/authentication/required-actions/{alias}/raise-priority`)
 - Get unregistered required actions Returns a list of unregistered required actions. (`GET /{realm}/authentication/unregistered-required-actions`)
 
+### [Authorization: Permission](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create permission (`POST /{realm}/clients/{id}/authz/resource-server/permission/{type}`)
+- Get permission (`GET /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Update permission (`PUT /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Delete permission (`DELETE /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+
+### [Authorization: Policy](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create policy (`POST /{realm}/clients/{id}/authz/resource-server/policy/{type}`)
+- Get policy (`GET /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Get policy by name (`GET /{realm}/clients/{id}/authz/resource-server/policy/search`)
+- Update policy (`PUT /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Delete policy (`DELETE /{realm}/clients/{id}/authz/resource-server/policy/{policyId}`)
+
 ## Not yet supported
 
 - [Attack Detection](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_attack_detection_resource)
