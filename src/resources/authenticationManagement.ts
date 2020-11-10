@@ -30,6 +30,11 @@ export class AuthenticationManagement extends Resource {
     catchNotFound: true,
   });
 
+  public getClientAuthenticatorProviders = this.makeRequest<{id: string}, {id: string, displayName: string}[]>({
+    method: 'GET',
+    path: '/client-authenticator-providers',
+  });
+
   // Update required action
   public updateRequiredAction = this.makeUpdateRequest<
     {alias: string},

@@ -122,13 +122,19 @@ export class Clients extends Resource<{realm?: string}> {
    * Client secret
    */
 
-  public generateNewClientSecret = this.makeRequest<{id: string}, {id: string}>(
+  public generateNewClientSecret = this.makeRequest<{id: string}, CredentialRepresentation>(
     {
       method: 'POST',
       path: '/{id}/client-secret',
       urlParamKeys: ['id'],
     },
   );
+
+  public generateRegistrationAccessToken = this.makeRequest<{id: string}, {registrationAccessToken: string}>({
+    method: 'POST',
+    path: '/{id}/registration-access-token',
+    urlParamKeys: ['id'],
+  });
 
   public getClientSecret = this.makeRequest<
     {id: string},
@@ -401,13 +407,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public getOfflineSessionCount = this.makeRequest<
-    {id: string},
-    {count: number}
-  >({
+  public getOfflineSessionCount = this.makeRequest<{id: string}, {count: number}>({
     method: 'GET',
     path: '/{id}/offline-session-count',
     urlParamKeys: ['id'],
+  });
+
+  public getInstallationProviders = this.makeRequest<{id: string, providerId: string}, string>({
+    method: 'GET',
+    path: '/{id}/installation/providers/{providerId}',
+    urlParamKeys: ['id', 'providerId'],
   });
 
   constructor(client: KeycloakAdminClient) {
