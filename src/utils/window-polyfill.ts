@@ -1,2 +1,4 @@
 const globalObject = global as any;
-globalObject.window = globalObject.window || {};
+if (!globalObject.window) {
+  globalObject.window = {};
+}
