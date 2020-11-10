@@ -227,6 +227,24 @@ describe('Clients', () => {
       expect(newCredential).to.be.eql(credential);
     });
 
+    it('generate new registration access token', async () => {
+      const newRegistrationAccessToken = await kcAdminClient.clients.generateRegistrationAccessToken(
+        {
+          id: currentClient.id,
+        },
+      );
+
+      expect(newRegistrationAccessToken).to.be.ok;
+    });
+
+    it('get installation providers', async () => {
+      const installationProvider = await kcAdminClient.clients.getInstallationProviders(
+        {id: currentClient.id, providerId: 'keycloak-oidc-jboss-subsystem'},
+      );
+      expect(installationProvider).to.be.ok;
+      expect(typeof installationProvider).to.be.equal('string');
+    });
+
     it('get service account user', async () => {
       const serviceAccountUser = await kcAdminClient.clients.getServiceAccountUser(
         {

@@ -120,5 +120,19 @@ describe('Authentication management', () => {
         requiredAction.priority,
       );
     });
+
+    it('should get client authenticator providers', async () => {
+      const createdClient = await kcAdminClient.clients.create({
+        clientId: 'testClient',
+      });
+      const authenticationProviders = await kcAdminClient.authenticationManagement.getClientAuthenticatorProviders(
+        {
+          id: createdClient.id,
+        },
+      );
+
+      expect(authenticationProviders.length).to.be.equal(4);
+      kcAdminClient.clients.del({id: createdClient.id});
+    });
   });
 });

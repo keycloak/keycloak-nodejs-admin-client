@@ -100,36 +100,36 @@ describe('Realms', () => {
       expect(realm).to.be.null;
     });
   });
-  
-  describe('Realm Admin Events', function() {
+
+  describe('Realm Admin Events', () => {
     before(async () => {
-      this.kcAdminClient = new KeycloakAdminClient();
-      await this.kcAdminClient.auth(credentials);
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
 
       const realmId = faker.internet.userName().toLowerCase();
       const realmName = faker.internet.userName().toLowerCase();
-      const realm = await this.kcAdminClient.realms.create({
+      const realm = await kcAdminClient.realms.create({
         id: realmId,
         realm: realmName,
       });
       expect(realm.realmName).to.be.equal(realmName);
-      this.currentRealmId = realmId;
-      this.currentRealmName = realmName;
+      currentRealmId = realmId;
+      currentRealmName = realmName;
     });
 
     it('list events of a realm', async () => {
       // @TODO: In order to test it, there have to be events
-      const events = await this.kcAdminClient.realms.findAdminEvents({
-        realm: this.currentRealmName,
+      const events = await kcAdminClient.realms.findAdminEvents({
+        realm: currentRealmName,
       });
 
       expect(events).to.be.ok;
     });
 
     after(async () => {
-      await this.kcAdminClient.realms.del({realm: this.currentRealmName});
-      const realm = await this.kcAdminClient.realms.findOne({
-        realm: this.currentRealmName,
+      await kcAdminClient.realms.del({realm: currentRealmName});
+      const realm = await kcAdminClient.realms.findOne({
+        realm: currentRealmName,
       });
       expect(realm).to.be.null;
     });
