@@ -3,17 +3,21 @@
  */
 
 export default interface RoleRepresentation {
-  clientRole?: boolean;
-  composite?: boolean;
-  composites?: {
-    client: Record<string, any>;
-    realm: string[];
-  };
-  containerId?: string;
-  description?: string;
   id?: string;
   name?: string;
-  attributes?: Record<string, string[]>;
+  description?: string;
+  scopeParamRequired?: boolean;
+  composite?: boolean;
+  composites?: Composites;
+  clientRole?: boolean;
+  containerId?: string;
+  attributes?: {[index: string]: string[]};
+}
+
+export interface Composites {
+  realm?: string[];
+  client?: {[index: string]: string[]};
+  application?: {[index: string]: string[]};
 }
 
 // when requesting to role-mapping api (create, delete), id and name are required
