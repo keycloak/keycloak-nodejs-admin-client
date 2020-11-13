@@ -38,6 +38,7 @@ await kcAdminClient.auth({
   password: 'wwwy3y3',
   grantType: 'password',
   clientId: 'admin-cli',
+  totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
 });
 
 // List all users
@@ -71,6 +72,7 @@ const keycloakIssuer = await Issuer.discover(
 
 const client = new keycloakIssuer.Client({
   client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  token_endpoint_auth_method: 'none', // to send only client_id in the header
 });
 
 // Use the grant type 'password'
