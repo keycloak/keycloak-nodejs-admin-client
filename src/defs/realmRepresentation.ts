@@ -4,7 +4,7 @@ import UserRepresentation from './userRepresentation';
 import GroupRepresentation from './groupRepresentation';
 import IdentityProviderRepresentation from './identityProviderRepresentation';
 import RequiredActionProviderRepresentation from './requiredActionProviderRepresentation';
-import RoleRepresentation from './roleRepresentation';
+import RolesRepresentation from './rolesRepresentation';
 
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realmrepresentation
@@ -93,7 +93,7 @@ export default interface RealmRepresentation {
   resetCredentialsFlow?: string;
   resetPasswordAllowed?: boolean;
   revokeRefreshToken?: boolean;
-  roles?: RoleRepresentation;
+  roles?: RolesRepresentation;
   // ScopeMappingRepresentation
   scopeMappings?: any[];
   smtpServer?: Record<string, any>;
