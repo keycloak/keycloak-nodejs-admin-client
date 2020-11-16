@@ -77,6 +77,17 @@ export class Realms extends Resource {
   });
 
   /**
+   * Remove a specific user session.
+   */
+  public removeSession = this.makeRequest<{realm: string, sessionId: string}, void>({
+    method: 'DELETE',
+    path: '/{realm}/sessions/{session}',
+    urlParamKeys: ['realm','session'],
+    catchNotFound: true,
+  });
+
+
+  /**
    * Get admin events Returns all admin events, or filters events based on URL query parameters listed here
    */
   public findAdminEvents = this.makeRequest<
