@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import RoleRepresentation from '../src/defs/roleRepresentation';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 
 const expect = chai.expect;
 
@@ -13,6 +14,13 @@ describe('Roles', () => {
   before(async () => {
     client = new KeycloakAdminClient();
     await client.auth(credentials);
+  });
+
+  after(async () => {
+    // delete the currentRole with id
+    await client.roles.delById({
+      id: currentRole.id,
+    });
   });
 
   it('list roles', async () => {
@@ -74,7 +82,6 @@ describe('Roles', () => {
   });
 
   it('delete single roles by id', async () => {
-    const roleId = currentRole.id;
     await client.roles.create({
       name: 'for-delete',
     });
@@ -82,17 +89,6 @@ describe('Roles', () => {
     await client.roles.delByName({
       name: 'for-delete',
     });
-
-    // delete the currentRole with id
-    await client.roles.delById({
-      id: roleId,
-    });
-
-    // both should be null
-    const role = await client.roles.findOneById({
-      id: roleId,
-    });
-    expect(role).to.be.null;
 
     const roleDelByName = await client.roles.findOneByName({
       name: 'for-delete',
@@ -106,5 +102,81 @@ describe('Roles', () => {
     });
     expect(users).to.be.ok;
     expect(users).to.be.an('array');
+  });
+
+  describe('Composite roles', () => {
+    const compositeRoleName = 'compositeRole';
+    let compositeRole: RoleRepresentation;
+
+    beforeEach(async () => {
+      await client.roles.create({
+        name: compositeRoleName,
+      });
+      compositeRole = await client.roles.findOneByName({name: compositeRoleName});
+      await client.roles.createComposite({roleId: currentRole.id}, [compositeRole]);
+    });
+
+    afterEach(async () => {
+      await client.roles.delByName({
+        name: compositeRoleName,
+      });
+    });
+
+    it('make the role a composite role by associating some child roles', async () => {
+      const children = await client.roles.getCompositeRoles({id: currentRole.id});
+
+      // attributes on the composite role are empty and when fetched not there.
+      const {attributes, ...rest} = compositeRole;
+      expect(children).to.be.eql([rest]);
+    });
+
+    it('delete composite roles', async () => {
+      await client.roles.delCompositeRoles({id: currentRole.id}, [compositeRole]);
+      const children = await client.roles.getCompositeRoles({id: currentRole.id});
+
+      expect(children).to.be.an('array').that.is.empty;
+    });
+
+
+    describe('Get composite roles for client and realm', () => {
+      let createdClient: ClientRepresentation;
+      let clientRole: RoleRepresentation;
+      before(async () => {
+        createdClient = await client.clients.create({clientId: 'test'});
+        const clientRoleName = 'clientRole';
+        await client.clients.createRole({
+          id: createdClient.id,
+          name: clientRoleName,
+        });
+        clientRole = await client.clients.findRole({
+          id: createdClient.id,
+          roleName: clientRoleName,
+        });
+
+        await client.roles.createComposite({roleId: currentRole.id}, [clientRole]);
+      });
+
+      after(async () => {
+        await client.clients.del({id: createdClient.id});
+      });
+
+      it('get composite role for the realm', async () => {
+        const realmChildren = await client.roles.getCompositeRolesForRealm({id: currentRole.id});
+        const children = await client.roles.getCompositeRoles({id: currentRole.id});
+
+        delete compositeRole.attributes;
+        expect(realmChildren).to.be.eql([compositeRole]);
+
+        expect(children).to.be.an('array').that.is.length(2);
+      });
+
+      it('get composite for the client', async () => {
+        const clientChildren = await client.roles.getCompositeRolesForClient({id: currentRole.id, clientId: createdClient.id});
+
+        delete clientRole.attributes;
+        expect(clientChildren).to.be.eql([clientRole]);
+      });
+
+    });
   });
 });
