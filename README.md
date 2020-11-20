@@ -21,6 +21,8 @@ yarn add keycloak-admin
 
 ```js
 import KcAdminClient from 'keycloak-admin';
+// or
+// const KcAdminClient = require('keycloak-admin').default;
 
 // To configure the client, pass an object to override any of these  options:
 // {
