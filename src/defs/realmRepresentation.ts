@@ -1,5 +1,5 @@
 import ClientRepresentation from './clientRepresentation';
-import MultivaluedHashMap from './multivaluedHashMap';
+import ComponentExportRepresentation from './componentExportRepresentation';
 import UserRepresentation from './userRepresentation';
 import GroupRepresentation from './groupRepresentation';
 import IdentityProviderRepresentation from './identityProviderRepresentation';
@@ -35,7 +35,7 @@ export default interface RealmRepresentation {
   // ClientScopeRepresentation
   clientScopes?: any[];
   clients?: ClientRepresentation[];
-  components?: MultivaluedHashMap;
+  components?: {[index: string]: ComponentExportRepresentation};
   defaultDefaultClientScopes?: string[];
   defaultGroups?: string[];
   defaultLocale?: string;

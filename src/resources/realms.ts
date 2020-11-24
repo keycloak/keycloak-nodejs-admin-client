@@ -82,7 +82,7 @@ export class Realms extends Resource {
   public removeSession = this.makeRequest<{realm: string, sessionId: string}, void>({
     method: 'DELETE',
     path: '/{realm}/sessions/{session}',
-    urlParamKeys: ['realm','session'],
+    urlParamKeys: ['realm', 'session'],
     catchNotFound: true,
   });
 
