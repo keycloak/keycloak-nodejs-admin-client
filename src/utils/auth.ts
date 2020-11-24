@@ -10,6 +10,7 @@ export interface Credentials {
   clientId: string;
   clientSecret?: string;
   totp?: string;
+  offlineToken?: boolean;
 }
 
 export interface Settings {
@@ -45,6 +46,7 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     grant_type: credentials.grantType,
     client_id: credentials.clientId,
     totp: credentials.totp,
+    scope: credentials.offlineToken ? 'offline_access' : '',
   });
   const config: AxiosRequestConfig = {
     ...settings.requestConfig,
