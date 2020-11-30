@@ -222,6 +222,11 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'groupId'],
   });
 
+  public countGroups = this.makeRequest<string, {count: number}>({
+    method: 'GET',
+    path: '/{id}/groups/count',
+  });
+
   /**
    * Federated Identity
    */
