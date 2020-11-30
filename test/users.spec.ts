@@ -68,6 +68,17 @@ describe('Users', function () {
     expect(users).to.be.ok;
   });
 
+  it('count users', async () => {
+    const numUsers = await kcAdminClient.users.count();
+    // admin user + created user in before hook
+    expect(numUsers).to.equal(2);
+  });
+
+  it('count users with filter', async () => {
+    const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
+    expect(numUsers).to.equal(1);
+  });
+
   it('get single users', async () => {
     const userId = currentUser.id;
     const user = await kcAdminClient.users.findOne({
@@ -102,7 +113,7 @@ describe('Users', function () {
   /**
    * exeute actions email
    */
-  it('should send user exeute actions email', async () => {
+  it('should send user execute actions email', async () => {
     // if travis skip it, cause travis close smtp port
     if (process.env.TRAVIS) {
       return;

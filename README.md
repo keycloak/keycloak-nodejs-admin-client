@@ -140,6 +140,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get representation of the user (`GET /{realm}/users/{id}`)
 - Update the user (`PUT /{realm}/users/{id}`)
 - Delete the user (`DELETE /{realm}/users/{id}`)
+- Count users (`GET /{realm}/users/count`)
 - Send a update account email to the user An email contains a link the user can click to perform a set of required actions. (`PUT /{realm}/users/{id}/execute-actions-email`)
 - Get user groups (`GET /{realm}/users/{id}/groups`)
 - Add user to group (`PUT /{realm}/users/{id}/groups/{groupId}`)

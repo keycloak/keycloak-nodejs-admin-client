@@ -59,6 +59,11 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public count = this.makeRequest<UserQuery, number>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * role mappings
    */
