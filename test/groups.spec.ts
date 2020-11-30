@@ -43,6 +43,19 @@ describe('Groups', () => {
     expect(groups).to.be.ok;
   });
 
+  it('count groups', async () => {
+    const result = await kcAdminClient.groups.count();
+    expect(result.count).to.eq(1);
+  });
+
+  it('count groups with filter', async () => {
+    let result = await kcAdminClient.groups.count({search: 'fake-group'});
+    expect(result.count).to.eq(0);
+
+    result = await kcAdminClient.groups.count({search: 'cool-group'});
+    expect(result.count).to.eq(1);
+  });
+
   it('get single groups', async () => {
     const groupId = currentGroup.id;
     const group = await kcAdminClient.groups.findOne({

@@ -169,6 +169,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get one (`GET /{realm}/groups/{id}`)
 - Update (`PUT /{realm}/groups/{id}`)
 - Delete (`DELETE /{realm}/groups/{id}`)
+- Count (`GET /{realm}/groups/count`)
 - List members (`GET /{realm}/groups/{id}/members`)
 - Set or create child (`POST /{realm}/groups/{id}/children`)
 
