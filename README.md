@@ -149,6 +149,13 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
 
+### User group-mapping
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L178
+- Add user to group (`PUT /{id}/groups/{groupId}`)
+- List all user groups (`GET /{id}/groups`)
+- Count user groups (`GET /{id}/groups/count`)
+- Remove user from group (`DELETE /{id}/groups/{groupId}`)
+
 ### User role-mapping
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L143
