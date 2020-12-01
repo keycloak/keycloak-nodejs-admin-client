@@ -9,6 +9,8 @@ import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
 import {omit} from 'lodash';
+import GroupRepresentation from '../src/defs/groupRepresentation';
+import {fail} from 'assert';
 
 const expect = chai.expect;
 
@@ -167,6 +169,85 @@ describe('Users', function () {
     const userId = currentUser.id;
     await kcAdminClient.users.sendVerifyEmail({
       id: userId,
+    });
+  });
+
+  /**
+   * Groups
+   */
+  describe('user groups', () => {
+    let currentGroup: GroupRepresentation;
+    before(async () => {
+      const group = await kcAdminClient.groups.create({
+        name: 'cool-group',
+      });
+      expect(group.id).to.be.ok;
+      currentGroup = await kcAdminClient.groups.findOne({id: group.id});
+    });
+
+    after(async () => {
+      const groupId = currentGroup.id;
+      const groups = await kcAdminClient.groups.find({max: 100});
+      await Promise.all(groups.map((_group: GroupRepresentation) => {
+        return kcAdminClient.groups.del({id: _group.id});
+      }));
+
+      const group = await kcAdminClient.groups.findOne({
+        id: groupId,
+      });
+      expect(group).to.be.null;
+    });
+
+    it('add group', async () => {
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(0);
+      await kcAdminClient.users.addToGroup({groupId: currentGroup.id, id: currentUser.id});
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(1);
+    });
+
+    it('count groups', async () => {
+      let {count} = await kcAdminClient.users.countGroups({id: currentUser.id});
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'cool-group'})).count;
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'fake-group'})).count;
+      expect(count).to.eq(0);
+    });
+
+    it('list groups', async () => {
+      const groups = await kcAdminClient.users.listGroups({id: currentUser.id});
+      expect(groups).to.be.ok;
+      expect(groups.length).to.be.eq(1);
+      expect(groups[0].name).to.eq('cool-group');
+    });
+
+    it('remove group', async () => {
+      const newGroup = await kcAdminClient.groups.create({name: 'test-group'});
+      await kcAdminClient.users.addToGroup({id: currentUser.id, groupId: newGroup.id});
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(2);
+
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: newGroup.id});
+      } catch (e) {
+        fail('Didn\'t expect an error when deleting a vaiid group id');
+      }
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.equal(1);
+
+      await kcAdminClient.groups.del({id: newGroup.id});
+
+      // delete a non-existing group should throw an error
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: 'fake-group-id'});
+        fail('Expected an error when deleting a fake id not assigned to the user');
+      } catch (e) {
+        expect(e).to.be.ok;
+      }
     });
   });
 
