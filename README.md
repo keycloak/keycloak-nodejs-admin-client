@@ -375,9 +375,16 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Update policy (`PUT /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
 - Delete policy (`DELETE /{realm}/clients/{id}/authz/resource-server/policy/{policyId}`)
 
+### [Attack Detection](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_attack_detection_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/attackDetection.spec.ts
+
+- Clear any user login failures for all users This can release temporary disabled users (`DELETE /{realm}/attack-detection/brute-force/users`)
+- Get status of a username in brute force detection (`GET /{realm}/attack-detection/brute-force/users/{userId}`)
+- Clear any user login failures for the user This can release temporary disabled user (`DELETE /{realm}/attack-detection/brute-force/users/{userId}`)
+
 ## Not yet supported
 
-- [Attack Detection](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_attack_detection_resource)
 - [Authentication Management](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_authentication_management_resource)
 - [Client Attribute Certificate](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_client_attribute_certificate_resource)
 - [Client Initial Access](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_client_initial_access_resource)
