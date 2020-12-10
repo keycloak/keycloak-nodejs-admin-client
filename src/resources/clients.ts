@@ -2,7 +2,6 @@ import {KeycloakAdminClient} from '../client';
 import ClientRepresentation from '../defs/clientRepresentation';
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
-import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import PolicyRepresentation from '../defs/policyRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
@@ -341,6 +340,44 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/{id}/scope-mappings/clients/{client}',
     urlParamKeys: ['id', 'client'],
+  });
+
+  public evaluatePermission = this.makeRequest<
+    {
+      id: string;
+      roleContainer: string;
+      type: 'granted' | 'not-granted';
+      scope: string;
+    },
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/scope-mappings/{roleContainer}/{type}',
+    urlParamKeys: ['id', 'roleContainer', 'type'],
+    queryParamKeys: ['scope'],
+  });
+
+  public evaluateListProtocolMapper = this.makeRequest<
+    {
+      id: string;
+      scope: string;
+    },
+    ProtocolMapperRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/protocol-mappers',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope'],
+  });
+
+  public evaluateGenerateAccessToken = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    object
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-access-token',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
   });
 
   public addRealmScopeMappings = this.makeUpdateRequest<
