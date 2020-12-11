@@ -3,10 +3,15 @@ import camelize from 'camelize';
 import querystring from 'query-string';
 import {defaultBaseUrl, defaultRealm} from './constants';
 
+export enum GrantTypes {
+  CLIENT_CREDENTIALS = "client_credentials",
+  PASSWORD = "password",
+}
+
 export interface Credentials {
   username: string;
   password: string;
-  grantType: string;
+  grantType: GrantTypes;
   clientId: string;
   clientSecret?: string;
   totp?: string;
