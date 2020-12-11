@@ -12,6 +12,11 @@ export interface GroupQuery {
   search?: string;
 }
 
+export interface GroupCountQuery {
+  search?: string;
+  top?: boolean;
+}
+
 export class Groups extends Resource<{realm?: string}> {
   public find = this.makeRequest<GroupQuery, GroupRepresentation[]>({
     method: 'GET',
@@ -47,6 +52,12 @@ export class Groups extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/{id}',
     urlParamKeys: ['id'],
+  });
+
+
+  public count = this.makeRequest<GroupCountQuery, {count: number}>({
+    method: 'GET',
+    path: '/count',
   });
 
   /**

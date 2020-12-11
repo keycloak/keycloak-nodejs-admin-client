@@ -140,6 +140,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get representation of the user (`GET /{realm}/users/{id}`)
 - Update the user (`PUT /{realm}/users/{id}`)
 - Delete the user (`DELETE /{realm}/users/{id}`)
+- Count users (`GET /{realm}/users/count`)
 - Send a update account email to the user An email contains a link the user can click to perform a set of required actions. (`PUT /{realm}/users/{id}/execute-actions-email`)
 - Get user groups (`GET /{realm}/users/{id}/groups`)
 - Add user to group (`PUT /{realm}/users/{id}/groups/{groupId}`)
@@ -147,6 +148,13 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Remove TOTP from the user (`PUT /{realm}/users/{id}/remove-totp`)
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
+
+### User group-mapping
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L178
+- Add user to group (`PUT /{id}/groups/{groupId}`)
+- List all user groups (`GET /{id}/groups`)
+- Count user groups (`GET /{id}/groups/count`)
+- Remove user from group (`DELETE /{id}/groups/{groupId}`)
 
 ### User role-mapping
 
@@ -168,6 +176,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get one (`GET /{realm}/groups/{id}`)
 - Update (`PUT /{realm}/groups/{id}`)
 - Delete (`DELETE /{realm}/groups/{id}`)
+- Count (`GET /{realm}/groups/count`)
 - List members (`GET /{realm}/groups/{id}/members`)
 - Set or create child (`POST /{realm}/groups/{id}/children`)
 

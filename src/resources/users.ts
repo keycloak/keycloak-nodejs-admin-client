@@ -59,6 +59,11 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public count = this.makeRequest<UserQuery, number>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * role mappings
    */
@@ -199,22 +204,22 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public addToGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public addToGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'PUT',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
   });
 
-  public delFromGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
+  });
+
+  public countGroups = this.makeRequest<{id: string, search?: string}, {count: number}>({
+    method: 'GET',
+    path: '/{id}/groups/count',
+    urlParamKeys: ['id'],
   });
 
   /**
