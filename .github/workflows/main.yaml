@@ -39,5 +39,3 @@ jobs:
 
     - name: Run tests
       run: yarn test
-      env:
-        TRAVIS: true
