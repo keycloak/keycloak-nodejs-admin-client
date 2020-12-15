@@ -7,7 +7,7 @@ Node.js Keycloak admin client
 ## Features
 
 - TypeScript supported
-- Keycloak latest version (v4.1) supported
+- Keycloak version 7 supported
 - [Complete resource definitions](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/src/defs)
 - [Well-tested for supported APIs](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/test)
 
