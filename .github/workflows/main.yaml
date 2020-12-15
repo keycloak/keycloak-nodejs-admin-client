@@ -1,31 +1,43 @@
 name: Node.js CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10, 12, 14]
+        keycloak-version: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3]
+
+    # continue-on-error makes failed jobs not fail the build, but visually it still looks like a failed job
+    # github actions doesnt have anything like 'allow-failure' from Travis, see https://github.com/actions/toolkit/issues/399
+    # multiple versions can be added like this
+    # continue-on-error: ${{ matrix.keycloak-version != '7.0.1' && matrix.keycloak-version != '8.0.2' }}
+    continue-on-error: ${{ matrix.keycloak-version != '7.0.1' }}
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: docker pull jboss/keycloak:7.0.1
-    - name: run keycloak docker
-      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 jboss/keycloak:7.0.1
-    - name: Sleep for 30 seconds
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '30s'
-    - name: Build and test
+
+    - name: Pull Keycloak ${{ matrix.keycloak-version }}
+      run: docker pull docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
+
+    - name: Start Keycloak docker container
+      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
+
+    - name: Install test dependencies
       run: yarn --frozen-lockfile
-    - run: yarn test
+
+    - name: Wait for Keycloak
+      run: ./.github/workflows/wait-for-keycloak.sh
+
+    - name: Run tests
+      run: yarn test
       env:
         TRAVIS: true
