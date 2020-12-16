@@ -7,35 +7,40 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10, 12, 14]
-        keycloak-version: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3]
-
-    # continue-on-error makes failed jobs not fail the build, but visually it still looks like a failed job
-    # github actions doesnt have anything like 'allow-failure' from Travis, see https://github.com/actions/toolkit/issues/399
-    # multiple versions can be added like this
-    # continue-on-error: ${{ matrix.keycloak-version != '7.0.1' && matrix.keycloak-version != '8.0.2' }}
-    continue-on-error: ${{ matrix.keycloak-version != '7.0.1' }}
-
+        node-version: [10, 12]
+        keycloak-version: [7.0.1, 8.0.2]
+    continue-on-error: true
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+    - name: Dump job context
+      env:
+        JOB_CONTEXT: ${{ toJson(job) }}
+      run: echo "$JOB_CONTEXT"
+    - name: Dump steps context
+      env:
+        STEPS_CONTEXT: ${{ toJson(steps) }}
+      run: echo "$STEPS_CONTEXT"
+    - name: Dump runner context
+      env:
+        RUNNER_CONTEXT: ${{ toJson(runner) }}
+      run: echo "$RUNNER_CONTEXT"
+    - name: Dump strategy context
+      env:
+        STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+      run: echo "$STRATEGY_CONTEXT"
+    - name: Dump matrix context
+      env:
+        MATRIX_CONTEXT: ${{ toJson(matrix) }}
+      run: echo "$MATRIX_CONTEXT"
 
-    - name: Pull Keycloak ${{ matrix.keycloak-version }}
-      run: docker pull docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
+    - name: log
+      run: echo '${{ toJSON(steps) }}'
 
-    - name: Start Keycloak docker container
-      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
-
-    - name: Install test dependencies
-      run: yarn --frozen-lockfile
-
-    - name: Wait for Keycloak
-      run: ./.github/workflows/wait-for-keycloak.sh
-
-    - name: Run tests
-      run: yarn test
+    - name: Fail
+      run: exit 1
