@@ -6,30 +6,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [10, 12, 14]
-        keycloak-version: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3]
-
-    # continue-on-error makes failed jobs not fail the build, but visually it still looks like a failed job
-    # github actions doesnt have anything like 'allow-failure' from Travis, see https://github.com/actions/toolkit/issues/399
-    # multiple versions can be added like this
-    # continue-on-error: ${{ matrix.keycloak-version != '7.0.1' && matrix.keycloak-version != '8.0.2' }}
-    continue-on-error: ${{ matrix.keycloak-version != '7.0.1' }}
-
+        node: [10, 12, 14]
+        keycloak: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node }}
 
-    - name: Pull Keycloak ${{ matrix.keycloak-version }}
-      run: docker pull docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
-
-    - name: Start Keycloak docker container
-      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak-version }}
+    - name: Start Keycloak ${{ matrix.keycloak }} container
+      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak }}
 
     - name: Install test dependencies
       run: yarn --frozen-lockfile
@@ -38,4 +29,13 @@ jobs:
       run: ./.github/workflows/wait-for-keycloak.sh
 
     - name: Run tests
-      run: yarn test
+      run: |
+        set -e
+        STATUS=0
+        yarn test || STATUS=$?
+        set +e
+        if [ $STATUS == 0 ]; then exit; fi;
+        TYPE=error
+        if [ ${{ matrix.keycloak == '9.0.3' || matrix.keycloak == '10.0.2' || matrix.keycloak == '11.0.3' }} = true ]; then TYPE=warning; fi;
+        echo "::$TYPE ::Tests failed on Keycloak ${{ matrix.keycloak }} with Node.js ${{ matrix.node }}"
+        if [ $TYPE = error ]; then exit 1; fi
