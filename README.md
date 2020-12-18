@@ -1,6 +1,6 @@
 ## keycloak-admin
 
-[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin) [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
+[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/@keycloak/keycloak-admin-client) [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
 
 Node.js Keycloak admin client
 
