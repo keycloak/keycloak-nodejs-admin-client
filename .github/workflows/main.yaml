@@ -20,7 +20,7 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Start Keycloak ${{ matrix.keycloak }} container
-      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak }}
+      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:${{ matrix.keycloak }}
 
     - name: Install test dependencies
       run: yarn --frozen-lockfile
