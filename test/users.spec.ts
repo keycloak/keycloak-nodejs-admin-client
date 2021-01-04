@@ -117,10 +117,7 @@ describe('Users', function () {
    * exeute actions email
    */
   it('should send user execute actions email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
+    if (process.env.CI) return; // not possible inside CI
     const userId = currentUser.id;
     await kcAdminClient.users.executeActionsEmail({
       id: userId,
@@ -163,10 +160,8 @@ describe('Users', function () {
    */
 
   it('should send user verify email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
+    if (process.env.CI) return; // not possible inside CI
+
     const userId = currentUser.id;
     await kcAdminClient.users.sendVerifyEmail({
       id: userId,
