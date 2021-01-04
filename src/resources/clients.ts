@@ -4,6 +4,7 @@ import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import PolicyRepresentation from '../defs/policyRepresentation';
+import ResourceRepresentation from '../defs/resourceRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
@@ -455,8 +456,48 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   /**
+   * Resource
+   */
+  public listResources = this.makeRequest<
+    {id: string, name: string},
+    ResourceRepresentation[]
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/resource',
+    urlParamKeys: ['id']
+  });
+
+  public createResource = this.makeUpdateRequest<
+    {id: string},
+    ResourceRepresentation,
+    ResourceRepresentation
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/resource',
+    urlParamKeys: ['id']
+  });
+
+  public delResource = this.makeRequest<
+    {id: string, resourceId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/authz/resource-server/resource/{resourceId}',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
+  /**
    * Policy
    */
+  public listPolicies = this.makeRequest<
+    {id: string, name: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/policy',
+    urlParamKeys: ['id'],
+  });
+
   public findByName = this.makeRequest<
     {id: string; name: string},
     PolicyRepresentation
@@ -528,6 +569,13 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
+  public listAllScopes = this.makeRequest<
+    {id: string}
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope',
+    urlParamKeys: ['id']
+  })
   public listScopesByResource = this.makeRequest<
     {id: string; resourceName: string},
     {id: string; name: string}[]
@@ -540,9 +588,19 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Permissions
    */
-  public createPermission = this.makeRequest<
+  public findPermissions = this.makeRequest<
+    {id: string; name: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/permission',
+    urlParamKeys: ['id'],
+  });
+
+  public createPermission = this.makeUpdateRequest<
+    {id: string; type: string},
     PolicyRepresentation,
-    {id: string; type: string}
+    PolicyRepresentation
   >({
     method: 'POST',
     path: '/{id}/authz/resource-server/permission/{type}',
