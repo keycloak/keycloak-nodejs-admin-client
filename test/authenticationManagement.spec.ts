@@ -135,4 +135,4 @@ describe('Authentication management', () => {
       kcAdminClient.clients.del({id: createdClient.id});
     });
   });
-});
+}).timeout(10000);

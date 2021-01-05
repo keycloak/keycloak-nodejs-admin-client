@@ -114,7 +114,7 @@ describe('Users', function () {
   });
 
   /**
-   * exeute actions email
+   * execute actions email
    */
   it('should send user execute actions email', async () => {
     if (process.env.CI) return; // not possible inside CI
@@ -130,12 +130,16 @@ describe('Users', function () {
    * remove totp
    */
 
-  it('should remove totp', async () => {
-    // todo: find a way to add totp from api
-    const userId = currentUser.id;
-    await kcAdminClient.users.removeTotp({
-      id: userId,
-    });
+  it('should remove totp', async function () {
+      if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith("7.")) {
+          // todo: find a way to add totp from api
+          const userId = currentUser.id;
+          await kcAdminClient.users.removeTotp({
+              id: userId,
+          });
+      } else {
+          this.skip();
+      }
   });
 
   /**
