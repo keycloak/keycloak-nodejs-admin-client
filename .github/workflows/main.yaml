@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         node: [10, 12, 14]
-        keycloak: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3]
+        keycloak: [7.0.1, 8.0.2, 9.0.3, 10.0.2, 11.0.3, 12.0.1]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Start Keycloak ${{ matrix.keycloak }} container
-      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 docker.io/jboss/keycloak:${{ matrix.keycloak }}
+      run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:${{ matrix.keycloak }}
 
     - name: Install test dependencies
       run: yarn --frozen-lockfile
@@ -36,6 +36,6 @@ jobs:
         set +e
         if [ $STATUS == 0 ]; then exit; fi;
         TYPE=error
-        if [ ${{ matrix.keycloak == '8.0.2' || matrix.keycloak == '9.0.3' || matrix.keycloak == '10.0.2' || matrix.keycloak == '11.0.3' }} = true ]; then TYPE=warning; fi;
+        if [ ${{ matrix.keycloak == '8.0.2' || matrix.keycloak == '9.0.3' || matrix.keycloak == '10.0.2' || matrix.keycloak == '11.0.3' || matrix.keycloak == '12.0.1' }} = true ]; then TYPE=warning; fi;
         echo "::$TYPE ::Tests failed on Keycloak ${{ matrix.keycloak }} with Node.js ${{ matrix.node }}"
         if [ $TYPE = error ]; then exit 1; fi
