@@ -36,7 +36,7 @@ jobs:
         set +e
         if [ $STATUS == 0 ]; then exit; fi;
         TYPE=error
-        if [ ${{ matrix.keycloak == '8.0.2' || matrix.keycloak == '9.0.3' || matrix.keycloak == '10.0.2' || matrix.keycloak == '11.0.3' || matrix.keycloak == '12.0.1' }} = true ]; then TYPE=warning; fi;
+        if [ ${{ matrix.keycloak == '9.0.3' || matrix.keycloak == '10.0.2' || matrix.keycloak == '11.0.3' || matrix.keycloak == '12.0.1' }} = true ]; then TYPE=warning; fi;
         echo "::$TYPE ::Tests failed on Keycloak ${{ matrix.keycloak }} with Node.js ${{ matrix.node }}"
         if [ $TYPE = error ]; then exit 1; fi
       env:
