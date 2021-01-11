@@ -10,6 +10,7 @@ import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import Resource from './resource';
+import ResourceEvaluation from "../defs/resourceEvaluation";
 
 export interface ClientQuery {
   first?: number;
@@ -486,6 +487,15 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'resourceId'],
   });
 
+  public evaluateResource = this.makeUpdateRequest<
+    { id: string },
+    ResourceEvaluation
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/policy/evaluate',
+    urlParamKeys: ['id'],
+  });
+
   /**
    * Policy
    */
@@ -583,6 +593,15 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/resource/{resourceName}/scopes',
     urlParamKeys: ['id', 'resourceName'],
+  });
+
+  public createAuthorizationScope = this.makeUpdateRequest<
+    {id: string},
+    {name: string; displayName?: string; iconUri?: string}
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/scope',
+    urlParamKeys: ['id'],
   });
 
   /**
