@@ -183,7 +183,7 @@ describe('Authentication management', () => {
   describe('Flow executions', () => {
     it('should fetch all executions for a flow', async () => {
       const executions = await kcAdminClient.authenticationManagement.getExecutions({flow: 'browser'});
-      expect(executions.length).to.be.eq(8);
+      expect(executions.length).to.be.gt(5);
     });
 
     const flowName = 'executionTest';
