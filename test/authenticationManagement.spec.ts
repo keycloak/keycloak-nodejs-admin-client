@@ -135,4 +135,109 @@ describe('Authentication management', () => {
       kcAdminClient.clients.del({id: createdClient.id});
     });
   });
+  describe('Flows', () => {
+
+    it('should get authentication flow', async () => {
+      const flows = await kcAdminClient.authenticationManagement.getFlows();
+
+      expect(flows.map(flow => flow.alias)).to.be.deep.eq(['browser', 'direct grant', 'registration', 'reset credentials',
+        'clients', 'first broker login', 'docker auth', 'http challenge']);
+    });
+
+    it('should create new authentication flow', async () => {
+      const flowName = 'test';
+      await kcAdminClient.authenticationManagement.createFlow({alias: flowName, providerId: 'basic-flow', description: '', topLevel: true, builtIn: false});
+
+      const flows = await kcAdminClient.authenticationManagement.getFlows();
+      expect(flows.find(f => f.alias === flowName)).to.be.ok;
+    });
+
+    const flowName = 'copy of browser';
+    it('should copy existing authentication flow', async () => {
+      await kcAdminClient.authenticationManagement.copyFlow({flow: 'browser', newName: flowName});
+
+      const flows = await kcAdminClient.authenticationManagement.getFlows();
+      const flow = flows.find(f => f.alias === flowName);
+      expect(flow).to.be.ok;
+    });
+
+    it('should update authentication flow', async () => {
+      const flows = await kcAdminClient.authenticationManagement.getFlows();
+      const flow = flows.find(f => f.alias === flowName);
+      const description = 'Updated description';
+      flow.description = description;
+      const updatedFlow = await kcAdminClient.authenticationManagement.updateFlow({flowId: flow.id}, flow);
+
+      expect(updatedFlow.description).to.be.eq(description);
+    });
+
+    it('should delete authentication flow', async () => {
+      let flows = await kcAdminClient.authenticationManagement.getFlows();
+      const flow = flows.find(f => f.alias === flowName);
+      await kcAdminClient.authenticationManagement.deleteFlow({flowId: flow.id});
+
+      flows = await kcAdminClient.authenticationManagement.getFlows();
+      expect(flows.find(f => f.alias === flowName)).to.be.undefined;
+    });
+  });
+  describe('Flow executions', () => {
+    it('should fetch all executions for a flow', async () => {
+      const executions = await kcAdminClient.authenticationManagement.getExecutions({flow: 'browser'});
+      expect(executions.length).to.be.gt(5);
+    });
+
+    const flowName = 'executionTest';
+    it('should add execution to a flow', async () => {
+      await kcAdminClient.authenticationManagement.copyFlow({flow: 'browser', newName: flowName});
+      const execution = await kcAdminClient.authenticationManagement.addExecutionToFlow({flow: flowName, provider: 'auth-otp-form'});
+
+      expect(execution.id).to.be.ok;
+    });
+
+    it('should update execution to a flow', async () => {
+      let executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      let execution = executions[executions.length - 1];
+      const choice = execution.requirementChoices[1];
+      execution.requirement = choice;
+      await kcAdminClient.authenticationManagement.updateExecution({flow: flowName}, execution);
+
+      executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      execution = executions[executions.length - 1];
+
+      expect(execution.requirement).to.be.eq(choice);
+    });
+
+    it('should delete execution', async () => {
+      let executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      const id = executions[0].id;
+      await kcAdminClient.authenticationManagement.delExecution({id});
+      executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      expect(executions.find(ex => ex.id === id)).to.be.undefined;
+    });
+
+    it('should raise priority of execution', async () => {
+      let executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      let execution = executions[executions.length - 1];
+      const priority = execution.index;
+      await kcAdminClient.authenticationManagement.raisePriorityExecution({id: execution.id});
+
+      executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      execution = executions.find(ex => ex.id === execution.id);
+
+      expect(execution.index).to.be.eq(priority - 1);
+    });
+
+    it('should lower priority of execution', async () => {
+      let executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      let execution = executions[0];
+      const priority = execution.index;
+      await kcAdminClient.authenticationManagement.lowerPriorityExecution({id: execution.id});
+
+      executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      execution = executions.find(ex => ex.id === execution.id);
+
+      expect(execution.index).to.be.eq(priority + 1);
+    });
+
+  });
 }).timeout(10000);

@@ -1,4 +1,4 @@
-import ResourceRepresentation from "./resourceRepresentation";
+import ResourceRepresentation from './resourceRepresentation';
 
 export default interface ResourceEvaluation {
   rolesIds?: string[];

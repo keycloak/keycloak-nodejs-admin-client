@@ -80,10 +80,10 @@ describe('Users', function () {
     const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
 
     if (process.env.KEYCLOAK_VERSION
-        && (
-          process.env.KEYCLOAK_VERSION.startsWith("7.")
-          || process.env.KEYCLOAK_VERSION.startsWith("8.")
-        )) {
+      && (
+        process.env.KEYCLOAK_VERSION.startsWith('7.')
+        || process.env.KEYCLOAK_VERSION.startsWith('8.')
+      )) {
       // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
       expect(numUsers).to.equal(2);
     } else {
@@ -140,15 +140,15 @@ describe('Users', function () {
    */
 
   it('should remove totp', async function () {
-      if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith("7.")) {
-          // todo: find a way to add totp from api
-          const userId = currentUser.id;
-          await kcAdminClient.users.removeTotp({
-              id: userId,
-          });
-      } else {
-          this.skip();
-      }
+    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('7.')) {
+      // todo: find a way to add totp from api
+      const userId = currentUser.id;
+      await kcAdminClient.users.removeTotp({
+        id: userId,
+      });
+    } else {
+      this.skip();
+    }
   });
 
   /**
