@@ -5,6 +5,27 @@ import {credentials} from './constants';
 import faker from 'faker';
 const expect = chai.expect;
 
+
+const createRealm = async (kcAdminClient: KeycloakAdminClient) => {
+  const realmId = faker.internet.userName().toLowerCase();
+  const realmName = faker.internet.userName().toLowerCase();
+  const realm = await kcAdminClient.realms.create({
+    id: realmId,
+    realm: realmName,
+  });
+  expect(realm.realmName).to.be.equal(realmName);
+
+  return {realmId, realmName};
+};
+
+const deleteRealm = async (kcAdminClient: KeycloakAdminClient, currentRealmName: string) => {
+  await kcAdminClient.realms.del({realm: currentRealmName});
+  const realm = await kcAdminClient.realms.findOne({
+    realm: currentRealmName,
+  });
+  expect(realm).to.be.null;
+};
+
 describe('Realms', () => {
   let kcAdminClient: KeycloakAdminClient;
   let currentRealmId: string;
@@ -72,15 +93,9 @@ describe('Realms', () => {
       kcAdminClient = new KeycloakAdminClient();
       await kcAdminClient.auth(credentials);
 
-      const realmId = faker.internet.userName().toLowerCase();
-      const realmName = faker.internet.userName().toLowerCase();
-      const realm = await kcAdminClient.realms.create({
-        id: realmId,
-        realm: realmName,
-      });
-      expect(realm.realmName).to.be.equal(realmName);
-      currentRealmId = realmId;
-      currentRealmName = realmName;
+      const created = await createRealm(kcAdminClient);
+      currentRealmId = created.realmId;
+      currentRealmName = created.realmName;
     });
 
     it('list events of a realm', async () => {
@@ -92,32 +107,7 @@ describe('Realms', () => {
       expect(events).to.be.ok;
     });
 
-    after(async () => {
-      await kcAdminClient.realms.del({realm: currentRealmName});
-      const realm = await kcAdminClient.realms.findOne({
-        realm: currentRealmName,
-      });
-      expect(realm).to.be.null;
-    });
-  });
-
-  describe('Realm Admin Events', () => {
-    before(async () => {
-      kcAdminClient = new KeycloakAdminClient();
-      await kcAdminClient.auth(credentials);
-
-      const realmId = faker.internet.userName().toLowerCase();
-      const realmName = faker.internet.userName().toLowerCase();
-      const realm = await kcAdminClient.realms.create({
-        id: realmId,
-        realm: realmName,
-      });
-      expect(realm.realmName).to.be.equal(realmName);
-      currentRealmId = realmId;
-      currentRealmName = realmName;
-    });
-
-    it('list events of a realm', async () => {
+    it('list admin events of a realm', async () => {
       // @TODO: In order to test it, there have to be events
       const events = await kcAdminClient.realms.findAdminEvents({
         realm: currentRealmName,
@@ -127,11 +117,7 @@ describe('Realms', () => {
     });
 
     after(async () => {
-      await kcAdminClient.realms.del({realm: currentRealmName});
-      const realm = await kcAdminClient.realms.findOne({
-        realm: currentRealmName,
-      });
-      expect(realm).to.be.null;
+      deleteRealm(kcAdminClient, currentRealmName);
     });
   });
 
@@ -140,15 +126,9 @@ describe('Realms', () => {
       kcAdminClient = new KeycloakAdminClient();
       await kcAdminClient.auth(credentials);
 
-      const realmId = faker.internet.userName().toLowerCase();
-      const realmName = faker.internet.userName().toLowerCase();
-      const realm = await kcAdminClient.realms.create({
-        id: realmId,
-        realm: realmName,
-      });
-      expect(realm.realmName).to.be.equal(realmName);
-      currentRealmId = realmId;
-      currentRealmName = realmName;
+      const created = await createRealm(kcAdminClient);
+      currentRealmId = created.realmId;
+      currentRealmName = created.realmName;
     });
 
     it('get users management permissions', async () => {
@@ -170,12 +150,13 @@ describe('Realms', () => {
       expect(managementPermissions).to.include({enabled: true});
     });
 
+    it('get realm keys', async () => {
+      const keys = await kcAdminClient.realms.getKeys({realm: currentRealmName});
+      expect(keys.active).to.be.ok;
+    });
+
     after(async () => {
-      await kcAdminClient.realms.del({realm: currentRealmName});
-      const realm = await kcAdminClient.realms.findOne({
-        realm: currentRealmName,
-      });
-      expect(realm).to.be.null;
+      deleteRealm(kcAdminClient, currentRealmName);
     });
   });
 
@@ -184,15 +165,9 @@ describe('Realms', () => {
       kcAdminClient = new KeycloakAdminClient();
       await kcAdminClient.auth(credentials);
 
-      const realmId = faker.internet.userName().toLowerCase();
-      const realmName = faker.internet.userName().toLowerCase();
-      const realm = await kcAdminClient.realms.create({
-        id: realmId,
-        realm: realmName,
-      });
-      expect(realm.realmName).to.be.equal(realmName);
-      currentRealmId = realmId;
-      currentRealmName = realmName;
+      const created = await createRealm(kcAdminClient);
+      currentRealmId = created.realmId;
+      currentRealmName = created.realmName;
     });
 
     it('log outs all sessions', async () => {
@@ -203,12 +178,7 @@ describe('Realms', () => {
     });
 
     after(async () => {
-      await kcAdminClient.realms.del({realm: currentRealmName});
-      const realm = await kcAdminClient.realms.findOne({
-        realm: currentRealmName,
-      });
-      expect(realm).to.be.null;
+      deleteRealm(kcAdminClient, currentRealmName);
     });
   });
-
 });

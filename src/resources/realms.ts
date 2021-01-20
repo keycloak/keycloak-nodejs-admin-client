@@ -3,6 +3,7 @@ import AdminEventRepresentation from '../defs/adminEventRepresentation';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
+import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
 
 import {KeycloakAdminClient} from '../client';
 
@@ -165,6 +166,12 @@ export class Realms extends Resource {
     method: 'DELETE',
     path: '/{realm}/sessions/{session}',
     urlParamKeys: ['realm', 'session'],
+  });
+
+  public getKeys = this.makeRequest<{realm: string}, KeysMetadataRepresentation>({
+    method: 'GET',
+    path: '/{realm}/keys',
+    urlParamKeys: ['realm'],
   });
 
   constructor(client: KeycloakAdminClient) {
