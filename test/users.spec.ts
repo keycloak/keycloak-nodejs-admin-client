@@ -9,6 +9,8 @@ import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
 import {omit} from 'lodash';
+import GroupRepresentation from '../src/defs/groupRepresentation';
+import {fail} from 'assert';
 
 const expect = chai.expect;
 
@@ -68,6 +70,27 @@ describe('Users', function () {
     expect(users).to.be.ok;
   });
 
+  it('count users', async () => {
+    const numUsers = await kcAdminClient.users.count();
+    // admin user + created user in before hook
+    expect(numUsers).to.equal(2);
+  });
+
+  it('count users with filter', async () => {
+    const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
+
+    if (process.env.KEYCLOAK_VERSION
+      && (
+        process.env.KEYCLOAK_VERSION.startsWith('7.')
+        || process.env.KEYCLOAK_VERSION.startsWith('8.')
+      )) {
+      // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
+      expect(numUsers).to.equal(2);
+    } else {
+      expect(numUsers).to.equal(1);
+    }
+  });
+
   it('get single users', async () => {
     const userId = currentUser.id;
     const user = await kcAdminClient.users.findOne({
@@ -100,13 +123,10 @@ describe('Users', function () {
   });
 
   /**
-   * exeute actions email
+   * execute actions email
    */
-  it('should send user exeute actions email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
+  it('should send user execute actions email', async () => {
+    if (process.env.CI) return; // not possible inside CI
     const userId = currentUser.id;
     await kcAdminClient.users.executeActionsEmail({
       id: userId,
@@ -119,12 +139,16 @@ describe('Users', function () {
    * remove totp
    */
 
-  it('should remove totp', async () => {
-    // todo: find a way to add totp from api
-    const userId = currentUser.id;
-    await kcAdminClient.users.removeTotp({
-      id: userId,
-    });
+  it('should remove totp', async function () {
+    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('7.')) {
+      // todo: find a way to add totp from api
+      const userId = currentUser.id;
+      await kcAdminClient.users.removeTotp({
+        id: userId,
+      });
+    } else {
+      this.skip();
+    }
   });
 
   /**
@@ -149,13 +173,90 @@ describe('Users', function () {
    */
 
   it('should send user verify email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
+    if (process.env.CI) return; // not possible inside CI
+
     const userId = currentUser.id;
     await kcAdminClient.users.sendVerifyEmail({
       id: userId,
+    });
+  });
+
+  /**
+   * Groups
+   */
+  describe('user groups', () => {
+    let currentGroup: GroupRepresentation;
+    before(async () => {
+      const group = await kcAdminClient.groups.create({
+        name: 'cool-group',
+      });
+      expect(group.id).to.be.ok;
+      currentGroup = await kcAdminClient.groups.findOne({id: group.id});
+    });
+
+    after(async () => {
+      const groupId = currentGroup.id;
+      const groups = await kcAdminClient.groups.find({max: 100});
+      await Promise.all(groups.map((_group: GroupRepresentation) => {
+        return kcAdminClient.groups.del({id: _group.id});
+      }));
+
+      const group = await kcAdminClient.groups.findOne({
+        id: groupId,
+      });
+      expect(group).to.be.null;
+    });
+
+    it('add group', async () => {
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(0);
+      await kcAdminClient.users.addToGroup({groupId: currentGroup.id, id: currentUser.id});
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(1);
+    });
+
+    it('count groups', async () => {
+      let {count} = await kcAdminClient.users.countGroups({id: currentUser.id});
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'cool-group'})).count;
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'fake-group'})).count;
+      expect(count).to.eq(0);
+    });
+
+    it('list groups', async () => {
+      const groups = await kcAdminClient.users.listGroups({id: currentUser.id});
+      expect(groups).to.be.ok;
+      expect(groups.length).to.be.eq(1);
+      expect(groups[0].name).to.eq('cool-group');
+    });
+
+    it('remove group', async () => {
+      const newGroup = await kcAdminClient.groups.create({name: 'test-group'});
+      await kcAdminClient.users.addToGroup({id: currentUser.id, groupId: newGroup.id});
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(2);
+
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: newGroup.id});
+      } catch (e) {
+        fail('Didn\'t expect an error when deleting a vaiid group id');
+      }
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.equal(1);
+
+      await kcAdminClient.groups.del({id: newGroup.id});
+
+      // delete a non-existing group should throw an error
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: 'fake-group-id'});
+        fail('Expected an error when deleting a fake id not assigned to the user');
+      } catch (e) {
+        expect(e).to.be.ok;
+      }
     });
   });
 

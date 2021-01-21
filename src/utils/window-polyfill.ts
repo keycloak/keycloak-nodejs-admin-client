@@ -1,4 +1,4 @@
-const globalObject = global as any;
+const globalObject = typeof global !== "undefined" ? global as any : {};
 if (!globalObject.window) {
   globalObject.window = {};
 }

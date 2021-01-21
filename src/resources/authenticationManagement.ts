@@ -1,6 +1,8 @@
 import Resource from './resource';
 import RequiredActionProviderRepresentation from '../defs/requiredActionProviderRepresentation';
 import {KeycloakAdminClient} from '../client';
+import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
+import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
 
 export class AuthenticationManagement extends Resource {
   /**
@@ -75,6 +77,78 @@ export class AuthenticationManagement extends Resource {
   public getUnregisteredRequiredActions = this.makeRequest<void>({
     method: 'GET',
     path: '/unregistered-required-actions',
+  });
+
+  public getFlows = this.makeRequest<void, AuthenticationFlowRepresentation[]>({
+    method: 'GET',
+    path: '/flows',
+  });
+
+  public createFlow = this.makeRequest<AuthenticationFlowRepresentation, void>({
+    method: 'POST',
+    path: '/flows',
+    returnResourceIdInLocationHeader: {field: 'id'},
+  });
+
+  public copyFlow = this.makeRequest<{flow: string, newName: string}>({
+    method: 'POST',
+    path: '/flows/{flow}/copy',
+    urlParamKeys: ['flow'],
+  });
+
+  public deleteFlow = this.makeRequest<{flowId: string}>({
+    method: 'DELETE',
+    path: '/flows/{flowId}',
+    urlParamKeys: ['flowId'],
+  });
+
+  public updateFlow = this.makeUpdateRequest<{flowId: string}, AuthenticationFlowRepresentation>({
+    method: 'PUT',
+    path: '/flows/{flowId}',
+    urlParamKeys: ['flowId'],
+  });
+
+  public getExecutions = this.makeRequest<{flow: string}, AuthenticationExecutionInfoRepresentation[]>({
+    method: 'GET',
+    path: '/flows/{flow}/executions',
+    urlParamKeys: ['flow'],
+  });
+
+  public addExecution = this.makeUpdateRequest<{flow: string}, AuthenticationExecutionInfoRepresentation>({
+    method: 'POST',
+    path: '/flows/{flow}/executions',
+    urlParamKeys: ['flow'],
+  });
+
+  public addExecutionToFlow = this.makeRequest<{flow: string, provider: string}>({
+    method: 'POST',
+    path: '/flows/{flow}/executions/execution',
+    urlParamKeys: ['flow'],
+    returnResourceIdInLocationHeader: {field: 'id'},
+  })
+
+  public updateExecution = this.makeUpdateRequest<{flow: string}, AuthenticationExecutionInfoRepresentation>({
+    method: 'PUT',
+    path: '/flows/{flow}/executions',
+    urlParamKeys: ['flow'],
+  });
+
+  public delExecution = this.makeRequest<{id: string}>({
+    method: 'DELETE',
+    path: '/executions/{id}',
+    urlParamKeys: ['id'],
+  });
+
+  public lowerPriorityExecution = this.makeRequest<{id: string}>({
+    method: 'POST',
+    path: '/executions/{id}/lower-priority',
+    urlParamKeys: ['id'],
+  });
+
+  public raisePriorityExecution = this.makeRequest<{id: string}>({
+    method: 'POST',
+    path: '/executions/{id}/raise-priority',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {

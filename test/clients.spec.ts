@@ -729,6 +729,49 @@ describe('Clients', () => {
         expect(rolesAfter).to.be.ok;
         expect(rolesAfter).to.eql([]);
       });
+
+      it('get effective scope mapping of all roles for a specific container', async () => {
+        const {id: clientUniqueId} = currentClient;
+        const roles = await kcAdminClient.clients.evaluatePermission({
+          id: clientUniqueId,
+          roleContainer: 'master',
+          type: 'granted',
+          scope: 'openid',
+        });
+
+        expect(roles).to.be.ok;
+        expect(roles.length).to.be.eq(4);
+      });
+
+      it('get list of all protocol mappers', async () => {
+        const {id: clientUniqueId} = currentClient;
+        const protocolMappers = await kcAdminClient.clients.evaluateListProtocolMapper(
+          {
+            id: clientUniqueId,
+            scope: 'openid',
+          },
+        );
+        expect(protocolMappers).to.be.ok;
+        expect(protocolMappers.length).to.be.gt(10);
+      });
+
+      it('get JSON with payload of example access token', async () => {
+        const {id: clientUniqueId} = currentClient;
+        const username = faker.internet.userName();
+        const user = await kcAdminClient.users.create({
+          username,
+        });
+        const accessToken = await kcAdminClient.clients.evaluateGenerateAccessToken(
+          {
+            id: clientUniqueId,
+            userId: user.id,
+            scope: 'openid',
+          },
+        );
+
+        expect(accessToken).to.be.ok;
+        await kcAdminClient.users.del({id: user.id});
+      });
     });
 
     describe('realm', () => {
