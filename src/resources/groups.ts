@@ -12,6 +12,11 @@ export interface GroupQuery {
   search?: string;
 }
 
+export interface GroupCountQuery {
+  search?: string;
+  top?: boolean;
+}
+
 export class Groups extends Resource<{realm?: string}> {
   public find = this.makeRequest<GroupQuery, GroupRepresentation[]>({
     method: 'GET',
@@ -49,6 +54,12 @@ export class Groups extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+
+  public count = this.makeRequest<GroupCountQuery, {count: number}>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * Set or create child.
    * This will just set the parent if it exists. Create it and set the parent if the group doesn’t exist.
@@ -81,7 +92,7 @@ export class Groups extends Resource<{realm?: string}> {
 
   /**
    * Role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_role_mapper_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_role_mapper_resource
    */
 
   public listRoleMappings = this.makeRequest<
@@ -133,7 +144,7 @@ export class Groups extends Resource<{realm?: string}> {
 
   /**
    * Client role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
    */
 
   public listClientRoleMappings = this.makeRequest<

@@ -59,6 +59,11 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public count = this.makeRequest<UserQuery, number>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * role mappings
    */
@@ -122,7 +127,7 @@ export class Users extends Resource<{realm?: string}> {
 
   /**
    * Client role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
    */
 
   public listClientRoleMappings = this.makeRequest<
@@ -199,22 +204,22 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public addToGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public addToGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'PUT',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
   });
 
-  public delFromGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
+  });
+
+  public countGroups = this.makeRequest<{id: string, search?: string}, {count: number}>({
+    method: 'GET',
+    path: '/{id}/groups/count',
+    urlParamKeys: ['id'],
   });
 
   /**

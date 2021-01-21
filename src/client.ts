@@ -11,6 +11,7 @@ import {Components} from './resources/components';
 import {AuthenticationManagement} from './resources/authenticationManagement';
 import {ServerInfo} from './resources/serverInfo';
 import {WhoAmI} from './resources/whoAmI';
+import {AttackDetection} from './resources/attackDetection';
 import {AxiosRequestConfig} from 'axios';
 import './utils/window-polyfill';
 import Keycloak, {
@@ -18,6 +19,7 @@ import Keycloak, {
   KeycloakInitOptions,
   KeycloakInstance,
 } from 'keycloak-js';
+import {Sessions} from './resources/sessions';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -37,6 +39,8 @@ export class KeycloakAdminClient {
   public components: Components;
   public serverInfo: ServerInfo;
   public whoAmI: WhoAmI;
+  public attackDetection: AttackDetection;
+  public sessions: Sessions;
   public authenticationManagement: AuthenticationManagement;
 
   // Members
@@ -67,6 +71,8 @@ export class KeycloakAdminClient {
     this.authenticationManagement = new AuthenticationManagement(this);
     this.serverInfo = new ServerInfo(this);
     this.whoAmI = new WhoAmI(this);
+    this.sessions = new Sessions(this);
+    this.attackDetection = new AttackDetection(this);
   }
 
   public async auth(credentials: Credentials) {

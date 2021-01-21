@@ -11,7 +11,7 @@ export interface ComponentQuery {
 export class Components extends Resource<{realm?: string}> {
   /**
    * components
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_component_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_component_resource
    */
 
   public find = this.makeRequest<ComponentQuery, ComponentRepresentation[]>({

@@ -2,7 +2,6 @@ import {KeycloakAdminClient} from '../client';
 import ClientRepresentation from '../defs/clientRepresentation';
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
-import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
 import PolicyRepresentation from '../defs/policyRepresentation';
 import ResourceRepresentation from '../defs/resourceRepresentation';
@@ -10,6 +9,7 @@ import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
+import ResourceEvaluation from '../defs/resourceEvaluation';
 import Resource from './resource';
 
 export interface ClientQuery {
@@ -344,6 +344,44 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'client'],
   });
 
+  public evaluatePermission = this.makeRequest<
+    {
+      id: string;
+      roleContainer: string;
+      type: 'granted' | 'not-granted';
+      scope: string;
+    },
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/scope-mappings/{roleContainer}/{type}',
+    urlParamKeys: ['id', 'roleContainer', 'type'],
+    queryParamKeys: ['scope'],
+  });
+
+  public evaluateListProtocolMapper = this.makeRequest<
+    {
+      id: string;
+      scope: string;
+    },
+    ProtocolMapperRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/protocol-mappers',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope'],
+  });
+
+  public evaluateGenerateAccessToken = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    object
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-access-token',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
+  });
+
   public addRealmScopeMappings = this.makeUpdateRequest<
     {id: string},
     RoleRepresentation[],
@@ -427,7 +465,7 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '{id}/authz/resource-server/resource',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   public createResource = this.makeUpdateRequest<
@@ -437,7 +475,7 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'POST',
     path: '{id}/authz/resource-server/resource',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   public delResource = this.makeRequest<
@@ -447,6 +485,15 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/{id}/authz/resource-server/resource/{resourceId}',
     urlParamKeys: ['id', 'resourceId'],
+  });
+
+  public evaluateResource = this.makeUpdateRequest<
+    {id: string},
+    ResourceEvaluation
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/policy/evaluate',
+    urlParamKeys: ['id'],
   });
 
   /**
@@ -537,8 +584,9 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
-    urlParamKeys: ['id']
-  })
+    urlParamKeys: ['id'],
+  });
+
   public listScopesByResource = this.makeRequest<
     {id: string; resourceName: string},
     {id: string; name: string}[]
@@ -546,6 +594,15 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/resource/{resourceName}/scopes',
     urlParamKeys: ['id', 'resourceName'],
+  });
+
+  public createAuthorizationScope = this.makeUpdateRequest<
+    {id: string},
+    {name: string; displayName?: string; iconUri?: string}
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/scope',
+    urlParamKeys: ['id'],
   });
 
   /**
