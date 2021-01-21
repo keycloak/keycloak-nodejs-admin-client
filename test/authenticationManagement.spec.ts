@@ -145,11 +145,11 @@ describe('Authentication management', () => {
     });
 
     it('should create new authentication flow', async () => {
-      const flowName = 'test';
-      await kcAdminClient.authenticationManagement.createFlow({alias: flowName, providerId: 'basic-flow', description: '', topLevel: true, builtIn: false});
+      const flow = 'test';
+      await kcAdminClient.authenticationManagement.createFlow({alias: flow, providerId: 'basic-flow', description: '', topLevel: true, builtIn: false});
 
       const flows = await kcAdminClient.authenticationManagement.getFlows();
-      expect(flows.find(f => f.alias === flowName)).to.be.ok;
+      expect(flows.find(f => f.alias === flow)).to.be.ok;
     });
 
     const flowName = 'copy of browser';
@@ -192,6 +192,14 @@ describe('Authentication management', () => {
       const execution = await kcAdminClient.authenticationManagement.addExecutionToFlow({flow: flowName, provider: 'auth-otp-form'});
 
       expect(execution.id).to.be.ok;
+    });
+
+    it('should add flow to a flow', async () => {
+      const flow = await kcAdminClient.authenticationManagement.addFlowToFlow({flow: flowName, alias: 'subFlow', description: '', provider: 'registration-page-form', type: 'basic-flow'});
+      const executions = await kcAdminClient.authenticationManagement.getExecutions({flow: flowName});
+      expect(flow.id).to.be.ok;
+
+      expect(executions.map(execution => execution.displayName)).includes('subFlow');
     });
 
     it('should update execution to a flow', async () => {
