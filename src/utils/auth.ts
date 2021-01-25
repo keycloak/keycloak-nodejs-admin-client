@@ -13,6 +13,7 @@ export interface Credentials {
   clientSecret?: string;
   totp?: string;
   offlineToken?: boolean;
+  refreshToken?: string;
 }
 
 export interface Settings {
@@ -49,7 +50,12 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     client_id: credentials.clientId,
     totp: credentials.totp,
     ...(credentials.offlineToken ? {scope: 'offline_access'} : {}),
+    ...(credentials.refreshToken ? {
+      refresh_token: credentials.refreshToken,
+      client_secret: credentials.clientSecret,
+    } : {}),
   });
+
   const config: AxiosRequestConfig = {
     ...settings.requestConfig,
   };
