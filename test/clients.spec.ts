@@ -886,4 +886,21 @@ describe('Clients', () => {
       expect(userSessions).to.be.ok;
     });
   });
+
+  describe('nodes', () => {
+    const host = '127.0.0.1';
+    it('register a node manually', async () => {
+      await kcAdminClient.clients.addClusterNode({id: currentClient.id, node: host});
+      const client = await kcAdminClient.clients.findOne({id: currentClient.id});
+
+      expect(Object.keys(client.registeredNodes)).to.be.eql([host]);
+    });
+
+    it('remove registered host', async () => {
+      await kcAdminClient.clients.deleteClusterNode({id: currentClient.id, node: host});
+      const client = await kcAdminClient.clients.findOne({id: currentClient.id});
+
+      expect(client.registeredNodes).to.be.undefined;
+    })
+  });
 });

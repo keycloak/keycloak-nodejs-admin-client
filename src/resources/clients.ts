@@ -10,6 +10,7 @@ import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import ResourceEvaluation from '../defs/resourceEvaluation';
+import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
 
 export interface ClientQuery {
@@ -671,6 +672,30 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/installation/providers/{providerId}',
     urlParamKeys: ['id', 'providerId'],
+  });
+
+  public pushRevocation = this.makeRequest<{id: string}, void>({
+    method: 'POST',
+    path: '/{id}/push-revocation',
+    urlParamKeys: ['id'],
+  });
+
+  public addClusterNode = this.makeRequest<{id: string, node: string}, void>({
+    method: 'POST',
+    path: '/{id}/nodes',
+    urlParamKeys: ['id'],
+  });
+
+  public deleteClusterNode = this.makeRequest<{id: string, node: string}, void>({
+    method: 'DELETE',
+    path: '/{id}/nodes/{node}',
+    urlParamKeys: ['id', 'node'],
+  });
+
+  public testNodesAvailable = this.makeRequest<{id: string}, GlobalRequestResult>({
+    method: 'GET',
+    path: '/{id}/test-nodes-available',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
