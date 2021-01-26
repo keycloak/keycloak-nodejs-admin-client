@@ -901,6 +901,6 @@ describe('Clients', () => {
       const client = await kcAdminClient.clients.findOne({id: currentClient.id});
 
       expect(client.registeredNodes).to.be.undefined;
-    })
+    });
   });
 });
