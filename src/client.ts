@@ -20,6 +20,7 @@ import Keycloak, {
   KeycloakInstance,
 } from 'keycloak-js';
 import {Sessions} from './resources/sessions';
+import {UserStorageProvider} from './resources/userStorageProvider';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -30,6 +31,7 @@ export interface ConnectionConfig {
 export class KeycloakAdminClient {
   // Resources
   public users: Users;
+  public userStorageProvider: UserStorageProvider;
   public groups: Groups;
   public roles: Roles;
   public clients: Clients;
@@ -61,6 +63,7 @@ export class KeycloakAdminClient {
 
     // Initialize resources
     this.users = new Users(this);
+    this.userStorageProvider = new UserStorageProvider(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
     this.clients = new Clients(this);
