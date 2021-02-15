@@ -81,8 +81,8 @@ describe('Users', function () {
 
     if (process.env.KEYCLOAK_VERSION
       && (
-        process.env.KEYCLOAK_VERSION.startsWith('7.')
-        || process.env.KEYCLOAK_VERSION.startsWith('8.')
+          process.env.KEYCLOAK_VERSION.startsWith('7.')
+          || process.env.KEYCLOAK_VERSION.startsWith('8.')
       )) {
       // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
       expect(numUsers).to.equal(2);
