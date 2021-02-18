@@ -146,7 +146,7 @@ export class Agent {
     payloadKey,
     returnResourceIdInLocationHeader,
   }: {
-    method: string;
+    method;
     path: string;
     payload: any;
     urlParams: any;

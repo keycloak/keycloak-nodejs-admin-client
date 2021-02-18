@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@types/debug": "^0.0.30",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.1",
     "camelize": "^1.0.0",
     "debug": "^3.1.0",
@@ -29,7 +29,6 @@
     "url-template": "^2.0.8"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/bluebird": "^3.5.20",
     "@types/chai": "^4.1.2",
     "@types/faker": "^4.1.2",
