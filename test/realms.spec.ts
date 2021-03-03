@@ -88,6 +88,28 @@ describe('Realms', () => {
     expect(realm).to.be.null;
   });
 
+  describe('Realm Client Initial Access', () => {
+    before(async () => {
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
+
+      const created = await createRealm(kcAdminClient);
+      currentRealmName = created.realmName;
+
+      await kcAdminClient.realms.createClientsInitialAccess({realm: currentRealmName}, {count: 1, expiration: 0});
+    });
+
+    after(async () => {
+      deleteRealm(kcAdminClient, currentRealmName);
+    });
+
+    it('list client initial access', async () => {
+      const initialAccess = await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName});
+      expect(initialAccess).to.be.ok;
+      expect(initialAccess[0].count).to.be.eq(1);
+    });
+  });
+
   describe('Realm Events', () => {
     before(async () => {
       kcAdminClient = new KeycloakAdminClient();
