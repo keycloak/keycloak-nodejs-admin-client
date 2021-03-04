@@ -138,6 +138,9 @@ describe('Group user integration', () => {
         resourceName: permissions.resource,
       });
 
+      const policies = await kcAdminClient.clients.listPolicies({id: managementClient.id, resource: permissions.resource, max: 2});
+      expect(policies).to.have.length(2);
+
       expect(scopes).to.have.length(5);
 
       // Search for the id of the management role

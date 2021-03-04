@@ -21,7 +21,16 @@ export interface ClientQuery {
 }
 
 export interface PolicyQuery {
-  name: string;
+  id?: string;
+  name?: string;
+  type?: string;
+  resource?: string;
+  scope?: string;
+  permission?: string;
+  owner?: string;
+  fields?: string;
+  first?: number;
+  max?: number;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -501,7 +510,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Policy
    */
   public listPolicies = this.makeRequest<
-    {id: string, name: string},
+    PolicyQuery,
     PolicyRepresentation[]
   >({
     method: 'GET',
