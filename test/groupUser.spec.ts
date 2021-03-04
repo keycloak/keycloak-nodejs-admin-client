@@ -143,7 +143,7 @@ describe('Group user integration', () => {
       // Search for the id of the management role
       const roleId = scopes.find(scope => scope.name === 'manage').id;
 
-      const userPolicy = await kcAdminClient.clients.findByName({id: managementClient.id, name: `policy.manager.${currentGroup.id}`});
+      const userPolicy = await kcAdminClient.clients.findPolicyByName({id: managementClient.id, name: `policy.manager.${currentGroup.id}`});
 
       expect(userPolicy).to.deep.include({
         name: `policy.manager.${currentGroup.id}`,

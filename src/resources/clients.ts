@@ -509,7 +509,7 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public findByName = this.makeRequest<
+  public findPolicyByName = this.makeRequest<
     {id: string; name: string},
     PolicyRepresentation
   >({
@@ -559,7 +559,7 @@ export class Clients extends Resource<{realm?: string}> {
     policyName: string;
     policy: PolicyRepresentation;
   }): Promise<PolicyRepresentation> {
-    const policyFound = await this.findByName({
+    const policyFound = await this.findPolicyByName({
       id: payload.id,
       name: payload.policyName,
     });
@@ -568,7 +568,7 @@ export class Clients extends Resource<{realm?: string}> {
         {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
         payload.policy,
       );
-      return this.findByName({id: payload.id, name: payload.policyName});
+      return this.findPolicyByName({id: payload.id, name: payload.policyName});
     } else {
       return this.createPolicy(
         {id: payload.id, type: payload.policy.type},
