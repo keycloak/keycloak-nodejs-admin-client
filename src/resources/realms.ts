@@ -97,6 +97,14 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public delClientsInitialAccess = this.makeRequest<
+    {realm: string, id: string}, void
+  >({
+    method: 'DELETE',
+    path: '/{realm}/clients-initial-access/{id}',
+    urlParamKeys: ['realm', 'id'],
+  });
+
   /**
    * Remove a specific user session.
    */
