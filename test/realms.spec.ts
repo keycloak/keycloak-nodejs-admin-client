@@ -120,6 +120,18 @@ describe('Realms', () => {
       expect(initialAccess).to.be.ok;
       expect(initialAccess[0].count).to.be.eq(1);
     });
+
+    it('del client initial access', async () => {
+      const access = await kcAdminClient.realms.createClientsInitialAccess({realm: currentRealmName}, {count: 1, expiration: 0});
+      expect((await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName})).length).to.be.eq(2);
+
+      await kcAdminClient.realms.delClientsInitialAccess({realm: currentRealmName, id: access.id!});
+
+      const initialAccess = await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName});
+      expect(initialAccess).to.be.ok;
+      expect(initialAccess[0].count).to.be.eq(1);
+    });
+
   });
 
   describe('Realm Events', () => {
