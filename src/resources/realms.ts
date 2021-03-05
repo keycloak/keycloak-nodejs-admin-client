@@ -46,6 +46,23 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public export = this.makeRequest<
+    {
+      realm: string,
+      exportClients?: boolean,
+      exportGroupsAndRoles?: boolean
+    },
+    RealmRepresentation
+  >({
+    method: 'POST',
+    path: '/{realm}/partial-export',
+    urlParamKeys: ['realm'],
+    queryParamKeys: [
+      'exportClients',
+      'exportGroupsAndRoles'
+    ]
+  });
+
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */

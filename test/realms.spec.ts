@@ -63,6 +63,18 @@ describe('Realms', () => {
     });
   });
 
+  it('export a realm', async () => {
+    const realm = await kcAdminClient.realms.export({
+      realm: currentRealmName,
+      exportClients: true,
+      exportGroupsAndRoles: true,
+    });
+    expect(realm).to.include({
+      id: currentRealmId,
+      realm: currentRealmName,
+    });
+  });
+
   it('update a realm', async () => {
     await kcAdminClient.realms.update(
       {realm: currentRealmName},
