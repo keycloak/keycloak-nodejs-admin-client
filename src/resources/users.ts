@@ -163,6 +163,15 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'clientUniqueId'],
   });
 
+  public listCompositeClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}/composite',
+    urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
   /**
    * Send a update account email to the user
    * an email contains a link the user can click to perform a set of required actions.

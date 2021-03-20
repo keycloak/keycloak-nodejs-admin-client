@@ -142,7 +142,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get realm-level role mappings (`GET /{realm}/users/{id}/role-mappings/realm`)
 - Delete realm-level role mappings (`DELETE /{realm}/users/{id}/role-mappings/realm`)
 - Get realm-level roles that can be mapped (`GET /{realm}/users/{id}/role-mappings/realm/available`)
-- Get effective realm-level role mappings This will recurse all composite roles to get the result. (`GET /{realm}/users/{id}/role-mappings/realm/composite`)
+- Get effective realm-level role mappings. This will recurse all composite roles to get the result. (`GET /{realm}/users/{id}/role-mappings/realm/composite`)
 
 ### [Group](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_groups_resource)
 
@@ -203,6 +203,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get client-level role mappings for the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Delete client-level roles from user role mapping (`DELETE /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}/available`)
+- Get effective client-level role mappings. This will recurse all composite roles to get the result. (`GET /{realm}/users/{id}/role-mappings/clients/{client}/composite`)
 
 ### [Identity Providers](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_identity_providers_resource)
 

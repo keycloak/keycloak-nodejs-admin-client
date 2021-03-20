@@ -331,6 +331,17 @@ describe('Users', function () {
       expect(this.currentRole).to.deep.include(roles[0]);
     });
 
+    it('list client composite role-mappings of user', async () => {
+      const roles = await this.kcAdminClient.users.listCompositeClientRoleMappings(
+        {
+          id: this.currentUser.id,
+          clientUniqueId: this.currentClient.id,
+        },
+      );
+      // todo: add data integrity check later
+      expect(roles).to.be.ok;
+    });
+
     it('del client role-mappings from user', async () => {
       const roleName = faker.internet.userName();
       await this.kcAdminClient.clients.createRole({
