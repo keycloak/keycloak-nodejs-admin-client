@@ -92,6 +92,15 @@ setInterval(async () => {
 }, 58 * 1000); // 58 seconds
 ```
 
+In cases where you don't have a refresh token, eg. in a client credentials flow, you can simply call `kcAdminClient.auth` to get a new access token, like this:
+
+```js
+const credentials = { grantType: 'client_credentials', clientId: 'clientId', clientSecret: 'some-client-secret-uuid' };
+await kcAdminClient.auth(credentials);
+
+setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
