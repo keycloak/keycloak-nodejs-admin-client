@@ -9,5 +9,5 @@ export default interface ComponentRepresentation {
   providerType?: string;
   parentId?: string;
   subType?: string;
-  config?: {[index: string]: string};
+  config?: {[index: string]: string | string[]};
 }
