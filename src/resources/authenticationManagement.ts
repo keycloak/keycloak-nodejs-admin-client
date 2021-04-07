@@ -120,12 +120,19 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ['flow'],
   });
 
-  public addExecutionToFlow = this.makeRequest<{flow: string, provider: string}>({
+  public addExecutionToFlow = this.makeRequest<{flow: string, provider: string}, AuthenticationExecutionInfoRepresentation>({
     method: 'POST',
     path: '/flows/{flow}/executions/execution',
     urlParamKeys: ['flow'],
     returnResourceIdInLocationHeader: {field: 'id'},
-  })
+  });
+
+  public addFlowToFlow = this.makeRequest<{flow: string, alias: string, type: string, provider: string, description: string}, AuthenticationFlowRepresentation>({
+    method: 'POST',
+    path: '/flows/{flow}/executions/flow',
+    urlParamKeys: ['flow'],
+    returnResourceIdInLocationHeader: {field: 'id'},
+  });
 
   public updateExecution = this.makeUpdateRequest<{flow: string}, AuthenticationExecutionInfoRepresentation>({
     method: 'PUT',

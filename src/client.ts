@@ -1,5 +1,6 @@
 import {getToken, Credentials} from './utils/auth';
 import {defaultBaseUrl, defaultRealm} from './utils/constants';
+import {Cache} from './resources/cache';
 import {Users} from './resources/users';
 import {Groups} from './resources/groups';
 import {Roles} from './resources/roles';
@@ -13,13 +14,9 @@ import {ServerInfo} from './resources/serverInfo';
 import {WhoAmI} from './resources/whoAmI';
 import {AttackDetection} from './resources/attackDetection';
 import {AxiosRequestConfig} from 'axios';
-import './utils/window-polyfill';
-import Keycloak, {
-  KeycloakConfig,
-  KeycloakInitOptions,
-  KeycloakInstance,
-} from 'keycloak-js';
+
 import {Sessions} from './resources/sessions';
+import {UserStorageProvider} from './resources/userStorageProvider';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -30,6 +27,7 @@ export interface ConnectionConfig {
 export class KeycloakAdminClient {
   // Resources
   public users: Users;
+  public userStorageProvider: UserStorageProvider;
   public groups: Groups;
   public roles: Roles;
   public clients: Clients;
@@ -42,13 +40,14 @@ export class KeycloakAdminClient {
   public attackDetection: AttackDetection;
   public sessions: Sessions;
   public authenticationManagement: AuthenticationManagement;
+  public cache: Cache;
 
   // Members
   public baseUrl: string;
   public realmName: string;
   public accessToken: string;
   public refreshToken: string;
-  public keycloak: KeycloakInstance;
+  public keycloak: any;
 
   private requestConfig?: AxiosRequestConfig;
 
@@ -61,6 +60,7 @@ export class KeycloakAdminClient {
 
     // Initialize resources
     this.users = new Users(this);
+    this.userStorageProvider = new UserStorageProvider(this);
     this.groups = new Groups(this);
     this.roles = new Roles(this);
     this.clients = new Clients(this);
@@ -73,6 +73,7 @@ export class KeycloakAdminClient {
     this.whoAmI = new WhoAmI(this);
     this.sessions = new Sessions(this);
     this.attackDetection = new AttackDetection(this);
+    this.cache = new Cache(this);
   }
 
   public async auth(credentials: Credentials) {
@@ -86,10 +87,13 @@ export class KeycloakAdminClient {
     this.refreshToken = refreshToken;
   }
 
-  public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
-    this.keycloak = Keycloak(config);
-    await this.keycloak.init(init);
-    this.baseUrl = this.keycloak.authServerUrl;
+  public async init(init?, config?) {
+    if (window) {
+      const Keycloak = (await import('keycloak-js')).default;
+      this.keycloak = Keycloak(config);
+      await this.keycloak.init(init);
+      this.baseUrl = this.keycloak.authServerUrl;
+    }
   }
 
   public setAccessToken(token: string) {

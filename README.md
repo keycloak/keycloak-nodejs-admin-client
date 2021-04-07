@@ -92,6 +92,15 @@ setInterval(async () => {
 }, 58 * 1000); // 58 seconds
 ```
 
+In cases where you don't have a refresh token, eg. in a client credentials flow, you can simply call `kcAdminClient.auth` to get a new access token, like this:
+
+```js
+const credentials = { grantType: 'client_credentials', clientId: 'clientId', clientSecret: 'some-client-secret-uuid' };
+await kcAdminClient.auth(credentials);
+
+setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
@@ -102,6 +111,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get the top-level representation of the realm (`GET /{realm}`)
 - Update the top-level information of the realm (`PUT /{realm}`)
 - Delete the realm (`DELETE /{realm}`)
+- Partial export of existing realm into a JSON file (`POST /{realm}/partial-export`)
 - Get users management permissions (`GET /{realm}/users-management-permissions`)
 - Enable users management permissions (`PUT /{realm}/users-management-permissions`)
 - Get events (`GET /{realm}/events`)
@@ -150,7 +160,9 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
 
 ### User group-mapping
+
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L178
+
 - Add user to group (`PUT /{id}/groups/{groupId}`)
 - List all user groups (`GET /{id}/groups`)
 - Count user groups (`GET /{id}/groups/count`)

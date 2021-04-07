@@ -10,6 +10,7 @@ import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import ResourceEvaluation from '../defs/resourceEvaluation';
+import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
 
 export interface ClientQuery {
@@ -20,7 +21,16 @@ export interface ClientQuery {
 }
 
 export interface PolicyQuery {
-  name: string;
+  id?: string;
+  name?: string;
+  type?: string;
+  resource?: string;
+  scope?: string;
+  permission?: string;
+  owner?: string;
+  fields?: string;
+  first?: number;
+  max?: number;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -500,7 +510,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Policy
    */
   public listPolicies = this.makeRequest<
-    {id: string, name: string},
+    PolicyQuery,
     PolicyRepresentation[]
   >({
     method: 'GET',
@@ -508,7 +518,7 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public findByName = this.makeRequest<
+  public findPolicyByName = this.makeRequest<
     {id: string; name: string},
     PolicyRepresentation
   >({
@@ -558,7 +568,7 @@ export class Clients extends Resource<{realm?: string}> {
     policyName: string;
     policy: PolicyRepresentation;
   }): Promise<PolicyRepresentation> {
-    const policyFound = await this.findByName({
+    const policyFound = await this.findPolicyByName({
       id: payload.id,
       name: payload.policyName,
     });
@@ -567,7 +577,7 @@ export class Clients extends Resource<{realm?: string}> {
         {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
         payload.policy,
       );
-      return this.findByName({id: payload.id, name: payload.policyName});
+      return this.findPolicyByName({id: payload.id, name: payload.policyName});
     } else {
       return this.createPolicy(
         {id: payload.id, type: payload.policy.type},
@@ -671,6 +681,30 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/installation/providers/{providerId}',
     urlParamKeys: ['id', 'providerId'],
+  });
+
+  public pushRevocation = this.makeRequest<{id: string}, void>({
+    method: 'POST',
+    path: '/{id}/push-revocation',
+    urlParamKeys: ['id'],
+  });
+
+  public addClusterNode = this.makeRequest<{id: string, node: string}, void>({
+    method: 'POST',
+    path: '/{id}/nodes',
+    urlParamKeys: ['id'],
+  });
+
+  public deleteClusterNode = this.makeRequest<{id: string, node: string}, void>({
+    method: 'DELETE',
+    path: '/{id}/nodes/{node}',
+    urlParamKeys: ['id', 'node'],
+  });
+
+  public testNodesAvailable = this.makeRequest<{id: string}, GlobalRequestResult>({
+    method: 'GET',
+    path: '/{id}/test-nodes-available',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {

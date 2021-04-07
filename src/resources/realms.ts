@@ -3,6 +3,8 @@ import AdminEventRepresentation from '../defs/adminEventRepresentation';
 import RealmRepresentation from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
+import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
+import ClientInitialAccessPresentation from '../defs/clientInitialAccessPresentation';
 
 import {KeycloakAdminClient} from '../client';
 
@@ -44,6 +46,23 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public export = this.makeRequest<
+    {
+      realm: string,
+      exportClients?: boolean,
+      exportGroupsAndRoles?: boolean
+    },
+    RealmRepresentation
+  >({
+    method: 'POST',
+    path: '/{realm}/partial-export',
+    urlParamKeys: ['realm'],
+    queryParamKeys: [
+      'exportClients',
+      'exportGroupsAndRoles'
+    ]
+  });
+
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */
@@ -76,16 +95,45 @@ export class Realms extends Resource {
     ],
   });
 
+  public getClientsInitialAccess = this.makeRequest<
+    {realm: string},
+    ClientInitialAccessPresentation[]
+  >({
+    method: 'GET',
+    path: '/{realm}/clients-initial-access',
+    urlParamKeys: ['realm'],
+  });
+
+  public createClientsInitialAccess = this.makeUpdateRequest<
+    {realm: string},
+    {count?: number; expiration?: number},
+    ClientInitialAccessPresentation
+  >({
+    method: 'POST',
+    path: '/{realm}/clients-initial-access',
+    urlParamKeys: ['realm'],
+  });
+
+  public delClientsInitialAccess = this.makeRequest<
+    {realm: string, id: string}, void
+  >({
+    method: 'DELETE',
+    path: '/{realm}/clients-initial-access/{id}',
+    urlParamKeys: ['realm', 'id'],
+  });
+
   /**
    * Remove a specific user session.
    */
-  public removeSession = this.makeRequest<{realm: string, sessionId: string}, void>({
+  public removeSession = this.makeRequest<
+    {realm: string; sessionId: string},
+    void
+  >({
     method: 'DELETE',
     path: '/{realm}/sessions/{session}',
     urlParamKeys: ['realm', 'session'],
     catchNotFound: true,
   });
-
 
   /**
    * Get admin events Returns all admin events, or filters events based on URL query parameters listed here
@@ -149,10 +197,7 @@ export class Realms extends Resource {
   /**
    * Sessions
    */
-  public logoutAll = this.makeRequest<
-    {realm: string},
-    void
-  >({
+  public logoutAll = this.makeRequest<{realm: string}, void>({
     method: 'POST',
     path: '/{realm}/logout-all',
     urlParamKeys: ['realm'],
@@ -165,6 +210,15 @@ export class Realms extends Resource {
     method: 'DELETE',
     path: '/{realm}/sessions/{session}',
     urlParamKeys: ['realm', 'session'],
+  });
+
+  public getKeys = this.makeRequest<
+    {realm: string},
+    KeysMetadataRepresentation
+  >({
+    method: 'GET',
+    path: '/{realm}/keys',
+    urlParamKeys: ['realm'],
   });
 
   constructor(client: KeycloakAdminClient) {
