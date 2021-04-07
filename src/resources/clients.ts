@@ -488,6 +488,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public updateResource = this.makeUpdateRequest<
+    {id: string, resourceId: string},
+    ResourceRepresentation,
+    void
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/resource/{resourceId}',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
   public delResource = this.makeRequest<
     {id: string, resourceId: string},
     void
