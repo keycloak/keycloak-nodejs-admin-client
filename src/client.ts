@@ -130,5 +130,6 @@ export class KeycloakAdminClient {
     ) {
       this.realmName = connectionConfig.realmName;
     }
+    this.requestConfig = connectionConfig.requestConfig;
   }
 }
