@@ -208,7 +208,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
     RoleRepresentation[]
   >({
     method: 'GET',
-    path: '/client-scopes/{id}/scope-mappings/clients/{client}/available',
+    path: '/client-scopes/{id}/scope-mappings/clients/{client}/composite',
     urlParamKeys: ['id', 'client'],
   });
 
@@ -255,7 +255,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
     RoleRepresentation[]
   >({
     method: 'GET',
-    path: '/client-scopes/{id}/scope-mappings/realm/available',
+    path: '/client-scopes/{id}/scope-mappings/realm/composite',
     urlParamKeys: ['id'],
   });
 
