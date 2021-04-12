@@ -415,7 +415,7 @@ describe('Users', function () {
         clientUniqueId: currentClient.id,
       });
 
-      expect(roles).to.be.empty;
+      expect(roles).to.be.ok;
     });
 
     it('list client role-mappings of user', async () => {
