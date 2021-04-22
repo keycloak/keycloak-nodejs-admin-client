@@ -50,7 +50,7 @@ export class Realms extends Resource {
     {
       realm: string,
       exportClients?: boolean,
-      exportGroupsAndRoles?: boolean
+      exportGroupsAndRoles?: boolean,
     },
     RealmRepresentation
   >({
@@ -59,8 +59,8 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
     queryParamKeys: [
       'exportClients',
-      'exportGroupsAndRoles'
-    ]
+      'exportGroupsAndRoles',
+    ],
   });
 
   /**
