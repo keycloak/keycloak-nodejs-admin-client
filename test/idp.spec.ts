@@ -151,4 +151,14 @@ describe('Identity providers', () => {
     const userAttribute = updatedIdpMappers.config['user.attribute'];
     expect(userAttribute).to.equal('firstName');
   });
+
+  it('Import from url', async () => {
+    const result = await kcAdminClient.identityProviders.importFromUrl({
+      providerId: 'oidc',
+      fromUrl: 'http://localhost:8080/auth/realms/master/.well-known/openid-configuration',
+    });
+
+    expect(result).to.be.ok;
+    expect(result.authorizationUrl).to.equal('http://localhost:8080/auth/realms/master/protocol/openid-connect/auth');
+  });
 });

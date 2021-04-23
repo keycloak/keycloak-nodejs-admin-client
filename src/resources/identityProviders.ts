@@ -113,6 +113,11 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParamKeys: ['alias'],
   });
 
+  public importFromUrl = this.makeRequest<{fromUrl: string, providerId: string}>({
+    method: 'POST',
+    path: '/import-config',
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/identity-provider',
