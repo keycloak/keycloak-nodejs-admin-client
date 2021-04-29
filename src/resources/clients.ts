@@ -12,6 +12,8 @@ import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import ResourceEvaluation from '../defs/resourceEvaluation';
 import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
+import CertificateRepresentation from '../defs/certificateRepresentation';
+import KeyStoreConfig from '../defs/keystoreConfig';
 
 export interface ClientQuery {
   first?: number;
@@ -715,6 +717,42 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/test-nodes-available',
     urlParamKeys: ['id'],
+  });
+
+  public getKeyInfo = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+    method: 'GET',
+    path: '/{id}/certificates/{attr}',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public generateKey = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/generate',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public downloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/download',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public generateAndDownloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/generate-and-download',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public uploadKey = this.makeUpdateRequest<{id: string, attr: string}, any>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/upload',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public uploadCertificate = this.makeUpdateRequest<{id: string, attr: string}, any>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/upload-certificate',
+    urlParamKeys: ['id', 'attr'],
   });
 
   constructor(client: KeycloakAdminClient) {

@@ -95,7 +95,11 @@ setInterval(async () => {
 In cases where you don't have a refresh token, eg. in a client credentials flow, you can simply call `kcAdminClient.auth` to get a new access token, like this:
 
 ```js
-const credentials = { grantType: 'client_credentials', clientId: 'clientId', clientSecret: 'some-client-secret-uuid' };
+const credentials = {
+  grantType: 'client_credentials',
+  clientId: 'clientId',
+  clientSecret: 'some-client-secret-uuid',
+};
 await kcAdminClient.auth(credentials);
 
 setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
@@ -239,6 +243,15 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get client-level role mappings for the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Delete client-level roles from user role mapping (`DELETE /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}/available`)
+
+### [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
+
+- Get key info (`GET /{realm}/clients/{id}/certificates/{attr}`)
+- Get a keystore file for the client, containing private key and public certificate (`POST /{realm}/clients/{id}/certificates/{attr}/download`)
+- Generate a new certificate with new key pair (`POST /{realm}/clients/{id}/certificates/{attr}/generate`)
+- Generate a new keypair and certificate, and get the private key file Generates a keypair and certificate and serves the private key in a specified keystore format. (`POST /{realm}/clients/{id}/certificates/{attr}/generate-and-download`)
+- Upload certificate and eventually private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload`)
+- Upload only certificate, not private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload-certificate`)
 
 ### [Identity Providers](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_identity_providers_resource)
 
@@ -407,7 +420,6 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 ## Not yet supported
 
 - [Authentication Management](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_authentication_management_resource)
-- [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
 - [Client Initial Access](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_initial_access_resource)
 - [Client Registration Policy](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_registration_policy_resource)
 - [Key](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_key_resource)
