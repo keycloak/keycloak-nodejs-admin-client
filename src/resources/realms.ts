@@ -5,6 +5,7 @@ import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
 import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
 import ClientInitialAccessPresentation from '../defs/clientInitialAccessPresentation';
+import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
 
 import {KeycloakAdminClient} from '../client';
 
@@ -218,6 +219,12 @@ export class Realms extends Resource {
   >({
     method: 'GET',
     path: '/{realm}/keys',
+    urlParamKeys: ['realm'],
+  });
+
+  public testLDAPConnection = this.makeUpdateRequest<{realm: string}, TestLdapConnectionRepresentation>({
+    method: 'POST',
+    path: '/{realm}/testLDAPConnection',
     urlParamKeys: ['realm'],
   });
 

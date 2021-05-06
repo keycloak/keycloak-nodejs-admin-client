@@ -227,4 +227,23 @@ describe('Realms', () => {
       deleteRealm(kcAdminClient, currentRealmName);
     });
   });
+
+  describe('Realm test ldap settings', () => {
+    it('should fail with invalid ldap settings', async () => {
+      try {
+        await kcAdminClient.realms.testLDAPConnection({realm: 'master'}, {
+          action: 'testConnection',
+          authType: 'simple',
+          bindCredential: '1',
+          bindDn: '1',
+          connectionTimeout: '',
+          connectionUrl: '1',
+          startTls: '',
+          useTruststoreSpi: 'ldapsOnly',
+        });
+      } catch (error) {
+        expect(error).to.be.ok;
+      }
+    });
+  });
 });
