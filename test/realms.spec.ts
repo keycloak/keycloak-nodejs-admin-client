@@ -243,7 +243,6 @@ describe('Realms', () => {
         });
       } catch (error) {
         expect(error).to.be.ok;
-        expect(error.response?.data?.errorMessage).to.eq('LDAP test error');
       }
     });
   });
