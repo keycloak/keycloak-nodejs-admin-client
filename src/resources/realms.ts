@@ -8,6 +8,7 @@ import ClientInitialAccessPresentation from '../defs/clientInitialAccessPresenta
 import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
 
 import {KeycloakAdminClient} from '../client';
+import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
 
 export class Realms extends Resource {
   /**
@@ -94,6 +95,18 @@ export class Realms extends Resource {
       'type',
       'user',
     ],
+  });
+
+  public getConfigEvents = this.makeRequest<{realm: string}, RealmEventsConfigRepresentation>({
+    method: 'GET',
+    path: '/{realm}/events/config',
+    urlParamKeys: ['realm'],
+  });
+
+  public updateConfigEvents = this.makeUpdateRequest<{realm: string}, RealmEventsConfigRepresentation, void>({
+    method: 'PUT',
+    path: '/{realm}/events/config',
+    urlParamKeys: ['realm'],
   });
 
   public getClientsInitialAccess = this.makeRequest<

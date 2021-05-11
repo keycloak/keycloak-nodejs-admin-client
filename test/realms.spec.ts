@@ -144,6 +144,24 @@ describe('Realms', () => {
       currentRealmName = created.realmName;
     });
 
+    it('get events config for a realm', async () => {
+      const config = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+
+      expect(config).to.be.ok;
+      expect(config.adminEventsEnabled).to.be.eq(false);
+    });
+
+    it('enable events', async () => {
+      const config = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+      config.eventsEnabled = true;
+      await kcAdminClient.realms.updateConfigEvents({realm: currentRealmName}, config);
+
+      const newConfig = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+
+      expect(newConfig).to.be.ok;
+      expect(newConfig.eventsEnabled).to.be.eq(true);
+    });
+
     it('list events of a realm', async () => {
       // @TODO: In order to test it, there have to be events
       const events = await kcAdminClient.realms.findEvents({
