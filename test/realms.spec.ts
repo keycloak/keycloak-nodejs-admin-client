@@ -180,6 +180,17 @@ describe('Realms', () => {
       expect(events).to.be.ok;
     });
 
+    it('clear events', async () => {
+      await kcAdminClient.realms.clearEvents({realm: currentRealmName});
+      await kcAdminClient.realms.clearAdminEvents({realm: currentRealmName});
+
+      const events = await kcAdminClient.realms.findAdminEvents({
+        realm: currentRealmName,
+      });
+
+      expect(events).to.deep.eq([]);
+    });
+
     after(async () => {
       deleteRealm(kcAdminClient, currentRealmName);
     });

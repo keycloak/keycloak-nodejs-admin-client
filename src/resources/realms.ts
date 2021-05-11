@@ -109,6 +109,18 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public clearEvents = this.makeRequest<{realm: string}, void>({
+    method: 'DELETE',
+    path: '/{realm}/events',
+    urlParamKeys: ['realm'],
+  });
+
+  public clearAdminEvents = this.makeRequest<{realm: string}, void>({
+    method: 'DELETE',
+    path: '/{realm}/admin-events',
+    urlParamKeys: ['realm'],
+  });
+
   public getClientsInitialAccess = this.makeRequest<
     {realm: string},
     ClientInitialAccessPresentation[]
