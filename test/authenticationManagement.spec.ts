@@ -136,6 +136,13 @@ describe('Authentication management', () => {
     });
   });
   describe('Flows', () => {
+    it('should get the registered form providers', async () => {
+      const formProviders = await kcAdminClient.authenticationManagement.getFormProviders();
+
+      expect(formProviders).to.be.ok;
+      expect(formProviders.length).to.be.eq(1);
+      expect(formProviders[0].displayName).to.be.eq('Registration Page');
+    });
 
     it('should get authentication flow', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
