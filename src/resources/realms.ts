@@ -253,6 +253,30 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public getRealmSpecificLocales = this.makeRequest<{realm: string}, string[]>({
+    method: 'GET',
+    path: '/{realm}/localization',
+    urlParamKeys: ['realm'],
+  });
+
+  public getRealmLocalizationTexts = this.makeRequest<{realm: string, selectedLocale: string}, Record<string, string>>({
+    method: 'GET',
+    path: '/{realm}/localization/{selectedLocale}',
+    urlParamKeys: ['realm', 'selectedLocale'],
+  });
+
+  public addLocalization = this.makeUpdateRequest<{realm: string, selectedLocale: string, key: string}, string, void>({
+    method: 'PUT',
+    path: '/{realm}/localization/{selectedLocale}/{key}',
+    urlParamKeys: ['realm', 'selectedLocale', 'key'],
+  });
+
+  public deleteRealmLocalizationTexts = this.makeRequest<{realm: string, selectedLocale: string, key?: string}, void>({
+    method: 'DELETE',
+    path: '/{realm}/localization/{selectedLocale}/{key}',
+    urlParamKeys: ['realm', 'selectedLocale', 'key'],
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms',
