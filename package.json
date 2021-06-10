@@ -1,6 +1,6 @@
 {
   "name": "@keycloak/keycloak-admin-client",
-  "version": "1.14.7",
+  "version": "1.14.17",
   "description": "keycloak admin client",
   "main": "lib/index.js",
   "files": [
@@ -22,7 +22,7 @@
     "axios": "^0.21.0",
     "camelize": "^1.0.0",
     "keycloak-js": "^11.0.3",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "query-string": "^6.13.7",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"

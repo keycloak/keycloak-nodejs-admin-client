@@ -14,12 +14,7 @@ import {ServerInfo} from './resources/serverInfo';
 import {WhoAmI} from './resources/whoAmI';
 import {AttackDetection} from './resources/attackDetection';
 import {AxiosRequestConfig} from 'axios';
-import './utils/window-polyfill';
-import Keycloak, {
-  KeycloakConfig,
-  KeycloakInitOptions,
-  KeycloakInstance,
-} from 'keycloak-js';
+
 import {Sessions} from './resources/sessions';
 import {UserStorageProvider} from './resources/userStorageProvider';
 
@@ -52,7 +47,7 @@ export class KeycloakAdminClient {
   public realmName: string;
   public accessToken: string;
   public refreshToken: string;
-  public keycloak: KeycloakInstance;
+  public keycloak: any;
 
   private requestConfig?: AxiosRequestConfig;
 
@@ -92,10 +87,13 @@ export class KeycloakAdminClient {
     this.refreshToken = refreshToken;
   }
 
-  public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
-    this.keycloak = Keycloak(config);
-    await this.keycloak.init(init);
-    this.baseUrl = this.keycloak.authServerUrl;
+  public async init(init?, config?) {
+    if (window) {
+      const Keycloak = (await import('keycloak-js')).default;
+      this.keycloak = Keycloak(config);
+      await this.keycloak.init(init);
+      this.baseUrl = this.keycloak.authServerUrl;
+    }
   }
 
   public setAccessToken(token: string) {
@@ -132,5 +130,6 @@ export class KeycloakAdminClient {
     ) {
       this.realmName = connectionConfig.realmName;
     }
+    this.requestConfig = connectionConfig.requestConfig;
   }
 }

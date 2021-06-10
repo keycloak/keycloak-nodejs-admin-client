@@ -81,8 +81,8 @@ describe('Users', function () {
 
     if (process.env.KEYCLOAK_VERSION
       && (
-          process.env.KEYCLOAK_VERSION.startsWith('7.')
-          || process.env.KEYCLOAK_VERSION.startsWith('8.')
+        process.env.KEYCLOAK_VERSION.startsWith('7.')
+        || process.env.KEYCLOAK_VERSION.startsWith('8.')
       )) {
       // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
       expect(numUsers).to.equal(2);
@@ -407,6 +407,15 @@ describe('Users', function () {
       });
 
       expect(roles).to.be.empty;
+    });
+
+    it('list composite client role-mappings for user', async () => {
+      const roles = await kcAdminClient.users.listCompositeClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
+      });
+
+      expect(roles).to.be.ok;
     });
 
     it('list client role-mappings of user', async () => {

@@ -903,4 +903,38 @@ describe('Clients', () => {
       expect(client.registeredNodes).to.be.undefined;
     });
   });
+
+  describe('client attribute certificate', () => {
+    const keystoreConfig = {
+      format: 'JKS',
+      keyAlias: 'new',
+      keyPassword: 'password',
+      realmAlias: 'master',
+      realmCertificate: false,
+      storePassword: 'password',
+    };
+    const attr = 'jwt.credential';
+
+    it('generate and download keys', async () => {
+      const result = await kcAdminClient.clients.generateAndDownloadKey({id: currentClient.id, attr}, keystoreConfig);
+
+      expect(result).to.be.ok;
+    });
+
+    it('generate key and updated info', async () => {
+      const certificate = await kcAdminClient.clients.generateKey({id: currentClient.id, attr});
+
+      expect(certificate).to.be.ok;
+      expect(certificate.certificate).to.be.ok;
+
+      const info = await kcAdminClient.clients.getKeyInfo({id: currentClient.id, attr});
+      expect(info).to.be.eql(certificate);
+    });
+
+    it('download key', async () => {
+      const result = await kcAdminClient.clients.downloadKey({id: currentClient.id, attr}, keystoreConfig);
+
+      expect(result).to.be.ok;
+    });
+  });
 });

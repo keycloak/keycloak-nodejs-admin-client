@@ -12,6 +12,8 @@ import UserSessionRepresentation from '../defs/userSessionRepresentation';
 import ResourceEvaluation from '../defs/resourceEvaluation';
 import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
+import CertificateRepresentation from '../defs/certificateRepresentation';
+import KeyStoreConfig from '../defs/keystoreConfig';
 
 export interface ClientQuery {
   first?: number;
@@ -21,7 +23,16 @@ export interface ClientQuery {
 }
 
 export interface PolicyQuery {
-  name: string;
+  id?: string;
+  name?: string;
+  type?: string;
+  resource?: string;
+  scope?: string;
+  permission?: string;
+  owner?: string;
+  fields?: string;
+  first?: number;
+  max?: number;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -479,6 +490,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public updateResource = this.makeUpdateRequest<
+    {id: string, resourceId: string},
+    ResourceRepresentation,
+    void
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/resource/{resourceId}',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
   public delResource = this.makeRequest<
     {id: string, resourceId: string},
     void
@@ -501,7 +522,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Policy
    */
   public listPolicies = this.makeRequest<
-    {id: string, name: string},
+    PolicyQuery,
     PolicyRepresentation[]
   >({
     method: 'GET',
@@ -509,7 +530,7 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public findByName = this.makeRequest<
+  public findPolicyByName = this.makeRequest<
     {id: string; name: string},
     PolicyRepresentation
   >({
@@ -559,7 +580,7 @@ export class Clients extends Resource<{realm?: string}> {
     policyName: string;
     policy: PolicyRepresentation;
   }): Promise<PolicyRepresentation> {
-    const policyFound = await this.findByName({
+    const policyFound = await this.findPolicyByName({
       id: payload.id,
       name: payload.policyName,
     });
@@ -568,7 +589,7 @@ export class Clients extends Resource<{realm?: string}> {
         {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
         payload.policy,
       );
-      return this.findByName({id: payload.id, name: payload.policyName});
+      return this.findPolicyByName({id: payload.id, name: payload.policyName});
     } else {
       return this.createPolicy(
         {id: payload.id, type: payload.policy.type},
@@ -696,6 +717,42 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/test-nodes-available',
     urlParamKeys: ['id'],
+  });
+
+  public getKeyInfo = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+    method: 'GET',
+    path: '/{id}/certificates/{attr}',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public generateKey = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/generate',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public downloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/download',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public generateAndDownloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/generate-and-download',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public uploadKey = this.makeUpdateRequest<{id: string, attr: string}, any>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/upload',
+    urlParamKeys: ['id', 'attr'],
+  });
+
+  public uploadCertificate = this.makeUpdateRequest<{id: string, attr: string}, any>({
+    method: 'POST',
+    path: '/{id}/certificates/{attr}/upload-certificate',
+    urlParamKeys: ['id', 'attr'],
   });
 
   constructor(client: KeycloakAdminClient) {

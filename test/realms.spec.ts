@@ -63,6 +63,18 @@ describe('Realms', () => {
     });
   });
 
+  it('export a realm', async () => {
+    const realm = await kcAdminClient.realms.export({
+      realm: currentRealmName,
+      exportClients: true,
+      exportGroupsAndRoles: true,
+    });
+    expect(realm).to.include({
+      id: currentRealmId,
+      realm: currentRealmName,
+    });
+  });
+
   it('update a realm', async () => {
     await kcAdminClient.realms.update(
       {realm: currentRealmName},
@@ -88,6 +100,40 @@ describe('Realms', () => {
     expect(realm).to.be.null;
   });
 
+  describe('Realm Client Initial Access', () => {
+    before(async () => {
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
+
+      const created = await createRealm(kcAdminClient);
+      currentRealmName = created.realmName;
+
+      await kcAdminClient.realms.createClientsInitialAccess({realm: currentRealmName}, {count: 1, expiration: 0});
+    });
+
+    after(async () => {
+      deleteRealm(kcAdminClient, currentRealmName);
+    });
+
+    it('list client initial access', async () => {
+      const initialAccess = await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName});
+      expect(initialAccess).to.be.ok;
+      expect(initialAccess[0].count).to.be.eq(1);
+    });
+
+    it('del client initial access', async () => {
+      const access = await kcAdminClient.realms.createClientsInitialAccess({realm: currentRealmName}, {count: 1, expiration: 0});
+      expect((await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName})).length).to.be.eq(2);
+
+      await kcAdminClient.realms.delClientsInitialAccess({realm: currentRealmName, id: access.id!});
+
+      const initialAccess = await kcAdminClient.realms.getClientsInitialAccess({realm: currentRealmName});
+      expect(initialAccess).to.be.ok;
+      expect(initialAccess[0].count).to.be.eq(1);
+    });
+
+  });
+
   describe('Realm Events', () => {
     before(async () => {
       kcAdminClient = new KeycloakAdminClient();
@@ -96,6 +142,24 @@ describe('Realms', () => {
       const created = await createRealm(kcAdminClient);
       currentRealmId = created.realmId;
       currentRealmName = created.realmName;
+    });
+
+    it('get events config for a realm', async () => {
+      const config = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+
+      expect(config).to.be.ok;
+      expect(config.adminEventsEnabled).to.be.eq(false);
+    });
+
+    it('enable events', async () => {
+      const config = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+      config.eventsEnabled = true;
+      await kcAdminClient.realms.updateConfigEvents({realm: currentRealmName}, config);
+
+      const newConfig = await kcAdminClient.realms.getConfigEvents({realm: currentRealmName});
+
+      expect(newConfig).to.be.ok;
+      expect(newConfig.eventsEnabled).to.be.eq(true);
     });
 
     it('list events of a realm', async () => {
@@ -114,6 +178,17 @@ describe('Realms', () => {
       });
 
       expect(events).to.be.ok;
+    });
+
+    it('clear events', async () => {
+      await kcAdminClient.realms.clearEvents({realm: currentRealmName});
+      await kcAdminClient.realms.clearAdminEvents({realm: currentRealmName});
+
+      const events = await kcAdminClient.realms.findAdminEvents({
+        realm: currentRealmName,
+      });
+
+      expect(events).to.deep.eq([]);
     });
 
     after(async () => {
@@ -179,6 +254,25 @@ describe('Realms', () => {
 
     after(async () => {
       deleteRealm(kcAdminClient, currentRealmName);
+    });
+  });
+
+  describe('Realm test ldap settings', () => {
+    it('should fail with invalid ldap settings', async () => {
+      try {
+        await kcAdminClient.realms.testLDAPConnection({realm: 'master'}, {
+          action: 'testConnection',
+          authType: 'simple',
+          bindCredential: '1',
+          bindDn: '1',
+          connectionTimeout: '',
+          connectionUrl: '1',
+          startTls: '',
+          useTruststoreSpi: 'ldapsOnly',
+        });
+      } catch (error) {
+        expect(error).to.be.ok;
+      }
     });
   });
 });

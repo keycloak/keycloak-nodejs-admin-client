@@ -92,6 +92,19 @@ setInterval(async () => {
 }, 58 * 1000); // 58 seconds
 ```
 
+In cases where you don't have a refresh token, eg. in a client credentials flow, you can simply call `kcAdminClient.auth` to get a new access token, like this:
+
+```js
+const credentials = {
+  grantType: 'client_credentials',
+  clientId: 'clientId',
+  clientSecret: 'some-client-secret-uuid',
+};
+await kcAdminClient.auth(credentials);
+
+setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
@@ -102,6 +115,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get the top-level representation of the realm (`GET /{realm}`)
 - Update the top-level information of the realm (`PUT /{realm}`)
 - Delete the realm (`DELETE /{realm}`)
+- Partial export of existing realm into a JSON file (`POST /{realm}/partial-export`)
 - Get users management permissions (`GET /{realm}/users-management-permissions`)
 - Enable users management permissions (`PUT /{realm}/users-management-permissions`)
 - Get events (`GET /{realm}/events`)
@@ -150,7 +164,9 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
 
 ### User group-mapping
+
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L178
+
 - Add user to group (`PUT /{id}/groups/{groupId}`)
 - List all user groups (`GET /{id}/groups`)
 - Count user groups (`GET /{id}/groups/count`)
@@ -227,6 +243,15 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get client-level role mappings for the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Delete client-level roles from user role mapping (`DELETE /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}/available`)
+
+### [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
+
+- Get key info (`GET /{realm}/clients/{id}/certificates/{attr}`)
+- Get a keystore file for the client, containing private key and public certificate (`POST /{realm}/clients/{id}/certificates/{attr}/download`)
+- Generate a new certificate with new key pair (`POST /{realm}/clients/{id}/certificates/{attr}/generate`)
+- Generate a new keypair and certificate, and get the private key file Generates a keypair and certificate and serves the private key in a specified keystore format. (`POST /{realm}/clients/{id}/certificates/{attr}/generate-and-download`)
+- Upload certificate and eventually private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload`)
+- Upload only certificate, not private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload-certificate`)
 
 ### [Identity Providers](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_identity_providers_resource)
 
@@ -395,7 +420,6 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 ## Not yet supported
 
 - [Authentication Management](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_authentication_management_resource)
-- [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
 - [Client Initial Access](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_initial_access_resource)
 - [Client Registration Policy](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_registration_policy_resource)
 - [Key](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_key_resource)

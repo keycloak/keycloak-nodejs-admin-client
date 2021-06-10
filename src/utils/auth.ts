@@ -6,8 +6,8 @@ import {defaultBaseUrl, defaultRealm} from './constants';
 export type GrantTypes = 'client_credentials' | 'password';
 
 export interface Credentials {
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
   grantType: GrantTypes;
   clientId: string;
   clientSecret?: string;
