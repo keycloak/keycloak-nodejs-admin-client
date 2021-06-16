@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
+import {fail} from 'assert';
 const expect = chai.expect;
 
 
@@ -257,7 +258,7 @@ describe('Realms', () => {
     });
   });
 
-  describe('Realm test ldap settings', () => {
+  describe('Realm connection settings', () => {
     it('should fail with invalid ldap settings', async () => {
       try {
         await kcAdminClient.realms.testLDAPConnection({realm: 'master'}, {
@@ -270,6 +271,23 @@ describe('Realms', () => {
           startTls: '',
           useTruststoreSpi: 'ldapsOnly',
         });
+        fail('exception should have been thrown');
+      } catch (error) {
+        expect(error).to.be.ok;
+      }
+    });
+
+    it('should fail with invalid smtp settings', async () => {
+      try {
+        const user = (await kcAdminClient.users.find({username: credentials.username}))[0];
+        user.email = 'test@test.com';
+        await kcAdminClient.users.update({id: user.id!}, user);
+        await kcAdminClient.realms.testSMTPConnection({realm: 'master'}, {
+          from: 'cdd1641ff4-1781a4@inbox.mailtrap.io',
+          host: 'localhost',
+          port: 3025,
+        });
+        fail('exception should have been thrown');
       } catch (error) {
         expect(error).to.be.ok;
       }

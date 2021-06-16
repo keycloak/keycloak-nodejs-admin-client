@@ -9,6 +9,7 @@ import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
 
 import {KeycloakAdminClient} from '../client';
 import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
+import ComponentRepresentation from '../defs/componentRepresentation';
 
 export class Realms extends Resource {
   /**
@@ -250,6 +251,12 @@ export class Realms extends Resource {
   public testLDAPConnection = this.makeUpdateRequest<{realm: string}, TestLdapConnectionRepresentation>({
     method: 'POST',
     path: '/{realm}/testLDAPConnection',
+    urlParamKeys: ['realm'],
+  });
+
+  public testSMTPConnection = this.makeUpdateRequest<{realm: string}, Record<string, string | number>>({
+    method: 'POST',
+    path: '/{realm}/testSMTPConnection',
     urlParamKeys: ['realm'],
   });
 
