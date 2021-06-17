@@ -1,92 +1,188 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import {pick, omit} from 'lodash';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
 import faker from 'faker';
-import UserRepresentation from '../src/defs/userRepresentation';
+import {omit, pick} from 'lodash';
+import {KeycloakAdminClient} from '../src/client';
+import ClientRepresentation from '../src/defs/clientRepresentation';
 import GroupRepresentation from '../src/defs/groupRepresentation';
+import PolicyRepresentation, {DecisionStrategy, Logic} from '../src/defs/policyRepresentation';
+import UserRepresentation from '../src/defs/userRepresentation';
+import {credentials} from './constants';
 
 const expect = chai.expect;
 
-declare module 'mocha' {
-  // tslint:disable-next-line:interface-name
-  interface ISuiteCallbackContext {
-    kcAdminClient?: KeycloakAdminClient;
-    currentGroup?: GroupRepresentation;
-    currentUser?: UserRepresentation;
-  }
-}
+describe('Group user integration', () => {
+  let kcAdminClient: KeycloakAdminClient;
+  let currentGroup: GroupRepresentation;
+  let currentUser: UserRepresentation;
+  let managementClient: ClientRepresentation;
+  let currentUserPolicy: PolicyRepresentation;
+  let currentPolicy: PolicyRepresentation;
 
-describe('Group user integration', function() {
   before(async () => {
     const groupName = faker.internet.userName();
-    this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(credentials);
+    kcAdminClient = new KeycloakAdminClient();
+    await kcAdminClient.auth(credentials);
     // create group
-    const group = await this.kcAdminClient.groups.create({
+    const group = await kcAdminClient.groups.create({
       name: groupName,
     });
-    this.currentGroup = await this.kcAdminClient.groups.findOne({id: group.id});
+    currentGroup = await kcAdminClient.groups.findOne({id: group.id});
 
     // create user
     const username = faker.internet.userName();
-    const user = await this.kcAdminClient.users.create({
+    const user = await kcAdminClient.users.create({
       username,
       email: 'wwwy3y3@canner.io',
       enabled: true,
     });
-    this.currentUser = await this.kcAdminClient.users.findOne({id: user.id});
+    currentUser = await kcAdminClient.users.findOne({id: user.id});
   });
 
   after(async () => {
-    await this.kcAdminClient.groups.del({
-      id: this.currentGroup.id,
+    await kcAdminClient.groups.del({
+      id: currentGroup.id,
     });
-    await this.kcAdminClient.users.del({
-      id: this.currentUser.id,
+    await kcAdminClient.users.del({
+      id: currentUser.id,
     });
   });
 
-  it("should list user's group and expect empty", async () => {
-    const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id,
+  it('should list user\'s group and expect empty', async () => {
+    const groups = await kcAdminClient.users.listGroups({
+      id: currentUser.id,
     });
     expect(groups).to.be.eql([]);
   });
 
   it('should add user to group', async () => {
-    await this.kcAdminClient.users.addToGroup({
-      id: this.currentUser.id,
-      groupId: this.currentGroup.id,
+    await kcAdminClient.users.addToGroup({
+      id: currentUser.id,
+      groupId: currentGroup.id,
     });
 
-    const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id,
+    const groups = await kcAdminClient.users.listGroups({
+      id: currentUser.id,
     });
     // expect id,name,path to be the same
-    expect(groups[0]).to.be.eql(
-      pick(this.currentGroup, ['id', 'name', 'path']),
-    );
+    expect(groups[0]).to.be.eql(pick(currentGroup, ['id', 'name', 'path']));
   });
 
   it('should list members using group api', async () => {
-    const members = await this.kcAdminClient.groups.listMembers({
-      id: this.currentGroup.id,
+    const members = await kcAdminClient.groups.listMembers({
+      id: currentGroup.id,
     });
     // access will not returned from member api
-    expect(members[0]).to.be.eql(omit(this.currentUser, ['access']));
+    expect(members[0]).to.be.eql(omit(currentUser, ['access']));
   });
 
   it('should remove user from group', async () => {
-    await this.kcAdminClient.users.delFromGroup({
-      id: this.currentUser.id,
-      groupId: this.currentGroup.id,
+    await kcAdminClient.users.delFromGroup({
+      id: currentUser.id,
+      groupId: currentGroup.id,
     });
 
-    const groups = await this.kcAdminClient.users.listGroups({
-      id: this.currentUser.id,
+    const groups = await kcAdminClient.users.listGroups({
+      id: currentUser.id,
     });
     expect(groups).to.be.eql([]);
+  });
+
+  /**
+   * Authorization permissions
+   */
+  describe('authorization permissions', () => {
+    before(async () => {
+      const clients = await kcAdminClient.clients.find();
+      managementClient = clients.find(client => client.clientId === 'master-realm');
+    });
+    after(async () => {
+      await kcAdminClient.clients.delPolicy({
+        id: managementClient.id,
+        policyId: currentUserPolicy.id,
+      });
+    });
+
+    it('Enable permissions', async () => {
+      const permission = await kcAdminClient.groups.updatePermission({id: currentGroup.id}, {enabled: true});
+      expect(permission).to.include({
+        enabled: true,
+      });
+    });
+
+    it('list of users in policy management', async () => {
+      const userPolicyData: PolicyRepresentation = {
+        type: 'user',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        name: `policy.manager.${currentGroup.id}`,
+        users: [currentUser.id],
+      };
+      currentUserPolicy = await kcAdminClient.clients.createPolicy({id: managementClient.id, type: userPolicyData.type}, userPolicyData);
+
+      expect(currentUserPolicy).to.include({
+        type: 'user',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        name: `policy.manager.${currentGroup.id}`,
+      });
+    });
+
+    it('list the roles available for this group', async () => {
+      const permissions = await kcAdminClient.groups.listPermissions({id: currentGroup.id});
+
+      expect(permissions.scopePermissions).to.be.an('object');
+
+      const scopes = await kcAdminClient.clients.listScopesByResource({
+        id: managementClient.id,
+        resourceName: permissions.resource,
+      });
+
+      const policies = await kcAdminClient.clients.listPolicies({id: managementClient.id, resource: permissions.resource, max: 2});
+      expect(policies).to.have.length(2);
+
+      expect(scopes).to.have.length(5);
+
+      // Search for the id of the management role
+      const roleId = scopes.find(scope => scope.name === 'manage').id;
+
+      const userPolicy = await kcAdminClient.clients.findPolicyByName({id: managementClient.id, name: `policy.manager.${currentGroup.id}`});
+
+      expect(userPolicy).to.deep.include({
+        name: `policy.manager.${currentGroup.id}`,
+      });
+
+      // Update of the role with the above modifications
+      const policyData: PolicyRepresentation = {
+        id: permissions.scopePermissions.manage,
+        name: `manage.permission.group.${currentGroup.id}`,
+        type: 'scope',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+        resources: [permissions.resource],
+        scopes: [roleId],
+        policies: [userPolicy.id],
+      };
+      await kcAdminClient.clients.updatePermission(
+        {
+          id: managementClient.id,
+          permissionId: permissions.scopePermissions.manage,
+          type: 'scope',
+        },
+        policyData,
+      );
+      currentPolicy = await kcAdminClient.clients.findOnePermission({
+        id: managementClient.id,
+        permissionId: permissions.scopePermissions.manage,
+        type: 'scope',
+      });
+      expect(currentPolicy).to.deep.include({
+        id: permissions.scopePermissions.manage,
+        name: `manage.permission.group.${currentGroup.id}`,
+        type: 'scope',
+        logic: Logic.POSITIVE,
+        decisionStrategy: DecisionStrategy.UNANIMOUS,
+      });
+    });
   });
 });

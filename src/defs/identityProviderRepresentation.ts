@@ -1,5 +1,5 @@
 /**
- * https://www.keycloak.org/docs-api/4.1/rest-api/#_identityproviderrepresentation
+ * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_identityproviderrepresentation
  */
 
 export default interface IdentityProviderRepresentation {

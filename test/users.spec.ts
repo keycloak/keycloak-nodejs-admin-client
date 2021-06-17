@@ -4,35 +4,30 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import UserRepresentation from '../src/defs/userRepresentation';
-import UserSessionRepresentation from '../src/defs/userSessionRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
 import {omit} from 'lodash';
+import GroupRepresentation from '../src/defs/groupRepresentation';
+import {fail} from 'assert';
 
 const expect = chai.expect;
 
-declare module 'mocha' {
-  // tslint:disable-next-line:interface-name
-  interface ISuiteCallbackContext {
-    kcAdminClient?: KeycloakAdminClient;
-    currentClient?: ClientRepresentation;
-    currentUser?: UserRepresentation;
-    currentRole?: RoleRepresentation;
-    federatedIdentity?: FederatedIdentityRepresentation;
-  }
-}
-
 describe('Users', function () {
+  let kcAdminClient: KeycloakAdminClient;
+  let currentClient: ClientRepresentation;
+  let currentUser: UserRepresentation;
+  let currentRole: RoleRepresentation;
+  let federatedIdentity: FederatedIdentityRepresentation;
   this.timeout(10000);
 
   before(async () => {
-    this.kcAdminClient = new KeycloakAdminClient();
-    await this.kcAdminClient.auth(credentials);
+    kcAdminClient = new KeycloakAdminClient();
+    await kcAdminClient.auth(credentials);
     // initialize user
     const username = faker.internet.userName();
-    const user = await this.kcAdminClient.users.create({
+    const user = await kcAdminClient.users.create({
       username,
       email: 'wwwy3y3@canner.io',
       // enabled required to be true in order to send actions email
@@ -41,10 +36,10 @@ describe('Users', function () {
     });
 
     expect(user.id).to.be.ok;
-    this.currentUser = await this.kcAdminClient.users.findOne({id: user.id});
+    currentUser = await kcAdminClient.users.findOne({id: user.id});
 
     // add smtp to realm
-    await this.kcAdminClient.realms.update(
+    await kcAdminClient.realms.update(
       {realm: 'master'},
       {
         smtpServer: {
@@ -59,33 +54,54 @@ describe('Users', function () {
   });
 
   after(async () => {
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.del({
+    const userId = currentUser.id;
+    await kcAdminClient.users.del({
       id: userId,
     });
 
-    const user = await this.kcAdminClient.users.findOne({
+    const user = await kcAdminClient.users.findOne({
       id: userId,
     });
     expect(user).to.be.null;
   });
 
   it('list users', async () => {
-    const users = await this.kcAdminClient.users.find();
+    const users = await kcAdminClient.users.find();
     expect(users).to.be.ok;
   });
 
+  it('count users', async () => {
+    const numUsers = await kcAdminClient.users.count();
+    // admin user + created user in before hook
+    expect(numUsers).to.equal(2);
+  });
+
+  it('count users with filter', async () => {
+    const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
+
+    if (process.env.KEYCLOAK_VERSION
+      && (
+        process.env.KEYCLOAK_VERSION.startsWith('7.')
+        || process.env.KEYCLOAK_VERSION.startsWith('8.')
+      )) {
+      // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
+      expect(numUsers).to.equal(2);
+    } else {
+      expect(numUsers).to.equal(1);
+    }
+  });
+
   it('get single users', async () => {
-    const userId = this.currentUser.id;
-    const user = await this.kcAdminClient.users.findOne({
+    const userId = currentUser.id;
+    const user = await kcAdminClient.users.findOne({
       id: userId,
     });
-    expect(user).to.be.deep.include(this.currentUser);
+    expect(user).to.be.deep.include(currentUser);
   });
 
   it('update single users', async () => {
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.update(
+    const userId = currentUser.id;
+    await kcAdminClient.users.update(
       {id: userId},
       {
         firstName: 'william',
@@ -95,7 +111,7 @@ describe('Users', function () {
       },
     );
 
-    const user = await this.kcAdminClient.users.findOne({
+    const user = await kcAdminClient.users.findOne({
       id: userId,
     });
     expect(user).to.deep.include({
@@ -107,15 +123,12 @@ describe('Users', function () {
   });
 
   /**
-   * exeute actions email
+   * execute actions email
    */
-  it('should send user exeute actions email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.executeActionsEmail({
+  it('should send user execute actions email', async () => {
+    if (process.env.CI) return; // not possible inside CI
+    const userId = currentUser.id;
+    await kcAdminClient.users.executeActionsEmail({
       id: userId,
       lifespan: 43200,
       actions: [RequiredActionAlias.UPDATE_PASSWORD],
@@ -126,12 +139,16 @@ describe('Users', function () {
    * remove totp
    */
 
-  it('should remove totp', async () => {
-    // todo: find a way to add totp from api
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.removeTotp({
-      id: userId,
-    });
+  it('should remove totp', async function () {
+    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('7.')) {
+      // todo: find a way to add totp from api
+      const userId = currentUser.id;
+      await kcAdminClient.users.removeTotp({
+        id: userId,
+      });
+    } else {
+      this.skip();
+    }
   });
 
   /**
@@ -140,8 +157,8 @@ describe('Users', function () {
 
   it('should reset user password', async () => {
     // todo: find a way to validate the reset-password result
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.resetPassword({
+    const userId = currentUser.id;
+    await kcAdminClient.users.resetPassword({
       id: userId,
       credential: {
         temporary: false,
@@ -156,13 +173,90 @@ describe('Users', function () {
    */
 
   it('should send user verify email', async () => {
-    // if travis skip it, cause travis close smtp port
-    if (process.env.TRAVIS) {
-      return;
-    }
-    const userId = this.currentUser.id;
-    await this.kcAdminClient.users.sendVerifyEmail({
+    if (process.env.CI) return; // not possible inside CI
+
+    const userId = currentUser.id;
+    await kcAdminClient.users.sendVerifyEmail({
       id: userId,
+    });
+  });
+
+  /**
+   * Groups
+   */
+  describe('user groups', () => {
+    let currentGroup: GroupRepresentation;
+    before(async () => {
+      const group = await kcAdminClient.groups.create({
+        name: 'cool-group',
+      });
+      expect(group.id).to.be.ok;
+      currentGroup = await kcAdminClient.groups.findOne({id: group.id});
+    });
+
+    after(async () => {
+      const groupId = currentGroup.id;
+      const groups = await kcAdminClient.groups.find({max: 100});
+      await Promise.all(groups.map((_group: GroupRepresentation) => {
+        return kcAdminClient.groups.del({id: _group.id});
+      }));
+
+      const group = await kcAdminClient.groups.findOne({
+        id: groupId,
+      });
+      expect(group).to.be.null;
+    });
+
+    it('add group', async () => {
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(0);
+      await kcAdminClient.users.addToGroup({groupId: currentGroup.id, id: currentUser.id});
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(1);
+    });
+
+    it('count groups', async () => {
+      let {count} = await kcAdminClient.users.countGroups({id: currentUser.id});
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'cool-group'})).count;
+      expect(count).to.eq(1);
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'fake-group'})).count;
+      expect(count).to.eq(0);
+    });
+
+    it('list groups', async () => {
+      const groups = await kcAdminClient.users.listGroups({id: currentUser.id});
+      expect(groups).to.be.ok;
+      expect(groups.length).to.be.eq(1);
+      expect(groups[0].name).to.eq('cool-group');
+    });
+
+    it('remove group', async () => {
+      const newGroup = await kcAdminClient.groups.create({name: 'test-group'});
+      await kcAdminClient.users.addToGroup({id: currentUser.id, groupId: newGroup.id});
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.eq(2);
+
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: newGroup.id});
+      } catch (e) {
+        fail('Didn\'t expect an error when deleting a vaiid group id');
+      }
+
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      expect(count).to.equal(1);
+
+      await kcAdminClient.groups.del({id: newGroup.id});
+
+      // delete a non-existing group should throw an error
+      try {
+        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: 'fake-group-id'});
+        fail('Expected an error when deleting a fake id not assigned to the user');
+      } catch (e) {
+        expect(e).to.be.ok;
+      }
     });
   });
 
@@ -173,40 +267,38 @@ describe('Users', function () {
     before(async () => {
       // create new role
       const roleName = faker.internet.userName();
-      await this.kcAdminClient.roles.create({
+      await kcAdminClient.roles.create({
         name: roleName,
       });
-      const role = await this.kcAdminClient.roles.findOneByName({
+      const role = await kcAdminClient.roles.findOneByName({
         name: roleName,
       });
-      this.currentRole = role;
+      currentRole = role;
     });
 
     after(async () => {
-      await this.kcAdminClient.roles.delByName({name: this.currentRole.name});
+      await kcAdminClient.roles.delByName({name: currentRole.name});
     });
 
     it('add a role to user', async () => {
       // add role-mappings with role id
-      await this.kcAdminClient.users.addRealmRoleMappings({
-        id: this.currentUser.id,
+      await kcAdminClient.users.addRealmRoleMappings({
+        id: currentUser.id,
 
         // at least id and name should appear
         roles: [
           {
-            id: this.currentRole.id,
-            name: this.currentRole.name,
+            id: currentRole.id,
+            name: currentRole.name,
           },
         ],
       });
     });
 
     it('list available role-mappings for user', async () => {
-      const roles = await this.kcAdminClient.users.listAvailableRealmRoleMappings(
-        {
-          id: this.currentUser.id,
-        },
-      );
+      const roles = await kcAdminClient.users.listAvailableRealmRoleMappings({
+        id: currentUser.id,
+      });
 
       // admin, create-realm
       // not sure why others like offline_access, uma_authorization not included
@@ -214,46 +306,44 @@ describe('Users', function () {
     });
 
     it('list role-mappings of user', async () => {
-      const res = await this.kcAdminClient.users.listRoleMappings({
-        id: this.currentUser.id,
+      const res = await kcAdminClient.users.listRoleMappings({
+        id: currentUser.id,
       });
 
       expect(res).have.all.keys('realmMappings', 'clientMappings');
     });
 
     it('list realm role-mappings of user', async () => {
-      const roles = await this.kcAdminClient.users.listRealmRoleMappings({
-        id: this.currentUser.id,
+      const roles = await kcAdminClient.users.listRealmRoleMappings({
+        id: currentUser.id,
       });
       // currentRole will have an empty `attributes`, but role-mappings do not
-      expect(roles).to.deep.include(omit(this.currentRole, 'attributes'));
+      expect(roles).to.deep.include(omit(currentRole, 'attributes'));
     });
 
     it('list realm composite role-mappings of user', async () => {
-      const roles = await this.kcAdminClient.users.listCompositeRealmRoleMappings(
-        {
-          id: this.currentUser.id,
-        },
-      );
+      const roles = await kcAdminClient.users.listCompositeRealmRoleMappings({
+        id: currentUser.id,
+      });
       // todo: add data integrity check later
       expect(roles).to.be.ok;
     });
 
     it('del realm role-mappings from user', async () => {
-      await this.kcAdminClient.users.delRealmRoleMappings({
-        id: this.currentUser.id,
+      await kcAdminClient.users.delRealmRoleMappings({
+        id: currentUser.id,
         roles: [
           {
-            id: this.currentRole.id,
-            name: this.currentRole.name,
+            id: currentRole.id,
+            name: currentRole.name,
           },
         ],
       });
 
-      const roles = await this.kcAdminClient.users.listRealmRoleMappings({
-        id: this.currentUser.id,
+      const roles = await kcAdminClient.users.listRealmRoleMappings({
+        id: currentUser.id,
       });
-      expect(roles).to.not.deep.include(this.currentRole);
+      expect(roles).to.not.deep.include(currentRole);
     });
   });
 
@@ -264,88 +354,95 @@ describe('Users', function () {
     before(async () => {
       // create new client
       const clientId = faker.internet.userName();
-      await this.kcAdminClient.clients.create({
+      await kcAdminClient.clients.create({
         clientId,
       });
 
-      const clients = await this.kcAdminClient.clients.find({clientId});
+      const clients = await kcAdminClient.clients.find({clientId});
       expect(clients[0]).to.be.ok;
-      this.currentClient = clients[0];
+      currentClient = clients[0];
 
       // create new client role
       const roleName = faker.internet.userName();
-      await this.kcAdminClient.clients.createRole({
-        id: this.currentClient.id,
+      await kcAdminClient.clients.createRole({
+        id: currentClient.id,
         name: roleName,
       });
 
       // assign to currentRole
-      this.currentRole = await this.kcAdminClient.clients.findRole({
-        id: this.currentClient.id,
+      currentRole = await kcAdminClient.clients.findRole({
+        id: currentClient.id,
         roleName,
       });
     });
 
     after(async () => {
-      await this.kcAdminClient.clients.delRole({
-        id: this.currentClient.id,
-        roleName: this.currentRole.name,
+      await kcAdminClient.clients.delRole({
+        id: currentClient.id,
+        roleName: currentRole.name,
       });
-      await this.kcAdminClient.clients.del({id: this.currentClient.id});
+      await kcAdminClient.clients.del({id: currentClient.id});
     });
 
     it('add a client role to user', async () => {
       // add role-mappings with role id
-      await this.kcAdminClient.users.addClientRoleMappings({
-        id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id,
+      await kcAdminClient.users.addClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
 
         // at least id and name should appear
         roles: [
           {
-            id: this.currentRole.id,
-            name: this.currentRole.name,
+            id: currentRole.id,
+            name: currentRole.name,
           },
         ],
       });
     });
 
     it('list available client role-mappings for user', async () => {
-      const roles = await this.kcAdminClient.users.listAvailableClientRoleMappings(
-        {
-          id: this.currentUser.id,
-          clientUniqueId: this.currentClient.id,
-        },
-      );
+      const roles = await kcAdminClient.users.listAvailableClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
+      });
 
       expect(roles).to.be.empty;
     });
 
+    it('list composite client role-mappings for user', async () => {
+      const roles = await kcAdminClient.users.listCompositeClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
+      });
+
+      expect(roles).to.be.ok;
+    });
+
     it('list client role-mappings of user', async () => {
-      const roles = await this.kcAdminClient.users.listClientRoleMappings({
-        id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id,
+      const roles = await kcAdminClient.users.listClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
       });
 
       // currentRole will have an empty `attributes`, but role-mappings do not
-      expect(this.currentRole).to.deep.include(roles[0]);
+      expect(currentRole).to.deep.include(roles[0]);
     });
 
     it('del client role-mappings from user', async () => {
       const roleName = faker.internet.userName();
-      await this.kcAdminClient.clients.createRole({
-        id: this.currentClient.id,
+      await kcAdminClient.clients.createRole({
+        id: currentClient.id,
         name: roleName,
       });
-      const role = await this.kcAdminClient.clients.findRole({
-        id: this.currentClient.id,
+      const role = await kcAdminClient.clients.findRole({
+        id: currentClient.id,
         roleName,
       });
 
       // delete the created role
-      await this.kcAdminClient.users.delClientRoleMappings({
-        id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id,
+      await kcAdminClient.users.delClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
         roles: [
           {
             id: role.id,
@@ -355,9 +452,9 @@ describe('Users', function () {
       });
 
       // check if mapping is successfully deleted
-      const roles = await this.kcAdminClient.users.listClientRoleMappings({
-        id: this.currentUser.id,
-        clientUniqueId: this.currentClient.id,
+      const roles = await kcAdminClient.users.listClientRoleMappings({
+        id: currentUser.id,
+        clientUniqueId: currentClient.id,
       });
 
       // should only left the one we added in the previous test
@@ -365,56 +462,42 @@ describe('Users', function () {
     });
   });
 
-  describe('User sessions', function () {
+  describe('User sessions', () => {
     before(async () => {
-      this.kcAdminClient = new KeycloakAdminClient();
-      await this.kcAdminClient.auth(credentials);
-
-      // create user
-      const username = faker.internet.userName();
-      await this.kcAdminClient.users.create({
-        username,
-        email: 'wwwy3y3-federated@canner.io',
-        enabled: true,
-      });
-      const users = await this.kcAdminClient.users.find({username});
-      expect(users[0]).to.be.ok;
-      this.currentUser = users[0];
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
 
       // create client
       const clientId = faker.internet.userName();
-      await this.kcAdminClient.clients.create({
-        clientId, consentRequired: true,
+      await kcAdminClient.clients.create({
+        clientId,
+        consentRequired: true,
       });
 
-      const clients = await this.kcAdminClient.clients.find({clientId});
+      const clients = await kcAdminClient.clients.find({clientId});
       expect(clients[0]).to.be.ok;
-      this.currentClient = clients[0];
+      currentClient = clients[0];
     });
 
     after(async () => {
-      await this.kcAdminClient.users.del({
-        id: this.currentUser.id,
-      });
-
-      await this.kcAdminClient.clients.del({
-        id: this.currentClient.id,
+      await kcAdminClient.clients.del({
+        id: currentClient.id,
       });
     });
 
     it('list user sessions', async () => {
       // @TODO: In order to test it, currentUser has to be logged in
-
-      const userSessions = await this.kcAdminClient.users.listSessions({id: this.currentUser.id});
+      const userSessions = await kcAdminClient.users.listSessions({
+        id: currentUser.id,
+      });
 
       expect(userSessions).to.be.ok;
     });
 
     it('list users off-line sessions', async () => {
       // @TODO: In order to test it, currentUser has to be logged in
-
-      const userOfflineSessions = await this.kcAdminClient.users.listOfflineSessions(
-        {id: this.currentUser.id, clientId: this.currentClient.id},
+      const userOfflineSessions = await kcAdminClient.users.listOfflineSessions(
+        {id: currentUser.id, clientId: currentClient.id},
       );
 
       expect(userOfflineSessions).to.be.ok;
@@ -422,89 +505,79 @@ describe('Users', function () {
 
     it('logout user from all sessions', async () => {
       // @TODO: In order to test it, currentUser has to be logged in
-
-      await this.kcAdminClient.users.logout({id: this.currentUser.id});
+      await kcAdminClient.users.logout({id: currentUser.id});
     });
 
     it('list consents granted by the user', async () => {
-      const consents = await this.kcAdminClient.users.listConsents({id: this.currentUser.id});
+      const consents = await kcAdminClient.users.listConsents({
+        id: currentUser.id,
+      });
 
       expect(consents).to.be.ok;
     });
 
     it('revoke consent and offline tokens for particular client', async () => {
       // @TODO: In order to test it, currentUser has to granted consent to client
-      const consents = await this.kcAdminClient.users.listConsents({id: this.currentUser.id});
+      const consents = await kcAdminClient.users.listConsents({
+        id: currentUser.id,
+      });
 
       if (consents.length) {
         const consent = consents[0];
 
-        await this.kcAdminClient.users.revokeConsent({id: this.currentUser.id, clientId: consent.clientId});
+        await kcAdminClient.users.revokeConsent({
+          id: currentUser.id,
+          clientId: consent.clientId,
+        });
       }
     });
   });
 
-  describe('Federated Identity user integration', function () {
+  describe('Federated Identity user integration', () => {
     before(async () => {
-      this.kcAdminClient = new KeycloakAdminClient();
-      await this.kcAdminClient.auth(credentials);
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
 
-      // create user
-      const username = faker.internet.userName();
-      await this.kcAdminClient.users.create({
-        username,
-        email: 'wwwy3y3-federated@canner.io',
-        enabled: true,
-      });
-      const users = await this.kcAdminClient.users.find({username});
-      expect(users[0]).to.be.ok;
-      this.currentUser = users[0];
-      this.federatedIdentity = {
+      federatedIdentity = {
         identityProvider: 'foobar',
         userId: 'userid1',
         userName: 'username1',
       };
     });
 
-    after(async () => {
-      await this.kcAdminClient.users.del({
-        id: this.currentUser.id,
-      });
-    });
-
-    it("should list user's federated identities and expect empty", async () => {
-      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities(
+    it('should list user\'s federated identities and expect empty', async () => {
+      const federatedIdentities = await kcAdminClient.users.listFederatedIdentities(
         {
-          id: this.currentUser.id,
+          id: currentUser.id,
         },
       );
       expect(federatedIdentities).to.be.eql([]);
     });
 
     it('should add federated identity to user', async () => {
-      await this.kcAdminClient.users.addToFederatedIdentity({
-        id: this.currentUser.id,
+      await kcAdminClient.users.addToFederatedIdentity({
+        id: currentUser.id,
         federatedIdentityId: 'foobar',
-        federatedIdentity: this.federatedIdentity,
+        federatedIdentity,
       });
 
       // @TODO: In order to test the integration with federated identities, the User Federation
       // would need to be created first, this is not implemented yet.
-      // const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities({
-      //   id: this.currentUser.id,
+      // const federatedIdentities = await kcAdminClient.users.listFederatedIdentities({
+      //   id: currentUser.id,
       // });
-      // expect(federatedIdentities[0]).to.be.eql(this.federatedIdentity);
+      // expect(federatedIdentities[0]).to.be.eql(federatedIdentity);
     });
 
     it('should remove federated identity from user', async () => {
-      await this.kcAdminClient.users.delFromFederatedIdentity({
-        id: this.currentUser.id,
+      await kcAdminClient.users.delFromFederatedIdentity({
+        id: currentUser.id,
         federatedIdentityId: 'foobar',
       });
 
-      const federatedIdentities = await this.kcAdminClient.users.listFederatedIdentities(
+      const federatedIdentities = await kcAdminClient.users.listFederatedIdentities(
         {
-          id: this.currentUser.id,
+          id: currentUser.id,
         },
       );
       expect(federatedIdentities).to.be.eql([]);

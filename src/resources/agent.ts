@@ -1,6 +1,6 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
-import axios, {AxiosRequestConfig} from 'axios';
+import axios, {AxiosRequestConfig, Method} from 'axios';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
 
@@ -9,7 +9,7 @@ const SLASH = '/';
 
 // interface
 export interface RequestArgs {
-  method: string;
+  method: Method;
   path?: string;
   // Keys of url params to be applied
   urlParamKeys?: string[];
@@ -33,7 +33,6 @@ export class Agent {
   private basePath: string;
   private getBaseParams?: () => Record<string, any>;
   private getBaseUrl?: () => string;
-  private requestConfig?: AxiosRequestConfig;
 
   constructor({
     client,
@@ -50,7 +49,6 @@ export class Agent {
     this.getBaseParams = getUrlParams;
     this.getBaseUrl = getBaseUrl;
     this.basePath = path;
-    this.requestConfig = client.getRequestConfig() || {};
   }
 
   public request({
@@ -164,12 +162,15 @@ export class Agent {
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
-      ...this.requestConfig,
+      ...this.client.getRequestConfig() || {},
       method,
       url,
-      headers: {
-        Authorization: `bearer ${this.client.getAccessToken()}`,
-      },
+    };
+
+    // Headers
+    requestConfig.headers = {
+      ...requestConfig.headers,
+      Authorization: `bearer ${await this.client.getAccessToken()}`,
     };
 
     // Put payload into querystring if method is GET
@@ -184,9 +185,9 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-            ...requestConfig.params,
-            ...queryParams,
-          }
+          ...requestConfig.params,
+          ...queryParams,
+        }
         : queryParams;
     }
 
@@ -208,9 +209,7 @@ export class Agent {
         if (!resourceId) {
           // throw an error to let users know the response is not expected
           throw new Error(
-            `resourceId is not found in Location header from request: ${
-              res.config.url
-            }`,
+            `resourceId is not found in Location header from request: ${res.config.url}`,
           );
         }
 
@@ -232,7 +231,7 @@ export class Agent {
       return;
     }
 
-    Object.keys(keyMapping).some(key => {
+    Object.keys(keyMapping).some((key) => {
       if (isUndefined(payload[key])) {
         // Skip if undefined
         return false;

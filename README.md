@@ -1,13 +1,13 @@
 ## keycloak-admin
 
-[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin) [![Travis (.org)](https://img.shields.io/travis/keycloak/keycloak-nodejs-admin-client.svg)](https://travis-ci.org/keycloak/keycloak-nodejs-admin-client)
+[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/@keycloak/keycloak-admin-client) [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
 
 Node.js Keycloak admin client
 
 ## Features
 
 - TypeScript supported
-- Keycloak latest version (v4.1) supported
+- Keycloak version 11 supported
 - [Complete resource definitions](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/src/defs)
 - [Well-tested for supported APIs](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/test)
 
@@ -21,6 +21,8 @@ yarn add keycloak-admin
 
 ```js
 import KcAdminClient from 'keycloak-admin';
+// or
+// const KcAdminClient = require('keycloak-admin').default;
 
 // To configure the client, pass an object to override any of these  options:
 // {
@@ -38,6 +40,7 @@ await kcAdminClient.auth({
   password: 'wwwy3y3',
   grantType: 'password',
   clientId: 'admin-cli',
+  totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
 });
 
 // List all users
@@ -71,6 +74,7 @@ const keycloakIssuer = await Issuer.discover(
 
 const client = new keycloakIssuer.Client({
   client_id: 'admin-cli', // Same as `clientId` passed to client.auth()
+  token_endpoint_auth_method: 'none', // to send only client_id in the header
 });
 
 // Use the grant type 'password'
@@ -88,9 +92,22 @@ setInterval(async () => {
 }, 58 * 1000); // 58 seconds
 ```
 
+In cases where you don't have a refresh token, eg. in a client credentials flow, you can simply call `kcAdminClient.auth` to get a new access token, like this:
+
+```js
+const credentials = {
+  grantType: 'client_credentials',
+  clientId: 'clientId',
+  clientSecret: 'some-client-secret-uuid',
+};
+await kcAdminClient.auth(credentials);
+
+setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
+```
+
 ## Supported APIs
 
-### [Realm admin](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_realms_admin_resource)
+### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/realms.spec.ts
 
@@ -98,8 +115,15 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get the top-level representation of the realm (`GET /{realm}`)
 - Update the top-level information of the realm (`PUT /{realm}`)
 - Delete the realm (`DELETE /{realm}`)
+- Partial export of existing realm into a JSON file (`POST /{realm}/partial-export`)
+- Get users management permissions (`GET /{realm}/users-management-permissions`)
+- Enable users management permissions (`PUT /{realm}/users-management-permissions`)
+- Get events (`GET /{realm}/events`)
+- Get admin events (`GET /{realm}/admin-events`)
+- Remove all user sessions (`POST /{realm}/logout-all`)
+- Remove a specific user session (`DELETE /{realm}/sessions/{session}`)
 
-### [Role](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
+### [Role](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/roles.spec.ts
 
@@ -110,13 +134,18 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete a role by name (`DELETE /{realm}/roles/{role-name}`)
 - Get all users in a role by name for the realm (`GET /{realm}/roles/{role-name}/users`)
 
-### [Roles (by ID)](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_by_id_resource)
+### [Roles (by ID)](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_by_id_resource)
 
 - Get a specific role (`GET /{realm}/roles-by-id/{role-id}`)
 - Update the role (`PUT /{realm}/roles-by-id/{role-id}`)
 - Delete the role (`DELETE /{realm}/roles-by-id/{role-id}`)
+- Make the role a composite role by associating some child roles(`POST /{realm}/roles-by-id/{role-id}/composites`)
+- Get role’s children Returns a set of role’s children provided the role is a composite. (`GET /{realm}/roles-by-id/{role-id}/composites`)
+- Remove a set of roles from the role’s composite (`DELETE /{realm}/roles-by-id/{role-id}/composites`)
+- Get client-level roles for the client that are in the role’s composite (`GET /{realm}/roles-by-id/{role-id}/composites/clients/{client}`)
+- Get realm-level roles that are in the role’s composite (`GET /{realm}/roles-by-id/{role-id}/composites/realm`)
 
-### [User](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_users_resource)
+### [User](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_users_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts
 
@@ -125,6 +154,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get representation of the user (`GET /{realm}/users/{id}`)
 - Update the user (`PUT /{realm}/users/{id}`)
 - Delete the user (`DELETE /{realm}/users/{id}`)
+- Count users (`GET /{realm}/users/count`)
 - Send a update account email to the user An email contains a link the user can click to perform a set of required actions. (`PUT /{realm}/users/{id}/execute-actions-email`)
 - Get user groups (`GET /{realm}/users/{id}/groups`)
 - Add user to group (`PUT /{realm}/users/{id}/groups/{groupId}`)
@@ -132,6 +162,15 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Remove TOTP from the user (`PUT /{realm}/users/{id}/remove-totp`)
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
+
+### User group-mapping
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L178
+
+- Add user to group (`PUT /{id}/groups/{groupId}`)
+- List all user groups (`GET /{id}/groups`)
+- Count user groups (`GET /{id}/groups/count`)
+- Remove user from group (`DELETE /{id}/groups/{groupId}`)
 
 ### User role-mapping
 
@@ -144,7 +183,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get realm-level roles that can be mapped (`GET /{realm}/users/{id}/role-mappings/realm/available`)
 - Get effective realm-level role mappings This will recurse all composite roles to get the result. (`GET /{realm}/users/{id}/role-mappings/realm/composite`)
 
-### [Group](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_groups_resource)
+### [Group](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_groups_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/groups.spec.ts
 
@@ -153,6 +192,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get one (`GET /{realm}/groups/{id}`)
 - Update (`PUT /{realm}/groups/{id}`)
 - Delete (`DELETE /{realm}/groups/{id}`)
+- Count (`GET /{realm}/groups/count`)
 - List members (`GET /{realm}/groups/{id}/members`)
 - Set or create child (`POST /{realm}/groups/{id}/children`)
 
@@ -166,7 +206,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete realm-level role mappings (`DELETE /{realm}/groups/{id}/role-mappings/realm`)
 - Get realm-level roles that can be mapped (`GET /{realm}/groups/{id}/role-mappings/realm/available`)
 
-### [Client](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_clients_resource)
+### [Client](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_clients_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
 
@@ -176,7 +216,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Update the client (`PUT /{realm}/clients/{id}`)
 - Delete the client (`DELETE /{realm}/clients/{id}`)
 
-### [Client roles](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_roles_resource)
+### [Client roles](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
 
@@ -186,7 +226,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Update a role by name (`PUT /{realm}/clients/{id}/roles/{role-name}`)
 - Delete a role by name (`DELETE /{realm}/clients/{id}/roles/{role-name}`)
 
-### [Client role-mapping for group](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_role_mappings_resource)
+### [Client role-mapping for group](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_role_mappings_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/groups.spec.ts#L150
 
@@ -195,7 +235,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete client-level roles from group role mapping (`DELETE /{realm}/groups/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the group (`GET /{realm}/groups/{id}/role-mappings/clients/{client}/available`)
 
-### [Client role-mapping for user](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_role_mappings_resource)
+### [Client role-mapping for user](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_role_mappings_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/users.spec.ts#L217
 
@@ -204,7 +244,16 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Delete client-level roles from user role mapping (`DELETE /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}/available`)
 
-### [Identity Providers](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_identity_providers_resource)
+### [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
+
+- Get key info (`GET /{realm}/clients/{id}/certificates/{attr}`)
+- Get a keystore file for the client, containing private key and public certificate (`POST /{realm}/clients/{id}/certificates/{attr}/download`)
+- Generate a new certificate with new key pair (`POST /{realm}/clients/{id}/certificates/{attr}/generate`)
+- Generate a new keypair and certificate, and get the private key file Generates a keypair and certificate and serves the private key in a specified keystore format. (`POST /{realm}/clients/{id}/certificates/{attr}/generate-and-download`)
+- Upload certificate and eventually private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload`)
+- Upload only certificate, not private key (`POST /{realm}/clients/{id}/certificates/{attr}/upload-certificate`)
+
+### [Identity Providers](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_identity_providers_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/idp.spec.ts
 
@@ -319,15 +368,62 @@ Supported for [user federation](https://www.keycloak.org/docs/latest/server_admi
 - Update (`PUT /{realm}/components/{id}`)
 - Delete (`DELETE /{realm}/components/{id}`)
 
+### [Sessions for clients]()
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- List user sessions for a specific client (`GET /{realm}/clients/{id}/user-sessions`)
+- List offline sessions for a specific client (`GET /{realm}/clients/{id}/offline-sessions`)
+- Get user session count for a specific client (`GET /{realm}/clients/{id}/session-count`)
+- List offline session count for a specific client (`GET /{realm}/clients/{id}/offline-session-count`)
+
+### [Authentication Management: Required actions](https://www.keycloak.org/docs-api/8.0/rest-api/index.html#_authentication_management_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/authenticationManagement.spec.ts
+
+- Register a new required action (`POST /{realm}/authentication/register-required-action`)
+- Get required actions. Returns a list of required actions. (`GET /{realm}/authentication/required-actions`)
+- Get required action for alias (`GET /{realm}/authentication/required-actions/{alias}`)
+- Update required action (`PUT /{realm}/authentication/required-actions/{alias}`)
+- Delete required action (`DELETE /{realm}/authentication/required-actions/{alias}`)
+- Lower required action’s priority (`POST /{realm}/authentication/required-actions/{alias}/lower-priority`)
+- Raise required action’s priority (`POST /{realm}/authentication/required-actions/{alias}/raise-priority`)
+- Get unregistered required actions Returns a list of unregistered required actions. (`GET /{realm}/authentication/unregistered-required-actions`)
+
+### [Authorization: Permission](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create permission (`POST /{realm}/clients/{id}/authz/resource-server/permission/{type}`)
+- Get permission (`GET /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Update permission (`PUT /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+- Delete permission (`DELETE /{realm}/clients/{id}/authz/resource-server/permission/{type}/{permissionId}`)
+
+### [Authorization: Policy](https://www.keycloak.org/docs/8.0/authorization_services/#_overview)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/clients.spec.ts
+
+- Create policy (`POST /{realm}/clients/{id}/authz/resource-server/policy/{type}`)
+- Get policy (`GET /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Get policy by name (`GET /{realm}/clients/{id}/authz/resource-server/policy/search`)
+- Update policy (`PUT /{realm}/clients/{id}/authz/resource-server/policy/{type}/{policyId}`)
+- Delete policy (`DELETE /{realm}/clients/{id}/authz/resource-server/policy/{policyId}`)
+
+### [Attack Detection](https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_attack_detection_resource)
+
+Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/attackDetection.spec.ts
+
+- Clear any user login failures for all users This can release temporary disabled users (`DELETE /{realm}/attack-detection/brute-force/users`)
+- Get status of a username in brute force detection (`GET /{realm}/attack-detection/brute-force/users/{userId}`)
+- Clear any user login failures for the user This can release temporary disabled user (`DELETE /{realm}/attack-detection/brute-force/users/{userId}`)
+
 ## Not yet supported
 
-- [Attack Detection](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_attack_detection_resource)
-- [Authentication Management](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_authentication_management_resource)
-- [Client Attribute Certificate](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_attribute_certificate_resource)
-- [Client Initial Access](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_initial_access_resource)
-- [Client Registration Policy](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_client_registration_policy_resource)
-- [Key](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_key_resource)
-- [User Storage Provider](https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_user_storage_provider_resource)
+- [Authentication Management](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_authentication_management_resource)
+- [Client Initial Access](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_initial_access_resource)
+- [Client Registration Policy](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_registration_policy_resource)
+- [Key](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_key_resource)
+- [User Storage Provider](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_user_storage_provider_resource)
 
 ## Maintainers
 

@@ -59,6 +59,11 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public count = this.makeRequest<UserQuery, number>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * role mappings
    */
@@ -122,7 +127,7 @@ export class Users extends Resource<{realm?: string}> {
 
   /**
    * Client role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
    */
 
   public listClientRoleMappings = this.makeRequest<
@@ -163,6 +168,15 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'clientUniqueId'],
   });
 
+  public listCompositeClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}/composite',
+    urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
   /**
    * Send a update account email to the user
    * an email contains a link the user can click to perform a set of required actions.
@@ -199,22 +213,22 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public addToGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public addToGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'PUT',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
   });
 
-  public delFromGroup = this.makeRequest<
-    {id: string; groupId: string},
-    GroupRepresentation[]
-  >({
+  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>({
     method: 'DELETE',
     path: '/{id}/groups/{groupId}',
     urlParamKeys: ['id', 'groupId'],
+  });
+
+  public countGroups = this.makeRequest<{id: string, search?: string}, {count: number}>({
+    method: 'GET',
+    path: '/{id}/groups/count',
+    urlParamKeys: ['id'],
   });
 
   /**
@@ -308,7 +322,7 @@ export class Users extends Resource<{realm?: string}> {
    * list offline sessions associated with the user and client
    */
   public listOfflineSessions = this.makeRequest<
-    {id: string, clientId: string},
+    {id: string; clientId: string},
     UserSessionRepresentation[]
   >({
     method: 'GET',
@@ -319,10 +333,7 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * logout user from all sessions
    */
-  public logout = this.makeRequest<
-    {id: string},
-    void
-  >({
+  public logout = this.makeRequest<{id: string}, void>({
     method: 'POST',
     path: '/{id}/logout',
     urlParamKeys: ['id'],
@@ -343,14 +354,13 @@ export class Users extends Resource<{realm?: string}> {
   /**
    * revoke consent and offline tokens for particular client from user
    */
-  public revokeConsent = this.makeRequest<
-    {id: string, clientId: string},
-    void
-  >({
-    method: 'DELETE',
-    path: '/{id}/consents/{clientId}',
-    urlParamKeys: ['id', 'clientId'],
-  });
+  public revokeConsent = this.makeRequest<{id: string; clientId: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/consents/{clientId}',
+      urlParamKeys: ['id', 'clientId'],
+    },
+  );
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
