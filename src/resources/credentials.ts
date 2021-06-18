@@ -1,5 +1,5 @@
 import Resource from './resource';
-import CredentialRepresentation from '../defs/credentialRepresentation';
+import CredentialsRepresentation from '../defs/credentialsRepresentation';
 import {KeycloakAdminClient} from '../client';
 
 export class Credentials extends Resource<{realm?: string}> {
@@ -8,7 +8,7 @@ export class Credentials extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/4.1/rest-api/index.html#_user_storage_provider_resource
    */
 
-  public getCredentials = this.makeRequest<{id: string}, CredentialRepresentation[]>({
+  public getCredentials = this.makeRequest<{id: string}, CredentialsRepresentation[]>({
     method: 'GET',
     path: '/{id}/credentials',
     urlParamKeys: ['id'],
