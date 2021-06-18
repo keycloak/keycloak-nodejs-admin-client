@@ -18,6 +18,7 @@ import {AxiosRequestConfig} from 'axios';
 
 import {Sessions} from './resources/sessions';
 import {UserStorageProvider} from './resources/userStorageProvider';
+import { Credentials as Credential } from './resources/credentials';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -33,6 +34,7 @@ export class KeycloakAdminClient {
   public groups: Groups;
   public roles: Roles;
   public clients: Clients;
+  public credentials: Credential;
   public realms: Realms;
   public clientScopes: ClientScopes;
   public identityProviders: IdentityProviders;
@@ -67,6 +69,7 @@ export class KeycloakAdminClient {
     this.groups = new Groups(this);
     this.roles = new Roles(this);
     this.clients = new Clients(this);
+    this.credentials = new Credential(this);
     this.realms = new Realms(this);
     this.clientScopes = new ClientScopes(this);
     this.identityProviders = new IdentityProviders(this);
