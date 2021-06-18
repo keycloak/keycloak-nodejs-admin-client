@@ -28,7 +28,7 @@ export class Credentials extends Resource<{realm?: string}> {
 
   constructor(client: KeycloakAdminClient) {
     super(client, {
-      path: 'admin/realms/{realm}/users',
+      path: '/admin/realms/{realm}/users',
       getUrlParams: () => ({
         realm: client.realmName,
       }),
