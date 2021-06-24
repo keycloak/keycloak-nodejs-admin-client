@@ -20,5 +20,5 @@ describe('Authorization', () => {
       'sessionState',
       'scope',
     );
-  });
+  }).timeout(10000);
 });

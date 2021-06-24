@@ -1,16 +1,20 @@
-import Resource from './resource';
-import GroupRepresentation from '../defs/groupRepresentation';
 import {KeycloakAdminClient} from '../client';
-import UserRepresentation from '../defs/userRepresentation';
+import GroupRepresentation from '../defs/groupRepresentation';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {
-  RoleMappingPayload,
-} from '../defs/roleRepresentation';
+import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import UserRepresentation from '../defs/userRepresentation';
+import Resource from './resource';
 
 export interface GroupQuery {
   first?: number;
   max?: number;
   search?: string;
+}
+
+export interface GroupCountQuery {
+  search?: string;
+  top?: boolean;
 }
 
 export class Groups extends Resource<{realm?: string}> {
@@ -50,6 +54,12 @@ export class Groups extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+
+  public count = this.makeRequest<GroupCountQuery, {count: number}>({
+    method: 'GET',
+    path: '/count',
+  });
+
   /**
    * Set or create child.
    * This will just set the parent if it exists. Create it and set the parent if the group doesn’t exist.
@@ -82,7 +92,7 @@ export class Groups extends Resource<{realm?: string}> {
 
   /**
    * Role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_role_mapper_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_role_mapper_resource
    */
 
   public listRoleMappings = this.makeRequest<
@@ -134,7 +144,7 @@ export class Groups extends Resource<{realm?: string}> {
 
   /**
    * Client role mappings
-   * https://www.keycloak.org/docs-api/4.1/rest-api/#_client_role_mappings_resource
+   * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
    */
 
   public listClientRoleMappings = this.makeRequest<
@@ -173,6 +183,28 @@ export class Groups extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
     urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
+  /**
+   * Authorization permissions
+   */
+  public updatePermission = this.makeUpdateRequest<
+    {id: string},
+    ManagementPermissionReference,
+    ManagementPermissionReference
+  >({
+    method: 'PUT',
+    path: '/{id}/management/permissions',
+    urlParamKeys: ['id'],
+  });
+
+  public listPermissions = this.makeRequest<
+    {id: string},
+    ManagementPermissionReference
+  >({
+    method: 'GET',
+    path: '/{id}/management/permissions',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {

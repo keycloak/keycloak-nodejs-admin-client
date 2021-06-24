@@ -1,14 +1,19 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import camelize from 'camelize';
-import querystring from 'querystring';
+import querystring from 'query-string';
 import {defaultBaseUrl, defaultRealm} from './constants';
 
+export type GrantTypes = 'client_credentials' | 'password';
+
 export interface Credentials {
-  username: string;
-  password: string;
-  grantType: string;
+  username?: string;
+  password?: string;
+  grantType: GrantTypes;
   clientId: string;
   clientSecret?: string;
+  totp?: string;
+  offlineToken?: boolean;
+  refreshToken?: string;
 }
 
 export interface Settings {
@@ -43,7 +48,14 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     password: credentials.password,
     grant_type: credentials.grantType,
     client_id: credentials.clientId,
+    totp: credentials.totp,
+    ...(credentials.offlineToken ? {scope: 'offline_access'} : {}),
+    ...(credentials.refreshToken ? {
+      refresh_token: credentials.refreshToken,
+      client_secret: credentials.clientSecret,
+    } : {}),
   });
+
   const config: AxiosRequestConfig = {
     ...settings.requestConfig,
   };

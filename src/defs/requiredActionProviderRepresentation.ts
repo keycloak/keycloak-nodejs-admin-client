@@ -1,5 +1,5 @@
 /**
- * https://www.keycloak.org/docs-api/4.1/rest-api/#_requiredactionproviderrepresentation
+ * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_requiredactionproviderrepresentation
  */
 
 export enum RequiredActionAlias {
@@ -17,4 +17,5 @@ export default interface RequiredActionProviderRepresentation {
   enabled?: boolean;
   name?: string;
   provider?: string;
+  priority?: number;
 }
