@@ -1,4 +1,4 @@
-export type CredentialType = 'otp';
+export type CredentialType = 'otp' | 'password';
 
  export default interface CredentialRepresentation {
   id?: string;
