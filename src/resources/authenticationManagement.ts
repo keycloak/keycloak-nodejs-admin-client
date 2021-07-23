@@ -3,6 +3,7 @@ import RequiredActionProviderRepresentation from '../defs/requiredActionProvider
 import {KeycloakAdminClient} from '../client';
 import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
 import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
+import AuthenticatorConfigRepresentation from '../defs/authenticatorConfigRepresentation';
 
 export class AuthenticationManagement extends Resource {
   /**
@@ -160,6 +161,37 @@ export class AuthenticationManagement extends Resource {
   public raisePriorityExecution = this.makeRequest<{id: string}>({
     method: 'POST',
     path: '/executions/{id}/raise-priority',
+    urlParamKeys: ['id'],
+  });
+
+  public getConfigDescription = this.makeRequest<{providerId: string}, any>({
+    method: 'GET',
+    path: 'config-description/{providerId}',
+    urlParamKeys: ['providerId'],
+  });
+
+  public createConfig = this.makeRequest<AuthenticatorConfigRepresentation, AuthenticatorConfigRepresentation>({
+    method: 'POST',
+    path: '/executions/{id}/config',
+    urlParamKeys: ['id'],
+    returnResourceIdInLocationHeader: {field: 'id'},
+  });
+
+  public updateConfig = this.makeRequest<AuthenticatorConfigRepresentation, void>({
+    method: 'PUT',
+    path: '/config/{id}',
+    urlParamKeys: ['id'],
+  });
+
+  public getConfig = this.makeRequest<{id: string}, AuthenticatorConfigRepresentation>({
+    method: 'GET',
+    path: '/config/{id}',
+    urlParamKeys: ['id'],
+  });
+
+  public delConfig = this.makeRequest<{id: string}>({
+    method: 'DELETE',
+    path: '/config/{id}',
     urlParamKeys: ['id'],
   });
 
