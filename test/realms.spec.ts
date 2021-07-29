@@ -277,7 +277,14 @@ describe('Realms', () => {
       currentRealmName = created.realmName;
     });
 
-    it('log outs all sessions', async () => {
+    it('push revocation', async () => {
+      const push = await kcAdminClient.realms.pushRevocation({
+        realm: currentRealmName,
+      });
+      expect(push).to.be.ok;
+    });
+
+    it('logs out all sessions', async () => {
       const logout = await kcAdminClient.realms.logoutAll({
         realm: currentRealmName,
       });
@@ -333,42 +340,67 @@ describe('Realms', () => {
     });
   });
 
-  // if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('12.')) {
-  //   describe('Realm localization', () => {
-  //     it('should add localization', async () => {
-  //       kcAdminClient.setConfig({requestConfig: {headers: {'Content-Type': 'text/plain'}}});
-  //       await kcAdminClient.realms.addLocalization({realm: currentRealmName, selectedLocale: 'nl', key: 'theKey'}, 'value');
-  //     });
+  if (
+    process.env.KEYCLOAK_VERSION &&
+    process.env.KEYCLOAK_VERSION.startsWith('12.')
+  ) {
+    describe('Realm localization', () => {
+      it('should add localization', async () => {
+        kcAdminClient.setConfig({
+          requestConfig: {headers: {'Content-Type': 'text/plain'}},
+        });
+        await kcAdminClient.realms.addLocalization(
+          {realm: currentRealmName, selectedLocale: 'nl', key: 'theKey'},
+          'value',
+        );
+      });
 
-  //     it('should get realm specific locales', async () => {
-  //       const locales = await kcAdminClient.realms.getRealmSpecificLocales({realm: currentRealmName});
+      it('should get realm specific locales', async () => {
+        const locales = await kcAdminClient.realms.getRealmSpecificLocales({
+          realm: currentRealmName,
+        });
 
-  //       expect(locales).to.be.ok;
-  //       expect(locales).to.be.deep.eq(['nl']);
-  //     });
+        expect(locales).to.be.ok;
+        expect(locales).to.be.deep.eq(['nl']);
+      });
 
-  //     it('should get localization for specified locale', async () => {
-  //       const texts = await kcAdminClient.realms.getRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'});
+      it('should get localization for specified locale', async () => {
+        const texts = await kcAdminClient.realms.getRealmLocalizationTexts({
+          realm: currentRealmName,
+          selectedLocale: 'nl',
+        });
 
-  //       expect(texts).to.be.ok;
-  //       expect(texts.theKey).to.be.eq('value');
-  //     });
+        expect(texts).to.be.ok;
+        expect(texts.theKey).to.be.eq('value');
+      });
 
-  //     it('should delete localization for specified locale key', async () => {
-  //       await kcAdminClient.realms.deleteRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl', key: 'theKey'});
+      it('should delete localization for specified locale key', async () => {
+        await kcAdminClient.realms.deleteRealmLocalizationTexts({
+          realm: currentRealmName,
+          selectedLocale: 'nl',
+          key: 'theKey',
+        });
 
-  //       const texts = await kcAdminClient.realms.getRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'});
-  //       expect(texts).to.be.ok;
-  //       expect(texts).to.be.deep.eq({});
-  //     });
+        const texts = await kcAdminClient.realms.getRealmLocalizationTexts({
+          realm: currentRealmName,
+          selectedLocale: 'nl',
+        });
+        expect(texts).to.be.ok;
+        expect(texts).to.be.deep.eq({});
+      });
 
-  //     it('should delete localization for specified locale', async () => {
-  //       await kcAdminClient.realms.deleteRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'});
+      it('should delete localization for specified locale', async () => {
+        await kcAdminClient.realms.deleteRealmLocalizationTexts({
+          realm: currentRealmName,
+          selectedLocale: 'nl',
+        });
 
-  //       const locales = await kcAdminClient.realms.getRealmSpecificLocales({realm: currentRealmName});
-  //       expect(locales).to.be.ok;
-  //       expect(locales).to.be.deep.eq([]);
-  //     });
-  //   });
-  // }
+        const locales = await kcAdminClient.realms.getRealmSpecificLocales({
+          realm: currentRealmName,
+        });
+        expect(locales).to.be.ok;
+        expect(locales).to.be.deep.eq([]);
+      });
+    });
+  }
 });
