@@ -33,6 +33,9 @@ describe('Users', function () {
       // enabled required to be true in order to send actions email
       emailVerified: true,
       enabled: true,
+      attributes: {
+        key: 'value',
+      },
     });
 
     expect(user.id).to.be.ok;
@@ -88,6 +91,17 @@ describe('Users', function () {
       expect(numUsers).to.equal(2);
     } else {
       expect(numUsers).to.equal(1);
+    }
+  });
+
+  it('find users by custom attributes', async function() {
+    // Searching by attributes is only available from Keycloak > 15
+    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('15.')) {
+      const users = await kcAdminClient.users.find({key: 'value'});
+      expect(users.length).to.be.equal(1);
+      expect(users[0]).to.be.deep.include(currentUser);
+    } else {
+      this.skip();
     }
   });
 

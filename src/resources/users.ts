@@ -23,7 +23,7 @@ export interface UserQuery {
 }
 
 export class Users extends Resource<{realm?: string}> {
-  public find = this.makeRequest<UserQuery, UserRepresentation[]>({
+  public find = this.makeRequest<UserQuery & {[key: string]: string}, UserRepresentation[]>({
     method: 'GET',
   });
 
