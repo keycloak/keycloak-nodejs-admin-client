@@ -1,6 +1,7 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
 import axios, {AxiosRequestConfig, Method} from 'axios';
+import querystring from 'query-string';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
 
@@ -162,7 +163,8 @@ export class Agent {
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
-      ...this.client.getRequestConfig() || {},
+      paramsSerializer: (params) => querystring.stringify(params),
+      ...(this.client.getRequestConfig() || {}),
       method,
       url,
     };
@@ -185,9 +187,9 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-          ...requestConfig.params,
-          ...queryParams,
-        }
+            ...requestConfig.params,
+            ...queryParams,
+          }
         : queryParams;
     }
 
