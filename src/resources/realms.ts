@@ -78,7 +78,7 @@ export class Realms extends Resource {
       first?: number;
       ipAddress?: string;
       max?: number;
-      type?: EventType;
+      type?: EventType | EventType[];
       user?: string;
     },
     EventRepresentation[]
