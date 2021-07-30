@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
+import {fail} from 'assert';
 const expect = chai.expect;
 
 describe('Authentication management', () => {
@@ -252,6 +253,36 @@ describe('Authentication management', () => {
       execution = executions.find(ex => ex.id === execution.id);
 
       expect(execution.index).to.be.eq(priority + 1);
+    });
+
+    it('should create, update and delete config for execution', async () => {
+      const execution = (await kcAdminClient.authenticationManagement.getExecutions({flow: flowName}))[0];
+      const alias = 'test';
+      let config = await kcAdminClient.authenticationManagement.createConfig({id: execution.id, alias});
+      config = await kcAdminClient.authenticationManagement.getConfig({id: config.id});
+      expect(config.alias).to.be.eq(alias);
+
+      const extraConfig = {defaultProvider: 'sdf'};
+      await kcAdminClient.authenticationManagement.updateConfig({...config, config: extraConfig});
+      config = await kcAdminClient.authenticationManagement.getConfig({id: config.id});
+
+      expect(config.config.defaultProvider).to.be.eq(extraConfig.defaultProvider);
+
+      await kcAdminClient.authenticationManagement.delConfig({id: config.id});
+      try {
+        await kcAdminClient.authenticationManagement.getConfig({id: config.id});
+        fail('should not find deleted config');
+      } catch (error) {
+        // ignore
+      }
+    });
+
+    it('should fetch config description for execution', async () => {
+      const execution = (await kcAdminClient.authenticationManagement.getExecutions({flow: flowName}))[0];
+
+      const configDescription = await kcAdminClient.authenticationManagement.getConfigDescription({providerId: execution.providerId});
+      expect(configDescription).is.ok;
+      expect(configDescription.providerId).to.be.eq(execution.providerId);
     });
 
   });

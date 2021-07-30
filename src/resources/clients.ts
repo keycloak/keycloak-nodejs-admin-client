@@ -472,7 +472,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Resource
    */
   public listResources = this.makeRequest<
-    {id: string, name: string},
+    {id: string},
     ResourceRepresentation[]
   >({
     method: 'GET',
