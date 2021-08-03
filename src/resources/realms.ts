@@ -248,6 +248,7 @@ export class Realms extends Resource {
     method: 'POST',
     path: '/{realm}/push-revocation',
     urlParamKeys: ['realm'],
+    ignoredKeys: ['realm'],
   });
 
   public getKeys = this.makeRequest<
