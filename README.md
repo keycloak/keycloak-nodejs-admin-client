@@ -15,7 +15,7 @@ Node.js Keycloak admin client
 ## Install
 
 ```sh
-yarn add keycloak-admin
+npm install keycloak-admin
 ```
 
 ## Usage
