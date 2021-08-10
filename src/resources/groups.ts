@@ -10,6 +10,7 @@ export interface GroupQuery {
   first?: number;
   max?: number;
   search?: string;
+  briefRepresentation?: boolean;
 }
 
 export interface GroupCountQuery {
