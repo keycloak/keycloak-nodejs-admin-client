@@ -79,8 +79,10 @@ export class Agent {
 
       // Omit url parameters and query parameters from payload
       const omittedKeys = ignoredKeys
-        ? [...allUrlParamKeys, ...queryParamKeys].filter(key => !ignoredKeys.includes(key))
-        : [...allUrlParamKeys, ...queryParamKeys]
+        ? [...allUrlParamKeys, ...queryParamKeys].filter(
+            (key) => !ignoredKeys.includes(key),
+          )
+        : [...allUrlParamKeys, ...queryParamKeys];
 
       payload = omit(payload, omittedKeys);
 

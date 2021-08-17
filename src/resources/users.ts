@@ -20,10 +20,11 @@ export interface UserQuery {
   max?: number;
   search?: string;
   username?: string;
+  [key: string]: string | number | undefined;
 }
 
 export class Users extends Resource<{realm?: string}> {
-  public find = this.makeRequest<UserQuery & {[key: string]: string | number}, UserRepresentation[]>({
+  public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET',
   });
 
@@ -219,13 +220,18 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'groupId'],
   });
 
-  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>({
-    method: 'DELETE',
-    path: '/{id}/groups/{groupId}',
-    urlParamKeys: ['id', 'groupId'],
-  });
+  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>(
+    {
+      method: 'DELETE',
+      path: '/{id}/groups/{groupId}',
+      urlParamKeys: ['id', 'groupId'],
+    },
+  );
 
-  public countGroups = this.makeRequest<{id: string, search?: string}, {count: number}>({
+  public countGroups = this.makeRequest<
+    {id: string; search?: string},
+    {count: number}
+  >({
     method: 'GET',
     path: '/{id}/groups/count',
     urlParamKeys: ['id'],
