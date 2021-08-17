@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../client';
 import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
 import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
 import AuthenticatorConfigRepresentation from '../defs/authenticatorConfigRepresentation';
+import AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation';
 
 export class AuthenticationManagement extends Resource {
   /**
@@ -33,7 +34,10 @@ export class AuthenticationManagement extends Resource {
     catchNotFound: true,
   });
 
-  public getClientAuthenticatorProviders = this.makeRequest<{id: string}, {id: string, displayName: string}[]>({
+  public getClientAuthenticatorProviders = this.makeRequest<
+    {id: string},
+    {id: string; displayName: string}[]
+  >({
     method: 'GET',
     path: '/client-authenticator-providers',
   });
@@ -96,7 +100,7 @@ export class AuthenticationManagement extends Resource {
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public copyFlow = this.makeRequest<{flow: string, newName: string}>({
+  public copyFlow = this.makeRequest<{flow: string; newName: string}>({
     method: 'POST',
     path: '/flows/{flow}/copy',
     urlParamKeys: ['flow'],
@@ -108,39 +112,63 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ['flowId'],
   });
 
-  public updateFlow = this.makeUpdateRequest<{flowId: string}, AuthenticationFlowRepresentation>({
+  public updateFlow = this.makeUpdateRequest<
+    {flowId: string},
+    AuthenticationFlowRepresentation
+  >({
     method: 'PUT',
     path: '/flows/{flowId}',
     urlParamKeys: ['flowId'],
   });
 
-  public getExecutions = this.makeRequest<{flow: string}, AuthenticationExecutionInfoRepresentation[]>({
+  public getExecutions = this.makeRequest<
+    {flow: string},
+    AuthenticationExecutionInfoRepresentation[]
+  >({
     method: 'GET',
     path: '/flows/{flow}/executions',
     urlParamKeys: ['flow'],
   });
 
-  public addExecution = this.makeUpdateRequest<{flow: string}, AuthenticationExecutionInfoRepresentation>({
+  public addExecution = this.makeUpdateRequest<
+    {flow: string},
+    AuthenticationExecutionInfoRepresentation
+  >({
     method: 'POST',
     path: '/flows/{flow}/executions',
     urlParamKeys: ['flow'],
   });
 
-  public addExecutionToFlow = this.makeRequest<{flow: string, provider: string}, AuthenticationExecutionInfoRepresentation>({
+  public addExecutionToFlow = this.makeRequest<
+    {flow: string; provider: string},
+    AuthenticationExecutionInfoRepresentation
+  >({
     method: 'POST',
     path: '/flows/{flow}/executions/execution',
     urlParamKeys: ['flow'],
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public addFlowToFlow = this.makeRequest<{flow: string, alias: string, type: string, provider: string, description: string}, AuthenticationFlowRepresentation>({
+  public addFlowToFlow = this.makeRequest<
+    {
+      flow: string;
+      alias: string;
+      type: string;
+      provider: string;
+      description: string;
+    },
+    AuthenticationFlowRepresentation
+  >({
     method: 'POST',
     path: '/flows/{flow}/executions/flow',
     urlParamKeys: ['flow'],
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public updateExecution = this.makeUpdateRequest<{flow: string}, AuthenticationExecutionInfoRepresentation>({
+  public updateExecution = this.makeUpdateRequest<
+    {flow: string},
+    AuthenticationExecutionInfoRepresentation
+  >({
     method: 'PUT',
     path: '/flows/{flow}/executions',
     urlParamKeys: ['flow'],
@@ -164,26 +192,38 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ['id'],
   });
 
-  public getConfigDescription = this.makeRequest<{providerId: string}, any>({
+  public getConfigDescription = this.makeRequest<
+    {providerId: string},
+    AuthenticatorConfigInfoRepresentation
+  >({
     method: 'GET',
     path: 'config-description/{providerId}',
     urlParamKeys: ['providerId'],
   });
 
-  public createConfig = this.makeRequest<AuthenticatorConfigRepresentation, AuthenticatorConfigRepresentation>({
+  public createConfig = this.makeRequest<
+    AuthenticatorConfigRepresentation,
+    AuthenticatorConfigRepresentation
+  >({
     method: 'POST',
     path: '/executions/{id}/config',
     urlParamKeys: ['id'],
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public updateConfig = this.makeRequest<AuthenticatorConfigRepresentation, void>({
+  public updateConfig = this.makeRequest<
+    AuthenticatorConfigRepresentation,
+    void
+  >({
     method: 'PUT',
     path: '/config/{id}',
     urlParamKeys: ['id'],
   });
 
-  public getConfig = this.makeRequest<{id: string}, AuthenticatorConfigRepresentation>({
+  public getConfig = this.makeRequest<
+    {id: string},
+    AuthenticatorConfigRepresentation
+  >({
     method: 'GET',
     path: '/config/{id}',
     urlParamKeys: ['id'],
