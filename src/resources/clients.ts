@@ -491,7 +491,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   public updateResource = this.makeUpdateRequest<
-    {id: string, resourceId: string},
+    {id: string; resourceId: string},
     ResourceRepresentation,
     void
   >({
@@ -500,14 +500,13 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'resourceId'],
   });
 
-  public delResource = this.makeRequest<
-    {id: string, resourceId: string},
-    void
-  >({
-    method: 'DELETE',
-    path: '/{id}/authz/resource-server/resource/{resourceId}',
-    urlParamKeys: ['id', 'resourceId'],
-  });
+  public delResource = this.makeRequest<{id: string; resourceId: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/authz/resource-server/resource/{resourceId}',
+      urlParamKeys: ['id', 'resourceId'],
+    },
+  );
 
   public evaluateResource = this.makeUpdateRequest<
     {id: string},
@@ -521,10 +520,7 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Policy
    */
-  public listPolicies = this.makeRequest<
-    PolicyQuery,
-    PolicyRepresentation[]
-  >({
+  public listPolicies = this.makeRequest<PolicyQuery, PolicyRepresentation[]>({
     method: 'GET',
     path: '{id}/authz/resource-server/policy',
     urlParamKeys: ['id'],
@@ -601,9 +597,7 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<
-    {id: string}
-  >({
+  public listAllScopes = this.makeRequest<{id: string}>({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
@@ -695,61 +689,83 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'providerId'],
   });
 
-  public pushRevocation = this.makeRequest<{id: string}, void>({
+  public pushRevocation = this.makeRequest<{id: string}, GlobalRequestResult>({
     method: 'POST',
     path: '/{id}/push-revocation',
     urlParamKeys: ['id'],
   });
 
-  public addClusterNode = this.makeRequest<{id: string, node: string}, void>({
+  public addClusterNode = this.makeRequest<{id: string; node: string}, void>({
     method: 'POST',
     path: '/{id}/nodes',
     urlParamKeys: ['id'],
   });
 
-  public deleteClusterNode = this.makeRequest<{id: string, node: string}, void>({
-    method: 'DELETE',
-    path: '/{id}/nodes/{node}',
-    urlParamKeys: ['id', 'node'],
-  });
+  public deleteClusterNode = this.makeRequest<{id: string; node: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/nodes/{node}',
+      urlParamKeys: ['id', 'node'],
+    },
+  );
 
-  public testNodesAvailable = this.makeRequest<{id: string}, GlobalRequestResult>({
+  public testNodesAvailable = this.makeRequest<
+    {id: string},
+    GlobalRequestResult
+  >({
     method: 'GET',
     path: '/{id}/test-nodes-available',
     urlParamKeys: ['id'],
   });
 
-  public getKeyInfo = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+  public getKeyInfo = this.makeRequest<
+    {id: string; attr: string},
+    CertificateRepresentation
+  >({
     method: 'GET',
     path: '/{id}/certificates/{attr}',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public generateKey = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+  public generateKey = this.makeRequest<
+    {id: string; attr: string},
+    CertificateRepresentation
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/generate',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public downloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+  public downloadKey = this.makeUpdateRequest<
+    {id: string; attr: string},
+    KeyStoreConfig,
+    string
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/download',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public generateAndDownloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+  public generateAndDownloadKey = this.makeUpdateRequest<
+    {id: string; attr: string},
+    KeyStoreConfig,
+    string
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/generate-and-download',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public uploadKey = this.makeUpdateRequest<{id: string, attr: string}, any>({
+  public uploadKey = this.makeUpdateRequest<{id: string; attr: string}, any>({
     method: 'POST',
     path: '/{id}/certificates/{attr}/upload',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public uploadCertificate = this.makeUpdateRequest<{id: string, attr: string}, any>({
+  public uploadCertificate = this.makeUpdateRequest<
+    {id: string; attr: string},
+    any
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/upload-certificate',
     urlParamKeys: ['id', 'attr'],
