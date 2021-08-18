@@ -345,10 +345,10 @@ describe('Realms', () => {
     process.env.KEYCLOAK_VERSION.startsWith('12.')
   ) {
     describe('Realm localization', () => {
-      currentRealmName = "master"
+      currentRealmName = 'master';
 
       it('enable localization', async () => {
-        await kcAdminClient.realms.getRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'})
+        await kcAdminClient.realms.getRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'});
       });
 
       it('should add localization', async () => {
