@@ -10,6 +10,7 @@ import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
 import {KeycloakAdminClient} from '../client';
 import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
 import ComponentRepresentation from '../defs/componentRepresentation';
+import GlobalRequestResult from '../defs/globalRequestResult';
 
 export class Realms extends Resource {
   /**
@@ -244,7 +245,10 @@ export class Realms extends Resource {
     urlParamKeys: ['realm', 'session'],
   });
 
-  public pushRevocation = this.makeRequest<{realm: string}, void>({
+  public pushRevocation = this.makeRequest<
+    {realm: string},
+    GlobalRequestResult
+  >({
     method: 'POST',
     path: '/{realm}/push-revocation',
     urlParamKeys: ['realm'],
