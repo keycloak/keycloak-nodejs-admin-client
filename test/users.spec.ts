@@ -81,28 +81,14 @@ describe('Users', function () {
 
   it('count users with filter', async () => {
     const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
-
-    if (process.env.KEYCLOAK_VERSION
-      && (
-        process.env.KEYCLOAK_VERSION.startsWith('7.')
-        || process.env.KEYCLOAK_VERSION.startsWith('8.')
-      )) {
-      // should be 1, but it seems it doesn't work issue: KEYCLOAK-16081
-      expect(numUsers).to.equal(2);
-    } else {
-      expect(numUsers).to.equal(1);
-    }
+    expect(numUsers).to.equal(1);
   });
 
-  it('find users by custom attributes', async function() {
+  it('find users by custom attributes', async function () {
     // Searching by attributes is only available from Keycloak > 15
-    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('15.')) {
-      const users = await kcAdminClient.users.find({key: 'value'});
-      expect(users.length).to.be.equal(1);
-      expect(users[0]).to.be.deep.include(currentUser);
-    } else {
-      this.skip();
-    }
+    const users = await kcAdminClient.users.find({key: 'value'});
+    expect(users.length).to.be.equal(2);
+    expect(users[0]).to.be.deep.include(currentUser);
   });
 
   it('get single users', async () => {
@@ -147,22 +133,6 @@ describe('Users', function () {
       lifespan: 43200,
       actions: [RequiredActionAlias.UPDATE_PASSWORD],
     });
-  });
-
-  /**
-   * remove totp
-   */
-
-  it('should remove totp', async function () {
-    if (process.env.KEYCLOAK_VERSION && process.env.KEYCLOAK_VERSION.startsWith('7.')) {
-      // todo: find a way to add totp from api
-      const userId = currentUser.id;
-      await kcAdminClient.users.removeTotp({
-        id: userId,
-      });
-    } else {
-      this.skip();
-    }
   });
 
   /**
@@ -324,7 +294,7 @@ describe('Users', function () {
         id: currentUser.id,
       });
 
-      expect(res).have.all.keys('realmMappings', 'clientMappings');
+      expect(res).have.all.keys('realmMappings');
     });
 
     it('list realm role-mappings of user', async () => {

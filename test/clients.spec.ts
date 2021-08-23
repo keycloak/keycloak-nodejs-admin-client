@@ -740,7 +740,7 @@ describe('Clients', () => {
         });
 
         expect(roles).to.be.ok;
-        expect(roles.length).to.be.eq(4);
+        expect(roles.length).to.be.eq(5);
       });
 
       it('get list of all protocol mappers', async () => {
