@@ -9,8 +9,10 @@ jobs:
         with:
           node-version: 16
           check-latest: true
-          registry-url: https://registry.npmjs.org
+
       - run: npm ci
-      - run: npm publish --tag prerelease
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish canary to NPM
+        run: |
+          echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+          npm publish --tag prerelease
