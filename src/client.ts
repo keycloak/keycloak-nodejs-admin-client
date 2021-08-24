@@ -17,6 +17,7 @@ import {AxiosRequestConfig} from 'axios';
 
 import {Sessions} from './resources/sessions';
 import {UserStorageProvider} from './resources/userStorageProvider';
+import type {KeycloakInstance} from 'keycloak-js';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -47,7 +48,7 @@ export class KeycloakAdminClient {
   public realmName: string;
   public accessToken: string;
   public refreshToken: string;
-  public keycloak: any;
+  public keycloak?: KeycloakInstance;
 
   private requestConfig?: AxiosRequestConfig;
 
