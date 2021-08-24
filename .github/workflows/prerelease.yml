@@ -14,6 +14,6 @@ jobs:
           check-latest: true
           registry-url: https://registry.npmjs.org
       - run: npm ci
-      - run: npm publish --tag prerelease
+      - run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
