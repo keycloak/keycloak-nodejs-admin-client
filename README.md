@@ -1,29 +1,25 @@
-## keycloak-admin
+## Keycloak Admin Client
 
-[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin) [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
+[![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
 [![npm version](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client.svg)](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client)
-
-Node.js Keycloak admin client
 
 ## Features
 
 - TypeScript supported
-- Keycloak version 11 supported
+- Latest Keycloak version supported
 - [Complete resource definitions](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/src/defs)
 - [Well-tested for supported APIs](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/test)
 
 ## Install
 
 ```sh
-npm install keycloak-admin
+npm install @keycloak/keycloak-admin-client
 ```
 
 ## Usage
 
 ```js
-import KcAdminClient from 'keycloak-admin';
-// or
-// const KcAdminClient = require('keycloak-admin').default;
+import KcAdminClient from '@keycloak/keycloak-admin-client';
 
 // To configure the client, pass an object to override any of these  options:
 // {
@@ -427,7 +423,5 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - [User Storage Provider](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_user_storage_provider_resource)
 
 ## Maintainers
-
-Checkout [MAINTAINERS.md](https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/MAINTAINERS.md) for detailed maintainers list.
 
 This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under keycloak organization.
