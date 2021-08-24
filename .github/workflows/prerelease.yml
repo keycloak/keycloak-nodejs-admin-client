@@ -1,8 +1,5 @@
 name: Publish Pre-release
-on:
-  push:
-    branches:
-      - master
+on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
