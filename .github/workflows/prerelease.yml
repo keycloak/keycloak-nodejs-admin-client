@@ -10,7 +10,7 @@ jobs:
           node-version: 16
           check-latest: true
           registry-url: https://registry.npmjs.org
-      - run: cat ./.npmrc
+      - run: cat ~/.npmrc
       - run: npm ci
       - run: npm publish --tag prerelease
         env:
