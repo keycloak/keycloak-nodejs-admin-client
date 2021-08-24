@@ -9,6 +9,7 @@ jobs:
         with:
           node-version: 16
           check-latest: true
+          always-auth: true
           registry-url: https://registry.npmjs.org
           scope: "@keycloak"
       - run: npm ci
