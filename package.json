@@ -23,7 +23,7 @@
     "camelize": "^1.0.0",
     "keycloak-js": "^15.0.2",
     "lodash": "^4.17.21",
-    "query-string": "^6.13.7",
+    "query-string": "^7.0.1",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"
   },
