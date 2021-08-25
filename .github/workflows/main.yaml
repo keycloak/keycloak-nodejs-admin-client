@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
+          cache: npm
 
       - name: Start Keycloak
         run: docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest

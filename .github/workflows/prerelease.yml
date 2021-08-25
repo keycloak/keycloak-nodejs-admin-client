@@ -13,6 +13,7 @@ jobs:
           node-version: 16
           check-latest: true
           registry-url: https://registry.npmjs.org
+          cache: npm
       - run: npm ci
       - run: npm publish --tag next
         env:
