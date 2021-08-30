@@ -80,7 +80,9 @@ describe('Users', function () {
   });
 
   it('count users with filter', async () => {
-    const numUsers = await kcAdminClient.users.count({email: 'wwwy3y3@canner.io'});
+    const numUsers = await kcAdminClient.users.count({
+      email: 'wwwy3y3@canner.io',
+    });
     expect(numUsers).to.equal(1);
   });
 
@@ -181,9 +183,11 @@ describe('Users', function () {
     after(async () => {
       const groupId = currentGroup.id;
       const groups = await kcAdminClient.groups.find({max: 100});
-      await Promise.all(groups.map((_group: GroupRepresentation) => {
-        return kcAdminClient.groups.del({id: _group.id});
-      }));
+      await Promise.all(
+        groups.map((_group: GroupRepresentation) => {
+          return kcAdminClient.groups.del({id: _group.id});
+        }),
+      );
 
       const group = await kcAdminClient.groups.findOne({
         id: groupId,
@@ -192,10 +196,15 @@ describe('Users', function () {
     });
 
     it('add group', async () => {
-      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id}))
+        .count;
       expect(count).to.eq(0);
-      await kcAdminClient.users.addToGroup({groupId: currentGroup.id, id: currentUser.id});
-      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      await kcAdminClient.users.addToGroup({
+        groupId: currentGroup.id,
+        id: currentUser.id,
+      });
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id}))
+        .count;
       expect(count).to.eq(1);
     });
 
@@ -203,10 +212,20 @@ describe('Users', function () {
       let {count} = await kcAdminClient.users.countGroups({id: currentUser.id});
       expect(count).to.eq(1);
 
-      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'cool-group'})).count;
+      count = (
+        await kcAdminClient.users.countGroups({
+          id: currentUser.id,
+          search: 'cool-group',
+        })
+      ).count;
       expect(count).to.eq(1);
 
-      count = (await kcAdminClient.users.countGroups({id: currentUser.id, search: 'fake-group'})).count;
+      count = (
+        await kcAdminClient.users.countGroups({
+          id: currentUser.id,
+          search: 'fake-group',
+        })
+      ).count;
       expect(count).to.eq(0);
     });
 
@@ -219,25 +238,38 @@ describe('Users', function () {
 
     it('remove group', async () => {
       const newGroup = await kcAdminClient.groups.create({name: 'test-group'});
-      await kcAdminClient.users.addToGroup({id: currentUser.id, groupId: newGroup.id});
-      let count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      await kcAdminClient.users.addToGroup({
+        id: currentUser.id,
+        groupId: newGroup.id,
+      });
+      let count = (await kcAdminClient.users.countGroups({id: currentUser.id}))
+        .count;
       expect(count).to.eq(2);
 
       try {
-        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: newGroup.id});
+        await kcAdminClient.users.delFromGroup({
+          id: currentUser.id,
+          groupId: newGroup.id,
+        });
       } catch (e) {
-        fail('Didn\'t expect an error when deleting a vaiid group id');
+        fail("Didn't expect an error when deleting a valid group id");
       }
 
-      count = (await kcAdminClient.users.countGroups({id: currentUser.id})).count;
+      count = (await kcAdminClient.users.countGroups({id: currentUser.id}))
+        .count;
       expect(count).to.equal(1);
 
       await kcAdminClient.groups.del({id: newGroup.id});
 
       // delete a non-existing group should throw an error
       try {
-        await kcAdminClient.users.delFromGroup({id: currentUser.id, groupId: 'fake-group-id'});
-        fail('Expected an error when deleting a fake id not assigned to the user');
+        await kcAdminClient.users.delFromGroup({
+          id: currentUser.id,
+          groupId: 'fake-group-id',
+        });
+        fail(
+          'Expected an error when deleting a fake id not assigned to the user',
+        );
       } catch (e) {
         expect(e).to.be.ok;
       }
