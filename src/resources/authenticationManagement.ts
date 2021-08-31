@@ -3,7 +3,9 @@ import RequiredActionProviderRepresentation from '../defs/requiredActionProvider
 import {KeycloakAdminClient} from '../client';
 import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
 import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
-import AuthenticatorConfigRepresentation from '../defs/authenticatorConfigRepresentation';
+import AuthenticatorConfigRepresentation, {
+  AuthenticationProviderRepresentation,
+} from '../defs/authenticatorConfigRepresentation';
 import AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation';
 
 export class AuthenticationManagement extends Resource {
@@ -233,6 +235,30 @@ export class AuthenticationManagement extends Resource {
     method: 'DELETE',
     path: '/config/{id}',
     urlParamKeys: ['id'],
+  });
+
+  public authenticatorProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/authenticator-providers',
+  });
+
+  public clientAuthenticatorProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/client-authenticator-providers',
+  });
+
+  public formActionProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/form-action-providers',
   });
 
   constructor(client: KeycloakAdminClient) {
