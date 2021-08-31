@@ -357,6 +357,16 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public impersonation = this.makeUpdateRequest<
+    {id: string},
+    {user: string; realm: string},
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/impersonation',
+    urlParamKeys: ['id'],
+  });
+
   /**
    * revoke consent and offline tokens for particular client from user
    */
