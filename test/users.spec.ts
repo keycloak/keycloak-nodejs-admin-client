@@ -561,7 +561,7 @@ describe('Users', function () {
       };
     });
 
-    it('should list user\'s federated identities and expect empty', async () => {
+    it('should list user federated identities and expect empty', async () => {
       const federatedIdentities = await kcAdminClient.users.listFederatedIdentities(
         {
           id: currentUser.id,
@@ -597,6 +597,17 @@ describe('Users', function () {
         },
       );
       expect(federatedIdentities).to.be.eql([]);
+    });
+  });
+
+  // last in the test set so it doesn't influence the other tests
+  describe('zzz - impersonate', () => {
+    it('zzz - impersonate user', async () => {
+      await kcAdminClient.users.impersonation(
+        {id: currentUser.id},
+        {user: currentUser.id, realm: kcAdminClient.realmName},
+      );
+      await kcAdminClient.auth(credentials);
     });
   });
 });
