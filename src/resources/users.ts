@@ -360,7 +360,7 @@ export class Users extends Resource<{realm?: string}> {
   public impersonation = this.makeUpdateRequest<
     {id: string},
     {user: string; realm: string},
-    void
+    Record<string, any>
   >({
     method: 'POST',
     path: '/{id}/impersonation',

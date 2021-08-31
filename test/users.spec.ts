@@ -547,6 +547,15 @@ describe('Users', function () {
         });
       }
     });
+
+    it('impersonate user', async () => {
+      const result = await kcAdminClient.users.impersonation(
+        {id: currentUser.id},
+        {user: currentUser.id, realm: kcAdminClient.realmName},
+      );
+      expect(result).to.be.ok;
+      await kcAdminClient.auth(credentials);
+    });
   });
 
   describe('Federated Identity user integration', () => {
@@ -597,17 +606,6 @@ describe('Users', function () {
         },
       );
       expect(federatedIdentities).to.be.eql([]);
-    });
-  });
-
-  // last in the test set so it doesn't influence the other tests
-  describe('zzz - impersonate', () => {
-    it('zzz - impersonate user', async () => {
-      await kcAdminClient.users.impersonation(
-        {id: currentUser.id},
-        {user: currentUser.id, realm: kcAdminClient.realmName},
-      );
-      await kcAdminClient.auth(credentials);
     });
   });
 });
