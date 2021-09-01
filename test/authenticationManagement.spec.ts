@@ -123,17 +123,22 @@ describe('Authentication management', () => {
     });
 
     it('should get client authenticator providers', async () => {
-      const createdClient = await kcAdminClient.clients.create({
-        clientId: 'testClient',
-      });
-      const authenticationProviders = await kcAdminClient.authenticationManagement.getClientAuthenticatorProviders(
-        {
-          id: createdClient.id,
-        },
-      );
+      const authenticationProviders = await kcAdminClient.authenticationManagement.getClientAuthenticatorProviders();
 
+      expect(authenticationProviders).is.ok;
       expect(authenticationProviders.length).to.be.equal(4);
-      kcAdminClient.clients.del({id: createdClient.id});
+    });
+
+    it('should fetch form providers', async () => {
+      const formProviders = await kcAdminClient.authenticationManagement.getFormActionProviders();
+      expect(formProviders).is.ok;
+      expect(formProviders.length).to.be.eq(4);
+    });
+
+    it('should fetch authenticator providers', async () => {
+      const providers = await kcAdminClient.authenticationManagement.getAuthenticatorProviders();
+      expect(providers).is.ok;
+      expect(providers.length).to.be.eq(36);
     });
   });
   describe('Flows', () => {
@@ -148,44 +153,66 @@ describe('Authentication management', () => {
     it('should get authentication flow', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
 
-      expect(flows.map(flow => flow.alias)).to.be.deep.eq(['browser', 'direct grant', 'registration', 'reset credentials',
-        'clients', 'first broker login', 'docker auth', 'http challenge']);
+      expect(flows.map((flow) => flow.alias)).to.be.deep.eq([
+        'browser',
+        'direct grant',
+        'registration',
+        'reset credentials',
+        'clients',
+        'first broker login',
+        'docker auth',
+        'http challenge',
+      ]);
     });
 
     it('should create new authentication flow', async () => {
       const flow = 'test';
-      await kcAdminClient.authenticationManagement.createFlow({alias: flow, providerId: 'basic-flow', description: '', topLevel: true, builtIn: false});
+      await kcAdminClient.authenticationManagement.createFlow({
+        alias: flow,
+        providerId: 'basic-flow',
+        description: '',
+        topLevel: true,
+        builtIn: false,
+      });
 
       const flows = await kcAdminClient.authenticationManagement.getFlows();
-      expect(flows.find(f => f.alias === flow)).to.be.ok;
+      expect(flows.find((f) => f.alias === flow)).to.be.ok;
     });
 
     const flowName = 'copy of browser';
     it('should copy existing authentication flow', async () => {
-      await kcAdminClient.authenticationManagement.copyFlow({flow: 'browser', newName: flowName});
+      await kcAdminClient.authenticationManagement.copyFlow({
+        flow: 'browser',
+        newName: flowName,
+      });
 
       const flows = await kcAdminClient.authenticationManagement.getFlows();
-      const flow = flows.find(f => f.alias === flowName);
+      const flow = flows.find((f) => f.alias === flowName);
       expect(flow).to.be.ok;
     });
 
     it('should update authentication flow', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
-      const flow = flows.find(f => f.alias === flowName);
+      const flow = flows.find((f) => f.alias === flowName);
       const description = 'Updated description';
       flow.description = description;
-      const updatedFlow = await kcAdminClient.authenticationManagement.updateFlow({flowId: flow.id}, flow);
+      const updatedFlow = await kcAdminClient.authenticationManagement.updateFlow(
+        {flowId: flow.id},
+        flow,
+      );
 
       expect(updatedFlow.description).to.be.eq(description);
     });
 
     it('should delete authentication flow', async () => {
       let flows = await kcAdminClient.authenticationManagement.getFlows();
-      const flow = flows.find(f => f.alias === flowName);
-      await kcAdminClient.authenticationManagement.deleteFlow({flowId: flow.id});
+      const flow = flows.find((f) => f.alias === flowName);
+      await kcAdminClient.authenticationManagement.deleteFlow({
+        flowId: flow.id,
+      });
 
       flows = await kcAdminClient.authenticationManagement.getFlows();
-      expect(flows.find(f => f.alias === flowName)).to.be.undefined;
+      expect(flows.find((f) => f.alias === flowName)).to.be.undefined;
     });
   });
   describe('Flow executions', () => {
@@ -348,23 +375,4 @@ describe('Authentication management', () => {
     });
   });
 
-  describe('Providers', () => {
-    it('should fetch form providers', async () => {
-      const formProviders = await kcAdminClient.authenticationManagement.formActionProviders();
-      expect(formProviders).is.ok;
-      expect(formProviders.length).to.be.eq(4);
-    });
-
-    it('should fetch client authenticator providers', async () => {
-      const clientProviders = await kcAdminClient.authenticationManagement.clientAuthenticatorProviders();
-      expect(clientProviders).is.ok;
-      expect(clientProviders.length).to.be.eq(4);
-    });
-
-    it('should fetch authenticator providers', async () => {
-      const providers = await kcAdminClient.authenticationManagement.authenticatorProviders();
-      expect(providers).is.ok;
-      expect(providers.length).to.be.eq(36);
-    });
-  });
 }).timeout(10000);

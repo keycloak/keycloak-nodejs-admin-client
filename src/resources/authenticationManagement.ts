@@ -37,11 +37,27 @@ export class AuthenticationManagement extends Resource {
   });
 
   public getClientAuthenticatorProviders = this.makeRequest<
-    {id: string},
-    {id: string; displayName: string}[]
+    void,
+    AuthenticationProviderRepresentation[]
   >({
     method: 'GET',
     path: '/client-authenticator-providers',
+  });
+
+  public getAuthenticatorProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/authenticator-providers',
+  });
+
+  public getFormActionProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/form-action-providers',
   });
 
   // Update required action
@@ -235,30 +251,6 @@ export class AuthenticationManagement extends Resource {
     method: 'DELETE',
     path: '/config/{id}',
     urlParamKeys: ['id'],
-  });
-
-  public authenticatorProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/authenticator-providers',
-  });
-
-  public clientAuthenticatorProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/client-authenticator-providers',
-  });
-
-  public formActionProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/form-action-providers',
   });
 
   constructor(client: KeycloakAdminClient) {
