@@ -253,30 +253,6 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ['id'],
   });
 
-  public authenticatorProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/authenticator-providers',
-  });
-
-  public clientAuthenticatorProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/client-authenticator-providers',
-  });
-
-  public formActionProviders = this.makeRequest<
-    void,
-    AuthenticationProviderRepresentation[]
-  >({
-    method: 'GET',
-    path: '/form-action-providers',
-  });
-
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/authentication',

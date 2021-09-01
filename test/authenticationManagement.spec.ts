@@ -375,23 +375,5 @@ describe('Authentication management', () => {
     });
   });
 
-  describe('Providers', () => {
-    it('should fetch form providers', async () => {
-      const formProviders = await kcAdminClient.authenticationManagement.formActionProviders();
-      expect(formProviders).is.ok;
-      expect(formProviders.length).to.be.eq(4);
-    });
-    it('should fetch client authenticator providers', async () => {
-      const clientProviders = await kcAdminClient.authenticationManagement.clientAuthenticatorProviders();
-      expect(clientProviders).is.ok;
-      expect(clientProviders.length).to.be.eq(4);
-    });
-
-    it('should fetch authenticator providers', async () => {
-      const providers = await kcAdminClient.authenticationManagement.authenticatorProviders();
-      expect(providers).is.ok;
-      expect(providers.length).to.be.eq(36);
-    });
-  });
 
 }).timeout(10000);
