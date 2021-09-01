@@ -3,7 +3,9 @@ import RequiredActionProviderRepresentation from '../defs/requiredActionProvider
 import {KeycloakAdminClient} from '../client';
 import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
 import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
-import AuthenticatorConfigRepresentation from '../defs/authenticatorConfigRepresentation';
+import AuthenticatorConfigRepresentation, {
+  AuthenticationProviderRepresentation,
+} from '../defs/authenticatorConfigRepresentation';
 import AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation';
 
 export class AuthenticationManagement extends Resource {
@@ -35,11 +37,27 @@ export class AuthenticationManagement extends Resource {
   });
 
   public getClientAuthenticatorProviders = this.makeRequest<
-    {id: string},
-    {id: string; displayName: string}[]
+    void,
+    AuthenticationProviderRepresentation[]
   >({
     method: 'GET',
     path: '/client-authenticator-providers',
+  });
+
+  public getAuthenticatorProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/authenticator-providers',
+  });
+
+  public getFormActionProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/form-action-providers',
   });
 
   // Update required action
