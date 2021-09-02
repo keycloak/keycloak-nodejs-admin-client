@@ -150,7 +150,7 @@ describe('Authentication management', () => {
       expect(formProviders[0].displayName).to.be.eq('Registration Page');
     });
 
-    it('should get authentication flow', async () => {
+    it('should get authentication flows', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
 
       expect(flows.map((flow) => flow.alias)).to.be.deep.eq([
@@ -163,6 +163,15 @@ describe('Authentication management', () => {
         'docker auth',
         'http challenge',
       ]);
+    });
+
+    it('should get authentication flow', async () => {
+      const flows = await kcAdminClient.authenticationManagement.getFlows();
+      const flow = await kcAdminClient.authenticationManagement.getFlow({
+        flowId: flows[0].id,
+      });
+
+      expect(flow.alias).to.be.eq('browser');
     });
 
     it('should create new authentication flow', async () => {
@@ -374,6 +383,5 @@ describe('Authentication management', () => {
       expect(configDescription.providerId).to.be.eq(execution.providerId);
     });
   });
-
 
 }).timeout(10000);

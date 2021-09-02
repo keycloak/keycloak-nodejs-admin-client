@@ -107,6 +107,15 @@ export class AuthenticationManagement extends Resource {
     path: '/flows',
   });
 
+  public getFlow = this.makeRequest<
+    {flowId: string},
+    AuthenticationFlowRepresentation
+  >({
+    method: 'GET',
+    path: '/flows/{flowId}',
+    urlParamKeys: ['flowId'],
+  });
+
   public getFormProviders = this.makeRequest<void, Record<string, any>>({
     method: 'GET',
     path: '/form-providers',
