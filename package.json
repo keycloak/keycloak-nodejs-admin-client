@@ -52,5 +52,5 @@
     "type": "git",
     "url": "git+https://github.com/keycloak/keycloak-nodejs-admin-client.git"
   },
-  "homepage": "http://keycloak.org"
+  "homepage": "https://www.keycloak.org/"
 }
