@@ -50,7 +50,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keycloak/keycloak-nodejs-admin-client.git"
+    "url": "https://github.com/keycloak/keycloak-nodejs-admin-client.git"
   },
   "homepage": "https://www.keycloak.org/"
 }
