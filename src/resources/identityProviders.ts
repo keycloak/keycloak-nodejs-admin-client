@@ -106,7 +106,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
 
   public findMapperTypes = this.makeRequest<
     {alias: string},
-    IdentityProviderMapperRepresentation[]
+    Record<string, IdentityProviderMapperRepresentation>
   >({
     method: 'GET',
     path: '/instances/{alias}/mapper-types',
