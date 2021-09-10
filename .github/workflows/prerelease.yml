@@ -21,7 +21,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm version prerelease --preid=dev
+      - run: git push --follow-tags
       - run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: git push --follow-tags
