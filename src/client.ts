@@ -7,6 +7,7 @@ import {Roles} from './resources/roles';
 import {Clients} from './resources/clients';
 import {Realms} from './resources/realms';
 import {ClientScopes} from './resources/clientScopes';
+import {ClientPolicies} from './resources/clientPolicies';
 import {IdentityProviders} from './resources/identityProviders';
 import {Components} from './resources/components';
 import {AuthenticationManagement} from './resources/authenticationManagement';
@@ -34,6 +35,7 @@ export class KeycloakAdminClient {
   public clients: Clients;
   public realms: Realms;
   public clientScopes: ClientScopes;
+  public clientPolicies: ClientPolicies;
   public identityProviders: IdentityProviders;
   public components: Components;
   public serverInfo: ServerInfo;
@@ -67,6 +69,7 @@ export class KeycloakAdminClient {
     this.clients = new Clients(this);
     this.realms = new Realms(this);
     this.clientScopes = new ClientScopes(this);
+    this.clientPolicies = new ClientPolicies(this);
     this.identityProviders = new IdentityProviders(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
