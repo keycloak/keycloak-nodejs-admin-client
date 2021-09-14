@@ -17,4 +17,9 @@ describe('Client Policies', () => {
     const profiles = await kcAdminClient.clientPolicies.listProfiles();
     expect(profiles).to.be.ok;
   });
+
+  it('lists client policy policies', async () => {
+    const policies = await kcAdminClient.clientPolicies.listPolicies();
+    expect(policies).to.be.ok;
+  });
 });
