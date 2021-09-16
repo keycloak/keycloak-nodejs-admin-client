@@ -2,6 +2,7 @@ import Resource from './resource';
 import {KeycloakAdminClient} from '../client';
 import ClientProfilesRepresentation from '../defs/clientProfilesRepresentation';
 import ClientPoliciesRepresentation from '../defs/clientPoliciesRepresentation';
+import ClientPolicyRepresentation from '../defs/clientPolicyRepresentation';
 
 /**
  * https://www.keycloak.org/docs-api/15.0/rest-api/#_client_registration_policy_resource
@@ -31,6 +32,22 @@ export class ClientPolicies extends Resource<{realm?: string}> {
 
   public listPolicies = this.makeRequest<void, ClientPoliciesRepresentation>({
     method: 'GET',
+    path: '/policies',
+  });
+
+  public createPolicy = this.makeRequest<
+    {name: string},
+    ClientPolicyRepresentation
+  >({
+    method: 'PUT',
+    path: '/policies',
+  });
+
+  public updatePolicy = this.makeUpdateRequest<
+    {name: string},
+    ClientPolicyRepresentation
+  >({
+    method: 'PUT',
     path: '/policies',
   });
 }
