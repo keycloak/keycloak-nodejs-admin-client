@@ -8,7 +8,9 @@ const expect = chai.expect;
 
 describe('Client Policies', () => {
   let kcAdminClient: KeycloakAdminClient;
-  let currentClientPolicy: string;
+  const newPolicy = {
+    name: 'new_test_policy',
+  };
 
   before(async () => {
     kcAdminClient = new KeycloakAdminClient();
@@ -16,10 +18,10 @@ describe('Client Policies', () => {
   });
 
   it('creates client policy', async () => {
-    const newPolicy = await kcAdminClient.clientPolicies.createPolicy({
-      name: 'test_client_policy',
+    const createdPolicy = await kcAdminClient.clientPolicies.createPolicy({
+      policies: [newPolicy],
     });
-    expect(newPolicy).to.be.ok;
+    expect(createdPolicy).to.be.ok;
   });
 
   it('lists client policy profiles', async () => {
@@ -33,13 +35,16 @@ describe('Client Policies', () => {
   });
 
   it('updates client policy', async () => {
-    currentClientPolicy = 'test_client_policy';
+    const policyWithUpdatedDescription = {
+      name: 'new_test_policy',
+      description: 'This is the updated description.',
+    };
     const updatedPolicy = await kcAdminClient.clientPolicies.updatePolicy(
       {
-        name: currentClientPolicy,
+        policies: [newPolicy],
       },
       {
-        description: 'This is the updated description.',
+        policies: [policyWithUpdatedDescription],
       },
     );
     expect(updatedPolicy).to.include({
