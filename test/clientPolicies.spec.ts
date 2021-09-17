@@ -33,7 +33,7 @@ describe('Client Policies', () => {
         }
     ], globalProfiles }
 
-   const createdClientProfile = await kcAdminClient.clientPolicies.updateProfiles(
+   const createdClientProfile = await kcAdminClient.clientPolicies.createProfiles(
      newClientProfiles,
    );
    
@@ -43,17 +43,5 @@ describe('Client Policies', () => {
   it('lists client policy policies', async () => {
     const policies = await kcAdminClient.clientPolicies.listPolicies();
     expect(policies).to.be.ok;
-  });
-
-  it('create client policy policy', async () => {
-    const newClientPolicy = {
-      "policies": [{name: "test", enabled: true, profiles: [], conditions: [], description: "test"}]
-    }
-
-   const createdClientPolicy = await kcAdminClient.clientPolicies.updatePolicies(
-     newClientPolicy,
-   );
-   
-   expect(createdClientPolicy).to.be.deep.eq('');
   });
 });

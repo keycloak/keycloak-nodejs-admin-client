@@ -32,7 +32,7 @@ export class ClientPolicies extends Resource<{realm?: string}> {
     },
   });
 
-  public updateProfiles = this.makeRequest<ClientProfilesRepresentation, void>({
+  public createProfiles = this.makeRequest<ClientProfilesRepresentation, void>({
     method: 'PUT',
     path: '/profiles',
   });
@@ -41,11 +41,6 @@ export class ClientPolicies extends Resource<{realm?: string}> {
 
   public listPolicies = this.makeRequest<void, ClientPoliciesRepresentation>({
     method: 'GET',
-    path: '/policies',
-  });
-
-  public updatePolicies = this.makeRequest<ClientPoliciesRepresentation, void>({
-    method: 'PUT',
     path: '/policies',
   });
 }
