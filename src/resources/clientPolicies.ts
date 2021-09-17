@@ -36,8 +36,8 @@ export class ClientPolicies extends Resource<{realm?: string}> {
   });
 
   public createPolicy = this.makeRequest<
-    {policies: ClientPolicyRepresentation[]},
-    void
+    ClientPoliciesRepresentation,
+    {policies: ClientPolicyRepresentation[]}
   >({
     method: 'PUT',
     path: '/policies',
