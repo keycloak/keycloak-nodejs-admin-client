@@ -119,6 +119,10 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get admin events (`GET /{realm}/admin-events`)
 - Remove all user sessions (`POST /{realm}/logout-all`)
 - Remove a specific user session (`DELETE /{realm}/sessions/{session}`)
+- Get client policies policies (`GET /{realm}/client-policies/policies`)
+- Update client policies policies (`PUT /{realm}/client-policies/policies`)
+- Get client policies profiles (`GET /{realm}/client-policies/profiles`)
+- Update client policies profiles (`PUT /{realm}/client-policies/profiles`)
 
 ### [Role](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_resource)
 
