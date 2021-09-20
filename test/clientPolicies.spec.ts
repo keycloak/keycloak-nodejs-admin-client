@@ -1,14 +1,12 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
-import ClientProfilesRepresentation from '../src/defs/clientProfilesRepresentation';
 import {credentials} from './constants';
 
 const expect = chai.expect;
 
 describe('Client Policies', () => {
   let kcAdminClient: KeycloakAdminClient;
-  let currentClientProfiles: ClientProfilesRepresentation;
 
   before(async () => {
     kcAdminClient = new KeycloakAdminClient();
@@ -20,11 +18,13 @@ describe('Client Policies', () => {
       {includeGlobalProfiles: true},
     );
     expect(profiles).to.be.ok;
-    currentClientProfiles = profiles;
   });
 
   it('create client policy profiles', async () => {
-    const globalProfiles = currentClientProfiles.globalProfiles;
+    const profiles = await kcAdminClient.clientPolicies.listProfiles(
+      {includeGlobalProfiles: true},
+    );
+    const globalProfiles = profiles.globalProfiles;
     const newClientProfiles = {
       "profiles": [
         {
