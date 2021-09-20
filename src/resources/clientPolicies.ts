@@ -17,6 +17,8 @@ export class ClientPolicies extends Resource<{realm?: string}> {
     });
   }
 
+  /* Client Profiles */
+
   public listProfiles = this.makeRequest<
     {includeGlobalProfiles?: boolean},
     ClientProfilesRepresentation
@@ -28,6 +30,13 @@ export class ClientPolicies extends Resource<{realm?: string}> {
       includeGlobalProfiles: 'include-global-profiles',
     },
   });
+
+  public createProfiles = this.makeRequest<ClientProfilesRepresentation, void>({
+    method: 'PUT',
+    path: '/profiles',
+  });
+
+  /* Client Policies */
 
   public listPolicies = this.makeRequest<void, ClientPoliciesRepresentation>({
     method: 'GET',
