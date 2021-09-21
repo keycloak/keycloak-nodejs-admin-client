@@ -597,7 +597,10 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<{id: string}>({
+  public listAllScopes = this.makeRequest<
+    {id: string},
+    {id: string; name: string}[]
+  >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
@@ -673,7 +676,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getAssociatedScopes = this.makeRequest<
     {id: string; permissionId: string},
-    {id: string; name: string}
+    {id: string; name: string}[]
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/policy/{permissionId}/scopes',
@@ -682,7 +685,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public getAssociatedResources = this.makeRequest<
     {id: string; permissionId: string},
-    {_id: string; name: string}
+    {_id: string; name: string}[]
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/policy/{permissionId}/resources',

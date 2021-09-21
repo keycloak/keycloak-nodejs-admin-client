@@ -6,6 +6,10 @@ import faker from 'faker';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import ProtocolMapperRepresentation from '../src/defs/protocolMapperRepresentation';
 import ClientScopeRepresentation from '../src/defs/clientScopeRepresentation';
+import ScopeRepresentation from '../src/defs/scopeRepresentation';
+import ResourceRepresentation from '../src/defs/resourceRepresentation';
+import UserRepresentation from '../src/defs/userRepresentation';
+import PolicyRepresentation, { Logic } from '../src/defs/policyRepresentation';
 const expect = chai.expect;
 
 describe('Clients', () => {
@@ -935,6 +939,173 @@ describe('Clients', () => {
       const result = await kcAdminClient.clients.downloadKey({id: currentClient.id, attr}, keystoreConfig);
 
       expect(result).to.be.ok;
+    });
+  });
+
+  describe('authorization', async () => {
+    const resourceConfig = {
+      name: 'testResourceName',
+      type: 'testResourceType',
+      scopeNames: [
+        'testScopeA',
+        'testScopeB',
+        'testScopeC',
+      ],
+    };
+    const policyConfig = {
+      name: 'testPolicyName',
+      type: 'user',
+      logic: Logic.POSITIVE,
+    };
+    const permissionConfig = {
+      name: 'testPermissionName',
+      type: 'scope',
+      logic: Logic.POSITIVE,
+    };
+    let scopes: ScopeRepresentation[];
+    let resource: ResourceRepresentation;
+    let policy: PolicyRepresentation;
+    let permission: PolicyRepresentation;
+    let user: UserRepresentation;
+
+    before('enable authorization services', async () => {
+      await kcAdminClient.clients.update(
+        { id: currentClient.id },
+        { 
+          clientId: currentClient.clientId,
+          authorizationServicesEnabled: true,
+          serviceAccountsEnabled: true,
+        }
+      );
+    });
+
+    before('create test user', async () => {
+      const username = faker.internet.userName();
+      user = await kcAdminClient.users.create({
+        username,
+      });
+    });
+    
+    it('create authorization scopes', async () => {
+      scopes = (await Promise.all(resourceConfig.scopeNames.map(async (name) => {
+        const result = await kcAdminClient.clients.createAuthorizationScope({ id: currentClient.id }, {
+          name,
+        })
+        expect(result).to.be.ok;
+        return result;
+      }))).sort((a, b) => a.name < b.name ? -1 : 1);
+    });
+
+    it('list all authorization scopes', async () => {
+      const result = await kcAdminClient.clients.listAllScopes({ id: currentClient.id });
+      expect(result.sort((a, b) => a.name < b.name ? -1 : 1)).to.deep.equal(scopes);
+    });
+
+    it('create resource', async () => {
+      resource = await kcAdminClient.clients.createResource({ id: currentClient.id }, {
+        name: resourceConfig.name,
+        type: resourceConfig.type,
+        scopes: scopes,
+      });
+      expect(resource).to.be.ok;
+    });
+
+    it('list scopes by resource', async () => {
+      // @ts-ignore
+      const result = await kcAdminClient.clients.listScopesByResource({ id: currentClient.id, resourceName: resource._id });
+      expect(result.sort((a, b) => a.name < b.name ? -1 : 1)).to.deep.equal(scopes);
+    });
+
+    it('list resources', async () => {
+      const result = await kcAdminClient.clients.listResources({ id: currentClient.id });
+      expect(result).to.deep.include(resource);
+    });
+
+    it('update resource', async () => {
+      const result = await kcAdminClient.clients.updateResource(
+        { 
+          id: currentClient.id, 
+          // @ts-ignore
+          resourceId: resource._id 
+        },
+        {
+          name: 'foo',
+        },
+      );
+      // updateResource does not return the updated resource, so we would have to fetch the resource again 
+      // to check. However, the endpoint is not implemented (yet?).
+      //expect(result).to.deep.equal({ ...resource, name: 'foo' });
+      // Change name back to original value
+      const result2 = await kcAdminClient.clients.updateResource(
+        { 
+          id: currentClient.id, 
+          // @ts-ignore
+          resourceId: resource._id 
+        },
+        {
+          name: resourceConfig.name,
+        },
+      );
+      //expect(result2).to.deep.equal(resource);
+    });
+
+    it('create policy', async () => {
+      policy = await kcAdminClient.clients.createPolicy(
+        { 
+          id: currentClient.id, 
+          type: policyConfig.type 
+        }, 
+        {
+          name: policyConfig.name,
+          logic: policyConfig.logic,
+          users: [user.id],
+        }
+      );
+      expect(policy).to.be.ok;
+    });
+
+    it('create permission', async () => {
+      permission = await kcAdminClient.clients.createPermission(
+        { 
+          id: currentClient.id, 
+          type: 'scope' 
+        }, 
+        {
+          name: permissionConfig.name,
+          logic: permissionConfig.logic,
+          // @ts-ignore
+          resources: [resource._id],
+          policies: [policy.id],
+          scopes: scopes.map((scope) => scope.id),
+        }
+      );
+      expect(permission).to.be.ok;
+    });
+
+    it('get associated scopes for permission', async () => {
+      const result = await kcAdminClient.clients.getAssociatedScopes(
+        { 
+          id: currentClient.id, 
+          permissionId: permission.id,
+        },
+      );
+      expect(result.sort((a, b) => a.name < b.name ? -1 : 1)).to.deep.equal(scopes);
+    });
+
+    it('get associated resources for permission', async () => {
+      const result = await kcAdminClient.clients.getAssociatedResources(
+        { 
+          id: currentClient.id, 
+          permissionId: permission.id,
+        },
+      );
+      expect(result).to.deep.equal([
+        { 
+          // @ts-ignore
+          _id: resource._id,
+          name: resource.name,
+        }
+      ]);
     });
   });
 });
