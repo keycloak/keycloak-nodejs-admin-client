@@ -17,11 +17,11 @@ describe('Client Policies', () => {
     await kcAdminClient.auth(credentials);
   });
 
-  it('creates client policy', async () => {
-    const createdPolicy = await kcAdminClient.clientPolicies.createPolicy({
+  it('creates/updates client policy', async () => {
+    const createdPolicy = await kcAdminClient.clientPolicies.updatePolicy({
       policies: [newPolicy],
     });
-    expect(createdPolicy).to.be.ok;
+    expect(createdPolicy).to.be.deep.eq('');
   });
 
   it('lists client policy profiles', async () => {
@@ -32,23 +32,5 @@ describe('Client Policies', () => {
   it('lists client policy policies', async () => {
     const policies = await kcAdminClient.clientPolicies.listPolicies();
     expect(policies).to.be.ok;
-  });
-
-  it('updates client policy', async () => {
-    const policyWithUpdatedDescription = {
-      name: 'new_test_policy',
-      description: 'This is the updated description.',
-    };
-    const updatedPolicy = await kcAdminClient.clientPolicies.updatePolicy(
-      {
-        policies: [newPolicy],
-      },
-      {
-        policies: [policyWithUpdatedDescription],
-      },
-    );
-    expect(updatedPolicy).to.include({
-      description: 'This is the updated description.',
-    });
   });
 });

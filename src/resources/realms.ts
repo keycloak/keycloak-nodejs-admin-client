@@ -151,7 +151,7 @@ export class Realms extends Resource {
     void
   >({
     method: 'DELETE',
-    : '/{realm}/clients-initial-access/{id}',
+    path: '/{realm}/clients-initial-access/{id}',
     urlParamKeys: ['realm', 'id'],
   });
 
