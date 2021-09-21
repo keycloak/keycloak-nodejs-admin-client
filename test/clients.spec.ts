@@ -985,6 +985,23 @@ describe('Clients', () => {
         username,
       });
     });
+
+    after('delete test user', async () => {
+      await kcAdminClient.users.del({
+        id: user.id,
+      });
+    });
+
+    after('disable authorization services', async () => {
+      await kcAdminClient.clients.update(
+        { id: currentClient.id },
+        { 
+          clientId: currentClient.clientId,
+          authorizationServicesEnabled: false,
+          serviceAccountsEnabled: false,
+        }
+      );
+    });
     
     it('create authorization scopes', async () => {
       scopes = (await Promise.all(resourceConfig.scopeNames.map(async (name) => {
