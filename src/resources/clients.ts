@@ -597,7 +597,10 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<{id: string}>({
+  public listAllScopes = this.makeRequest<
+    {id: string},
+    {id: string; name: string}[]
+  >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
@@ -669,6 +672,24 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
     urlParamKeys: ['id', 'type', 'permissionId'],
+  });
+
+  public getAssociatedScopes = this.makeRequest<
+    {id: string; permissionId: string},
+    {id: string; name: string}[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/scopes',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getAssociatedResources = this.makeRequest<
+    {id: string; permissionId: string},
+    {_id: string; name: string}[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/resources',
+    urlParamKeys: ['id', 'permissionId'],
   });
 
   public getOfflineSessionCount = this.makeRequest<

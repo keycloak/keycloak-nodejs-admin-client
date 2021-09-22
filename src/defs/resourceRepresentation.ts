@@ -4,7 +4,7 @@
 import ScopeRepresentation from './scopeRepresentation';
 
 export default interface ResourceRepresentation {
-  id?: string;
+  _id?: string;
   attributes?: Record<string, any>;
   displayName?: string;
   icon_uri?: string;
