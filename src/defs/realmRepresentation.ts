@@ -5,6 +5,8 @@ import GroupRepresentation from './groupRepresentation';
 import IdentityProviderRepresentation from './identityProviderRepresentation';
 import RequiredActionProviderRepresentation from './requiredActionProviderRepresentation';
 import RolesRepresentation from './rolesRepresentation';
+import ClientProfilesRepresentation from './clientProfilesRepresentation';
+import ClientPoliciesRepresentation from './clientPoliciesRepresentation';
 
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realmrepresentation
@@ -35,6 +37,8 @@ export default interface RealmRepresentation {
   // ClientScopeRepresentation
   clientScopes?: any[];
   clients?: ClientRepresentation[];
+  clientPolicies?: ClientPoliciesRepresentation;
+  clientProfiles?: ClientProfilesRepresentation;
   components?: {[index: string]: ComponentExportRepresentation};
   defaultDefaultClientScopes?: string[];
   defaultGroups?: string[];
