@@ -27,7 +27,10 @@ export class Realms extends Resource {
     returnResourceIdInLocationHeader: {field: 'realmName'},
   });
 
-  public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
+  public findOne = this.makeRequest<
+    {realm: string},
+    RealmRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{realm}',
     urlParamKeys: ['realm'],

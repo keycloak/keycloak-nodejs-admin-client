@@ -23,7 +23,10 @@ export class Components extends Resource<{realm?: string}> {
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    ComponentRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],

@@ -1,7 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
-import ClientPolicyRepresentation from '../src/defs/clientPolicyRepresentation';
 import {credentials} from './constants';
 
 const expect = chai.expect;
@@ -25,30 +24,32 @@ describe('Client Policies', () => {
   });
 
   it('lists client policy profiles', async () => {
-    const profiles = await kcAdminClient.clientPolicies.listProfiles(
-      {includeGlobalProfiles: true},
-    );
+    const profiles = await kcAdminClient.clientPolicies.listProfiles({
+      includeGlobalProfiles: true,
+    });
     expect(profiles).to.be.ok;
   });
 
   it('create client policy profiles', async () => {
-    const profiles = await kcAdminClient.clientPolicies.listProfiles(
-      {includeGlobalProfiles: true},
-    );
+    const profiles = await kcAdminClient.clientPolicies.listProfiles({
+      includeGlobalProfiles: true,
+    });
     const globalProfiles = profiles.globalProfiles;
     const newClientProfiles = {
-      "profiles": [
+      profiles: [
         {
-          "name": "test",
-          "executors": []
-        }
-    ], globalProfiles }
+          name: 'test',
+          executors: [],
+        },
+      ],
+      globalProfiles,
+    };
 
-   const createdClientProfile = await kcAdminClient.clientPolicies.createProfiles(
-     newClientProfiles,
-   );
-   
-   expect(createdClientProfile).to.be.deep.eq('');
+    const createdClientProfile = await kcAdminClient.clientPolicies.createProfiles(
+      newClientProfiles,
+    );
+
+    expect(createdClientProfile).to.be.deep.eq('');
   });
 
   it('lists client policy policies', async () => {

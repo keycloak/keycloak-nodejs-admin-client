@@ -37,7 +37,10 @@ export class Users extends Resource<{realm?: string}> {
    * Single user
    */
 
-  public findOne = this.makeRequest<{id: string}, UserRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    UserRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],

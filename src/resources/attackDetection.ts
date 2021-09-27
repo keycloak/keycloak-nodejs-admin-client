@@ -2,8 +2,10 @@ import Resource from './resource';
 import KeycloakAdminClient from '..';
 
 export class AttackDetection extends Resource<{realm?: string}> {
-
-  public findOne = this.makeRequest<{id: string}, Record<string, any>>({
+  public findOne = this.makeRequest<
+    {id: string},
+    Record<string, any> | undefined
+  >({
     method: 'GET',
     path: '/users/{id}',
     urlParamKeys: ['id'],

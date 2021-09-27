@@ -116,12 +116,18 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ['flowId'],
   });
 
-  public getFormProviders = this.makeRequest<void, Record<string, any>>({
+  public getFormProviders = this.makeRequest<
+    void,
+    AuthenticationProviderRepresentation[]
+  >({
     method: 'GET',
     path: '/form-providers',
   });
 
-  public createFlow = this.makeRequest<AuthenticationFlowRepresentation, void>({
+  public createFlow = this.makeRequest<
+    AuthenticationFlowRepresentation,
+    AuthenticationFlowRepresentation
+  >({
     method: 'POST',
     path: '/flows',
     returnResourceIdInLocationHeader: {field: 'id'},

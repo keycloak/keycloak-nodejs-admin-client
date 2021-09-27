@@ -86,7 +86,7 @@ describe('Users', function () {
     expect(numUsers).to.equal(1);
   });
 
-  it('find users by custom attributes', async function () {
+  it('find users by custom attributes', async () => {
     // Searching by attributes is only available from Keycloak > 15
     const users = await kcAdminClient.users.find({key: 'value'});
     expect(users.length).to.be.equal(2);
@@ -252,7 +252,7 @@ describe('Users', function () {
           groupId: newGroup.id,
         });
       } catch (e) {
-        fail("Didn't expect an error when deleting a valid group id");
+        fail('Didn\'t expect an error when deleting a valid group id');
       }
 
       count = (await kcAdminClient.users.countGroups({id: currentUser.id}))

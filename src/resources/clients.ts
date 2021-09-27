@@ -49,7 +49,10 @@ export class Clients extends Resource<{realm?: string}> {
    * Single client
    */
 
-  public findOne = this.makeRequest<{id: string}, ClientRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    ClientRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -667,7 +670,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public findOnePermission = this.makeRequest<
     {id: string; type: string; permissionId: string},
-    PolicyRepresentation
+    PolicyRepresentation | undefined
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
