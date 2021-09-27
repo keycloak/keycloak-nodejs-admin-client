@@ -20,7 +20,10 @@ export class ClientScopes extends Resource<{realm?: string}> {
    * Client-Scopes by id
    */
 
-  public findOne = this.makeRequest<{id: string}, ClientScopeRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    ClientScopeRepresentation | undefined
+  >({
     method: 'GET',
     path: '/client-scopes/{id}',
     urlParamKeys: ['id'],

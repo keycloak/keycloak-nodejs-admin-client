@@ -2,7 +2,9 @@ import {KeycloakAdminClient} from '../client';
 import GroupRepresentation from '../defs/groupRepresentation';
 import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import RoleRepresentation, {
+  RoleMappingPayload,
+} from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import Resource from './resource';
 
@@ -32,7 +34,10 @@ export class Groups extends Resource<{realm?: string}> {
    * Single user
    */
 
-  public findOne = this.makeRequest<{id: string}, GroupRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    GroupRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -54,7 +59,6 @@ export class Groups extends Resource<{realm?: string}> {
     path: '/{id}',
     urlParamKeys: ['id'],
   });
-
 
   public count = this.makeRequest<GroupCountQuery, {count: number}>({
     method: 'GET',

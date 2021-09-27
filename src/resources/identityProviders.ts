@@ -25,7 +25,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
 
   public findOne = this.makeRequest<
     {alias: string},
-    IdentityProviderRepresentation
+    IdentityProviderRepresentation | undefined
   >({
     method: 'GET',
     path: '/instances/{alias}',
@@ -66,7 +66,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
 
   public findOneMapper = this.makeRequest<
     {alias: string; id: string},
-    IdentityProviderMapperRepresentation
+    IdentityProviderMapperRepresentation | undefined
   >({
     method: 'GET',
     path: '/instances/{alias}/mappers/{id}',
@@ -113,7 +113,10 @@ export class IdentityProviders extends Resource<{realm?: string}> {
     urlParamKeys: ['alias'],
   });
 
-  public importFromUrl = this.makeRequest<{fromUrl: string, providerId: string}>({
+  public importFromUrl = this.makeRequest<{
+    fromUrl: string;
+    providerId: string;
+  }>({
     method: 'POST',
     path: '/import-config',
   });
