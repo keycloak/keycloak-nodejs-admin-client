@@ -111,7 +111,7 @@ describe('Client Scopes', () => {
     const scope = await kcAdminClient.clientScopes.findOneByName({
       name: 'I do not exist',
     });
-    expect(scope).to.be.null;
+    expect(scope).to.be.undefined;
   });
 
   it('update client scope', async () => {
