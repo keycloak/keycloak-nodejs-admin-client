@@ -19,7 +19,7 @@ describe('Roles', () => {
   after(async () => {
     // delete the currentRole with id
     await client.roles.delById({
-      id: currentRole.id,
+      id: currentRole.id!,
     });
   });
 
@@ -37,20 +37,20 @@ describe('Roles', () => {
     expect(createdRole.roleName).to.be.equal(roleName);
     const role = await client.roles.findOneByName({name: roleName});
     expect(role).to.be.ok;
-    currentRole = role;
+    currentRole = role!;
   });
 
   it('get single roles by id', async () => {
     const roleId = currentRole.id;
     const role = await client.roles.findOneById({
-      id: roleId,
+      id: roleId!,
     });
     expect(role).to.deep.include(currentRole);
   });
 
   it('update single role by name & by id', async () => {
     await client.roles.updateByName(
-      {name: currentRole.name},
+      {name: currentRole.name!},
       {
         // dont know why if role name not exist in payload, role name will be overriden with empty string
         // todo: open an issue on keycloak
@@ -60,21 +60,21 @@ describe('Roles', () => {
     );
 
     const role = await client.roles.findOneByName({
-      name: currentRole.name,
+      name: currentRole.name!,
     });
     expect(role).to.include({
       description: 'cool',
     });
 
     await client.roles.updateById(
-      {id: currentRole.id},
+      {id: currentRole.id!},
       {
         description: 'another description',
       },
     );
 
     const roleById = await client.roles.findOneById({
-      id: currentRole.id,
+      id: currentRole.id!,
     });
     expect(roleById).to.include({
       description: 'another description',
@@ -112,8 +112,8 @@ describe('Roles', () => {
       await client.roles.create({
         name: compositeRoleName,
       });
-      compositeRole = await client.roles.findOneByName({name: compositeRoleName});
-      await client.roles.createComposite({roleId: currentRole.id}, [compositeRole]);
+      compositeRole = (await client.roles.findOneByName({name: compositeRoleName}))!;
+      await client.roles.createComposite({roleId: currentRole.id!}, [compositeRole]);
     });
 
     afterEach(async () => {
@@ -123,7 +123,7 @@ describe('Roles', () => {
     });
 
     it('make the role a composite role by associating some child roles', async () => {
-      const children = await client.roles.getCompositeRoles({id: currentRole.id});
+      const children = await client.roles.getCompositeRoles({id: currentRole.id!});
 
       // attributes on the composite role are empty and when fetched not there.
       const {attributes, ...rest} = compositeRole;
@@ -131,8 +131,8 @@ describe('Roles', () => {
     });
 
     it('delete composite roles', async () => {
-      await client.roles.delCompositeRoles({id: currentRole.id}, [compositeRole]);
-      const children = await client.roles.getCompositeRoles({id: currentRole.id});
+      await client.roles.delCompositeRoles({id: currentRole.id!}, [compositeRole]);
+      const children = await client.roles.getCompositeRoles({id: currentRole.id!});
 
       expect(children).to.be.an('array').that.is.empty;
     });
@@ -149,20 +149,20 @@ describe('Roles', () => {
           name: clientRoleName,
         });
         clientRole = await client.clients.findRole({
-          id: createdClient.id,
+          id: createdClient.id!,
           roleName: clientRoleName,
         });
 
-        await client.roles.createComposite({roleId: currentRole.id}, [clientRole]);
+        await client.roles.createComposite({roleId: currentRole.id!}, [clientRole]);
       });
 
       after(async () => {
-        await client.clients.del({id: createdClient.id});
+        await client.clients.del({id: createdClient.id!});
       });
 
       it('get composite role for the realm', async () => {
-        const realmChildren = await client.roles.getCompositeRolesForRealm({id: currentRole.id});
-        const children = await client.roles.getCompositeRoles({id: currentRole.id});
+        const realmChildren = await client.roles.getCompositeRolesForRealm({id: currentRole.id!});
+        const children = await client.roles.getCompositeRoles({id: currentRole.id!});
 
         delete compositeRole.attributes;
         expect(realmChildren).to.be.eql([compositeRole]);
@@ -171,7 +171,7 @@ describe('Roles', () => {
       });
 
       it('get composite for the client', async () => {
-        const clientChildren = await client.roles.getCompositeRolesForClient({id: currentRole.id, clientId: createdClient.id});
+        const clientChildren = await client.roles.getCompositeRolesForClient({id: currentRole.id!, clientId: createdClient.id!});
 
         delete clientRole.attributes;
         expect(clientChildren).to.be.eql([clientRole]);

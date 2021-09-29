@@ -21,12 +21,11 @@ describe('Attack Detection', () => {
   });
 
   after(async () => {
-    const id = currentUser.id;
-    await kcAdminClient.users.del({id});
+    await kcAdminClient.users.del({id: currentUser.id!});
   });
 
   it('list attack detection for user', async () => {
-    const attackDetection = await kcAdminClient.attackDetection.findOne({id: currentUser.id});
+    const attackDetection = await kcAdminClient.attackDetection.findOne({id: currentUser.id!});
     expect(attackDetection).to.deep.equal({
       numFailures: 0,
       disabled: false,
@@ -40,6 +39,6 @@ describe('Attack Detection', () => {
   });
 
   it('clear any user login failures for a user', async () => {
-    await kcAdminClient.attackDetection.del({id: currentUser.id});
+    await kcAdminClient.attackDetection.del({id: currentUser.id!});
   });
 });

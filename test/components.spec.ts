@@ -25,20 +25,20 @@ describe('User federation using component api', () => {
     expect(component.id).to.be.ok;
 
     // assign current user fed
-    const fed = await kcAdminClient.components.findOne({
+    const fed = (await kcAdminClient.components.findOne({
       id: component.id,
-    });
+    }))!;
     currentUserFed = fed;
   });
 
   after(async () => {
     await kcAdminClient.components.del({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
 
     // check deleted
     const idp = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(idp).to.be.null;
   });
@@ -53,7 +53,7 @@ describe('User federation using component api', () => {
 
   it('get a user federation', async () => {
     const fed = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(fed).to.include({
       id: currentUserFed.id,
@@ -62,7 +62,7 @@ describe('User federation using component api', () => {
 
   it('update a user federation', async () => {
     await kcAdminClient.components.update(
-      {id: currentUserFed.id},
+      {id: currentUserFed.id!},
       {
         // parentId, providerId, providerType required for update
         parentId: 'master',
@@ -72,7 +72,7 @@ describe('User federation using component api', () => {
       },
     );
     const updated = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
 
     expect(updated).to.include({

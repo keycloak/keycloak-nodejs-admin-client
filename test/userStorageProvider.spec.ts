@@ -27,26 +27,26 @@ describe('Users federation provider', () => {
 
   after(async () => {
     await kcAdminClient.components.del({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 
   it('list storage provider', async () => {
     const name = await kcAdminClient.userStorageProvider.name({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(name).to.be.ok;
   });
 
   it('remove imported users', async () => {
     await kcAdminClient.userStorageProvider.removeImportedUsers({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 
   it('unlink users', async () => {
     await kcAdminClient.userStorageProvider.unlinkUsers({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 });

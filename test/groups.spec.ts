@@ -23,17 +23,17 @@ describe('Groups', () => {
       name: 'cool-group',
     });
     expect(group.id).to.be.ok;
-    currentGroup = await kcAdminClient.groups.findOne({id: group.id});
+    currentGroup = (await kcAdminClient.groups.findOne({id: group.id}))!;
   });
 
   after(async () => {
     const groupId = currentGroup.id;
     await kcAdminClient.groups.del({
-      id: groupId,
+      id: groupId!,
     });
 
     const group = await kcAdminClient.groups.findOne({
-      id: groupId,
+      id: groupId!,
     });
     expect(group).to.be.null;
   });
@@ -59,7 +59,7 @@ describe('Groups', () => {
   it('get single groups', async () => {
     const groupId = currentGroup.id;
     const group = await kcAdminClient.groups.findOne({
-      id: groupId,
+      id: groupId!,
     });
     // get group from id will contains more fields than listing api
     expect(group).to.deep.include(currentGroup);
@@ -68,12 +68,12 @@ describe('Groups', () => {
   it('update single groups', async () => {
     const groupId = currentGroup.id;
     await kcAdminClient.groups.update(
-      {id: groupId},
+      {id: groupId!},
       {name: 'another-group-name'},
     );
 
     const group = await kcAdminClient.groups.findOne({
-      id: groupId,
+      id: groupId!,
     });
     expect(group).to.include({
       name: 'another-group-name',
@@ -84,16 +84,16 @@ describe('Groups', () => {
     const groupName = 'child-group';
     const groupId = currentGroup.id;
     const childGroup = await kcAdminClient.groups.setOrCreateChild(
-      {id: groupId},
+      {id: groupId!},
       {name: groupName},
     );
 
     expect(childGroup.id).to.be.ok;
 
-    const group = await kcAdminClient.groups.findOne({
-      id: groupId,
-    });
-    expect(group.subGroups[0]).to.deep.include({
+    const group = (await kcAdminClient.groups.findOne({
+      id: groupId!,
+    }))!;
+    expect(group.subGroups![0]).to.deep.include({
       id: childGroup.id,
       name: groupName,
       path: `/${group.name}/${groupName}`,
@@ -114,23 +114,23 @@ describe('Groups', () => {
       const role = await kcAdminClient.roles.findOneByName({
         name: roleName,
       });
-      currentRole = role;
+      currentRole = role!;
     });
 
     after(async () => {
-      await kcAdminClient.roles.delByName({name: currentRole.name});
+      await kcAdminClient.roles.delByName({name: currentRole.name!});
     });
 
     it('add a role to group', async () => {
       // add role-mappings with role id
       await kcAdminClient.groups.addRealmRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
 
         // at least id and name should appear
         roles: [
           {
-            id: currentRole.id,
-            name: currentRole.name,
+            id: currentRole.id!,
+            name: currentRole.name!,
           },
         ],
       });
@@ -138,7 +138,7 @@ describe('Groups', () => {
 
     it('list available role-mappings', async () => {
       const roles = await kcAdminClient.groups.listAvailableRealmRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
       });
 
       // admin, create-realm, offline_access, uma_authorization
@@ -147,17 +147,17 @@ describe('Groups', () => {
 
     it('list role-mappings', async () => {
       const {realmMappings} = await kcAdminClient.groups.listRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
       });
 
       expect(realmMappings).to.be.ok;
       // currentRole will have an empty `attributes`, but role-mappings do not
-      expect(currentRole).to.deep.include(realmMappings[0]);
+      expect(currentRole).to.deep.include(realmMappings![0]);
     });
 
     it('list realm role-mappings of group', async () => {
       const roles = await kcAdminClient.groups.listRealmRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
       });
       // currentRole will have an empty `attributes`, but role-mappings do not
       expect(currentRole).to.deep.include(roles[0]);
@@ -165,17 +165,17 @@ describe('Groups', () => {
 
     it('del realm role-mappings from group', async () => {
       await kcAdminClient.groups.delRealmRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
         roles: [
           {
-            id: currentRole.id,
-            name: currentRole.name,
+            id: currentRole.id!,
+            name: currentRole.name!,
           },
         ],
       });
 
       const roles = await kcAdminClient.groups.listRealmRoleMappings({
-        id: currentGroup.id,
+        id: currentGroup.id!,
       });
       expect(roles).to.be.empty;
     });
@@ -205,30 +205,30 @@ describe('Groups', () => {
 
       // assign to currentRole
       currentRole = await kcAdminClient.clients.findRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName,
       });
     });
 
     after(async () => {
       await kcAdminClient.clients.delRole({
-        id: currentClient.id,
-        roleName: currentRole.name,
+        id: currentClient.id!,
+        roleName: currentRole.name!,
       });
-      await kcAdminClient.clients.del({id: currentClient.id});
+      await kcAdminClient.clients.del({id: currentClient.id!});
     });
 
     it('add a client role to group', async () => {
       // add role-mappings with role id
       await kcAdminClient.groups.addClientRoleMappings({
-        id: currentGroup.id,
-        clientUniqueId: currentClient.id,
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
 
         // at least id and name should appear
         roles: [
           {
-            id: currentRole.id,
-            name: currentRole.name,
+            id: currentRole.id!,
+            name: currentRole.name!,
           },
         ],
       });
@@ -236,8 +236,8 @@ describe('Groups', () => {
 
     it('list available client role-mappings for group', async () => {
       const roles = await kcAdminClient.groups.listAvailableClientRoleMappings({
-        id: currentGroup.id,
-        clientUniqueId: currentClient.id,
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
       });
 
       expect(roles).to.be.empty;
@@ -245,8 +245,8 @@ describe('Groups', () => {
 
     it('list client role-mappings of group', async () => {
       const roles = await kcAdminClient.groups.listClientRoleMappings({
-        id: currentGroup.id,
-        clientUniqueId: currentClient.id,
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
       });
 
       // currentRole will have an empty `attributes`, but role-mappings do not
@@ -260,26 +260,26 @@ describe('Groups', () => {
         name: roleName,
       });
       const role = await kcAdminClient.clients.findRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName,
       });
 
       // delete the created role
       await kcAdminClient.groups.delClientRoleMappings({
-        id: currentGroup.id,
-        clientUniqueId: currentClient.id,
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
         roles: [
           {
-            id: role.id,
-            name: role.name,
+            id: role.id!,
+            name: role.name!,
           },
         ],
       });
 
       // check if mapping is successfully deleted
       const roles = await kcAdminClient.groups.listClientRoleMappings({
-        id: currentGroup.id,
-        clientUniqueId: currentClient.id,
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
       });
 
       // should only left the one we added in the previous test
