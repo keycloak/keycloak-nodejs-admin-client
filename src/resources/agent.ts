@@ -68,7 +68,7 @@ export class Agent {
     ignoredKeys,
   }: RequestArgs) {
     return async (payload: any = {}) => {
-      const baseParams = this.getBaseParams();
+      const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(payload, queryParamKeys) : null;
@@ -80,8 +80,8 @@ export class Agent {
       // Omit url parameters and query parameters from payload
       const omittedKeys = ignoredKeys
         ? [...allUrlParamKeys, ...queryParamKeys].filter(
-            (key) => !ignoredKeys.includes(key),
-          )
+          (key) => !ignoredKeys.includes(key),
+        )
         : [...allUrlParamKeys, ...queryParamKeys];
 
       payload = omit(payload, omittedKeys);
@@ -116,7 +116,7 @@ export class Agent {
     returnResourceIdInLocationHeader,
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
-      const baseParams = this.getBaseParams();
+      const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(query, queryParamKeys) : null;
@@ -170,7 +170,7 @@ export class Agent {
     // Parse template and replace with values from urlParams
     const pathTemplate = template.parse(newPath);
     const parsedPath = pathTemplate.expand(urlParams);
-    const url = `${this.getBaseUrl()}${parsedPath}`;
+    const url = `${this.getBaseUrl?.() ?? ''}${parsedPath}`;
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
@@ -213,12 +213,14 @@ export class Agent {
       // for now, we simply split the last sub-path of the path returned in location header field
       if (returnResourceIdInLocationHeader) {
         const locationHeader = res.headers.location;
-        if (!locationHeader) {
+
+        if (typeof locationHeader !== 'string') {
           throw new Error(
             `location header is not found in request: ${res.config.url}`,
           );
         }
-        const resourceId: string = last(locationHeader.split(SLASH));
+
+        const resourceId = last(locationHeader.split(SLASH));
         if (!resourceId) {
           // throw an error to let users know the response is not expected
           throw new Error(
@@ -232,7 +234,7 @@ export class Agent {
       }
       return res.data;
     } catch (err) {
-      if (err.response && err.response.status === 404 && catchNotFound) {
+      if (axios.isAxiosError(err) && err.response?.status === 404 && catchNotFound) {
         return null;
       }
       throw err;
