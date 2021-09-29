@@ -288,12 +288,11 @@ export class ClientScopes extends Resource<{realm?: string}> {
   public async findOneByName(payload: {
     realm?: string;
     name: string;
-  }): Promise<ClientScopeRepresentation> {
+  }): Promise<ClientScopeRepresentation | undefined> {
     const allScopes = await this.find({
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    const scope = allScopes.find((item) => item.name === payload.name);
-    return scope ? scope : null;
+    return allScopes.find((item) => item.name === payload.name);
   }
 
   /**
@@ -311,7 +310,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
 
     await this.del({
       ...(payload.realm ? {realm: payload.realm} : {}),
-      id: scope.id,
+      id: scope.id!,
     });
   }
 
@@ -322,14 +321,13 @@ export class ClientScopes extends Resource<{realm?: string}> {
     realm?: string;
     id: string;
     name: string;
-  }): Promise<ProtocolMapperRepresentation> {
+  }): Promise<ProtocolMapperRepresentation | undefined> {
     const allProtocolMappers = await this.listProtocolMappers({
       id: payload.id,
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    const protocolMapper = allProtocolMappers.find(
+    return allProtocolMappers.find(
       (mapper) => mapper.name === payload.name,
     );
-    return protocolMapper ? protocolMapper : null;
   }
 }

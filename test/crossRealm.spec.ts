@@ -36,10 +36,10 @@ describe('Realms', () => {
       emailVerified: true,
       enabled: true,
     });
-    const foundUser = await kcAdminClient.users.findOne({
+    const foundUser = (await kcAdminClient.users.findOne({
       realm: currentRealmId,
       id: user.id,
-    });
+    }))!;
     expect(foundUser.username).to.be.eql(username);
   });
 });

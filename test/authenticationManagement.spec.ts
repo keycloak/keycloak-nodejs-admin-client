@@ -168,7 +168,7 @@ describe('Authentication management', () => {
     it('should get authentication flow', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
       const flow = await kcAdminClient.authenticationManagement.getFlow({
-        flowId: flows[0].id,
+        flowId: flows[0].id!,
       });
 
       expect(flow.alias).to.be.eq('browser');
@@ -202,11 +202,11 @@ describe('Authentication management', () => {
 
     it('should update authentication flow', async () => {
       const flows = await kcAdminClient.authenticationManagement.getFlows();
-      const flow = flows.find((f) => f.alias === flowName);
+      const flow = flows.find((f) => f.alias === flowName)!;
       const description = 'Updated description';
       flow.description = description;
       const updatedFlow = await kcAdminClient.authenticationManagement.updateFlow(
-        {flowId: flow.id},
+        {flowId: flow.id!},
         flow,
       );
 
@@ -215,9 +215,9 @@ describe('Authentication management', () => {
 
     it('should delete authentication flow', async () => {
       let flows = await kcAdminClient.authenticationManagement.getFlows();
-      const flow = flows.find((f) => f.alias === flowName);
+      const flow = flows.find((f) => f.alias === flowName)!;
       await kcAdminClient.authenticationManagement.deleteFlow({
-        flowId: flow.id,
+        flowId: flow.id!,
       });
 
       flows = await kcAdminClient.authenticationManagement.getFlows();
@@ -268,7 +268,7 @@ describe('Authentication management', () => {
         {flow: flowName},
       );
       let execution = executions[executions.length - 1];
-      const choice = execution.requirementChoices[1];
+      const choice = execution.requirementChoices![1];
       execution.requirement = choice;
       await kcAdminClient.authenticationManagement.updateExecution(
         {flow: flowName},
@@ -287,7 +287,7 @@ describe('Authentication management', () => {
       let executions = await kcAdminClient.authenticationManagement.getExecutions(
         {flow: flowName},
       );
-      const id = executions[0].id;
+      const id = executions[0].id!;
       await kcAdminClient.authenticationManagement.delExecution({id});
       executions = await kcAdminClient.authenticationManagement.getExecutions({
         flow: flowName,
@@ -300,15 +300,15 @@ describe('Authentication management', () => {
         {flow: flowName},
       );
       let execution = executions[executions.length - 1];
-      const priority = execution.index;
+      const priority = execution.index!;
       await kcAdminClient.authenticationManagement.raisePriorityExecution({
-        id: execution.id,
+        id: execution.id!,
       });
 
       executions = await kcAdminClient.authenticationManagement.getExecutions({
         flow: flowName,
       });
-      execution = executions.find((ex) => ex.id === execution.id);
+      execution = executions.find((ex) => ex.id === execution.id)!;
 
       expect(execution.index).to.be.eq(priority - 1);
     });
@@ -318,15 +318,15 @@ describe('Authentication management', () => {
         {flow: flowName},
       );
       let execution = executions[0];
-      const priority = execution.index;
+      const priority = execution.index!;
       await kcAdminClient.authenticationManagement.lowerPriorityExecution({
-        id: execution.id,
+        id: execution.id!,
       });
 
       executions = await kcAdminClient.authenticationManagement.getExecutions({
         flow: flowName,
       });
-      execution = executions.find((ex) => ex.id === execution.id);
+      execution = executions.find((ex) => ex.id === execution.id)!;
 
       expect(execution.index).to.be.eq(priority + 1);
     });
@@ -343,7 +343,7 @@ describe('Authentication management', () => {
         alias,
       });
       config = await kcAdminClient.authenticationManagement.getConfig({
-        id: config.id,
+        id: config.id!,
       });
       expect(config.alias).to.be.eq(alias);
 
@@ -353,16 +353,16 @@ describe('Authentication management', () => {
         config: extraConfig,
       });
       config = await kcAdminClient.authenticationManagement.getConfig({
-        id: config.id,
+        id: config.id!,
       });
 
-      expect(config.config.defaultProvider).to.be.eq(
+      expect(config.config!.defaultProvider).to.be.eq(
         extraConfig.defaultProvider,
       );
 
-      await kcAdminClient.authenticationManagement.delConfig({id: config.id});
+      await kcAdminClient.authenticationManagement.delConfig({id: config.id!});
       try {
-        await kcAdminClient.authenticationManagement.getConfig({id: config.id});
+        await kcAdminClient.authenticationManagement.getConfig({id: config.id!});
         fail('should not find deleted config');
       } catch (error) {
         // ignore
@@ -377,7 +377,7 @@ describe('Authentication management', () => {
       )[0];
 
       const configDescription = await kcAdminClient.authenticationManagement.getConfigDescription(
-        {providerId: execution.providerId},
+        {providerId: execution.providerId!},
       );
       expect(configDescription).is.ok;
       expect(configDescription.providerId).to.be.eq(execution.providerId);

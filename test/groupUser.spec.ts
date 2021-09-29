@@ -27,7 +27,7 @@ describe('Group user integration', () => {
     const group = await kcAdminClient.groups.create({
       name: groupName,
     });
-    currentGroup = await kcAdminClient.groups.findOne({id: group.id});
+    currentGroup = (await kcAdminClient.groups.findOne({id: group.id}))!;
 
     // create user
     const username = faker.internet.userName();
@@ -36,33 +36,33 @@ describe('Group user integration', () => {
       email: 'wwwy3y3@canner.io',
       enabled: true,
     });
-    currentUser = await kcAdminClient.users.findOne({id: user.id});
+    currentUser = (await kcAdminClient.users.findOne({id: user.id}))!;
   });
 
   after(async () => {
     await kcAdminClient.groups.del({
-      id: currentGroup.id,
+      id: currentGroup.id!,
     });
     await kcAdminClient.users.del({
-      id: currentUser.id,
+      id: currentUser.id!,
     });
   });
 
   it('should list user\'s group and expect empty', async () => {
     const groups = await kcAdminClient.users.listGroups({
-      id: currentUser.id,
+      id: currentUser.id!,
     });
     expect(groups).to.be.eql([]);
   });
 
   it('should add user to group', async () => {
     await kcAdminClient.users.addToGroup({
-      id: currentUser.id,
-      groupId: currentGroup.id,
+      id: currentUser.id!,
+      groupId: currentGroup.id!,
     });
 
     const groups = await kcAdminClient.users.listGroups({
-      id: currentUser.id,
+      id: currentUser.id!,
     });
     // expect id,name,path to be the same
     expect(groups[0]).to.be.eql(pick(currentGroup, ['id', 'name', 'path']));
@@ -70,7 +70,7 @@ describe('Group user integration', () => {
 
   it('should list members using group api', async () => {
     const members = await kcAdminClient.groups.listMembers({
-      id: currentGroup.id,
+      id: currentGroup.id!,
     });
     // access will not returned from member api
     expect(members[0]).to.be.eql(omit(currentUser, ['access']));
@@ -78,12 +78,12 @@ describe('Group user integration', () => {
 
   it('should remove user from group', async () => {
     await kcAdminClient.users.delFromGroup({
-      id: currentUser.id,
-      groupId: currentGroup.id,
+      id: currentUser.id!,
+      groupId: currentGroup.id!,
     });
 
     const groups = await kcAdminClient.users.listGroups({
-      id: currentUser.id,
+      id: currentUser.id!,
     });
     expect(groups).to.be.eql([]);
   });
@@ -94,17 +94,17 @@ describe('Group user integration', () => {
   describe('authorization permissions', () => {
     before(async () => {
       const clients = await kcAdminClient.clients.find();
-      managementClient = clients.find(client => client.clientId === 'master-realm');
+      managementClient = clients.find(client => client.clientId === 'master-realm')!;
     });
     after(async () => {
       await kcAdminClient.clients.delPolicy({
-        id: managementClient.id,
-        policyId: currentUserPolicy.id,
+        id: managementClient.id!,
+        policyId: currentUserPolicy.id!,
       });
     });
 
     it('Enable permissions', async () => {
-      const permission = await kcAdminClient.groups.updatePermission({id: currentGroup.id}, {enabled: true});
+      const permission = await kcAdminClient.groups.updatePermission({id: currentGroup.id!}, {enabled: true});
       expect(permission).to.include({
         enabled: true,
       });
@@ -116,9 +116,9 @@ describe('Group user integration', () => {
         logic: Logic.POSITIVE,
         decisionStrategy: DecisionStrategy.UNANIMOUS,
         name: `policy.manager.${currentGroup.id}`,
-        users: [currentUser.id],
+        users: [currentUser.id!],
       };
-      currentUserPolicy = await kcAdminClient.clients.createPolicy({id: managementClient.id, type: userPolicyData.type}, userPolicyData);
+      currentUserPolicy = await kcAdminClient.clients.createPolicy({id: managementClient.id!, type: userPolicyData.type!}, userPolicyData);
 
       expect(currentUserPolicy).to.include({
         type: 'user',
@@ -129,14 +129,14 @@ describe('Group user integration', () => {
     });
 
     it('list the roles available for this group', async () => {
-      const permissions = await kcAdminClient.groups.listPermissions({id: currentGroup.id});
+      const permissions = (await kcAdminClient.groups.listPermissions({id: currentGroup.id!}))!;
 
       expect(permissions.scopePermissions).to.be.an('object');
 
-      const scopes = await kcAdminClient.clients.listScopesByResource({
-        id: managementClient.id,
-        resourceName: permissions.resource,
-      });
+      const scopes = (await kcAdminClient.clients.listScopesByResource({
+        id: managementClient.id!,
+        resourceName: permissions.resource!,
+      }))!;
 
       const policies = await kcAdminClient.clients.listPolicies({id: managementClient.id, resource: permissions.resource, max: 2});
       expect(policies).to.have.length(2);
@@ -144,9 +144,9 @@ describe('Group user integration', () => {
       expect(scopes).to.have.length(5);
 
       // Search for the id of the management role
-      const roleId = scopes.find(scope => scope.name === 'manage').id;
+      const roleId = scopes.find(scope => scope.name === 'manage')!.id;
 
-      const userPolicy = await kcAdminClient.clients.findPolicyByName({id: managementClient.id, name: `policy.manager.${currentGroup.id}`});
+      const userPolicy = await kcAdminClient.clients.findPolicyByName({id: managementClient.id!, name: `policy.manager.${currentGroup.id}`});
 
       expect(userPolicy).to.deep.include({
         name: `policy.manager.${currentGroup.id}`,
@@ -154,30 +154,30 @@ describe('Group user integration', () => {
 
       // Update of the role with the above modifications
       const policyData: PolicyRepresentation = {
-        id: permissions.scopePermissions.manage,
+        id: permissions.scopePermissions!.manage!,
         name: `manage.permission.group.${currentGroup.id}`,
         type: 'scope',
         logic: Logic.POSITIVE,
         decisionStrategy: DecisionStrategy.UNANIMOUS,
-        resources: [permissions.resource],
+        resources: [permissions.resource!],
         scopes: [roleId],
-        policies: [userPolicy.id],
+        policies: [userPolicy.id!],
       };
       await kcAdminClient.clients.updatePermission(
         {
-          id: managementClient.id,
-          permissionId: permissions.scopePermissions.manage,
+          id: managementClient.id!,
+          permissionId: permissions.scopePermissions!.manage,
           type: 'scope',
         },
         policyData,
       );
-      currentPolicy = await kcAdminClient.clients.findOnePermission({
-        id: managementClient.id,
-        permissionId: permissions.scopePermissions.manage,
+      currentPolicy = (await kcAdminClient.clients.findOnePermission({
+        id: managementClient.id!,
+        permissionId: permissions.scopePermissions!.manage,
         type: 'scope',
-      });
+      }))!;
       expect(currentPolicy).to.deep.include({
-        id: permissions.scopePermissions.manage,
+        id: permissions.scopePermissions!.manage,
         name: `manage.permission.group.${currentGroup.id}`,
         type: 'scope',
         logic: Logic.POSITIVE,

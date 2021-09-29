@@ -18,7 +18,7 @@ import {AxiosRequestConfig} from 'axios';
 
 import {Sessions} from './resources/sessions';
 import {UserStorageProvider} from './resources/userStorageProvider';
-import type {KeycloakInstance} from 'keycloak-js';
+import type {KeycloakInstance, KeycloakInitOptions, KeycloakConfig} from 'keycloak-js';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -48,8 +48,8 @@ export class KeycloakAdminClient {
   // Members
   public baseUrl: string;
   public realmName: string;
-  public accessToken: string;
-  public refreshToken: string;
+  public accessToken?: string;
+  public refreshToken?: string;
   public keycloak?: KeycloakInstance;
 
   private requestConfig?: AxiosRequestConfig;
@@ -91,11 +91,19 @@ export class KeycloakAdminClient {
     this.refreshToken = refreshToken;
   }
 
-  public async init(init?, config?) {
-    if (window) {
-      const Keycloak = (await import('keycloak-js')).default;
-      this.keycloak = Keycloak(config);
+  public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
+    if (!window) {
+      return;
+    }
+
+    const Keycloak = (await import('keycloak-js')).default;
+    this.keycloak = Keycloak(config);
+
+    if (init) {
       await this.keycloak.init(init);
+    }
+
+    if (this.keycloak.authServerUrl) {
       this.baseUrl = this.keycloak.authServerUrl;
     }
   }

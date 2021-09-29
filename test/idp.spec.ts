@@ -44,13 +44,13 @@ describe('Identity providers', () => {
     const idpMapperId = idpMapper[0].id;
     await kcAdminClient.identityProviders.delMapper({
       alias: currentIdpAlias,
-      id: idpMapperId,
+      id: idpMapperId!,
     });
 
     const idpMapperUpdated = await kcAdminClient.identityProviders.findOneMapper(
       {
         alias: currentIdpAlias,
-        id: idpMapperId,
+        id: idpMapperId!,
       },
     );
 
@@ -84,15 +84,15 @@ describe('Identity providers', () => {
   });
 
   it('update an idp', async () => {
-    const idp = await kcAdminClient.identityProviders.findOne({
+    const idp = (await kcAdminClient.identityProviders.findOne({
       alias: currentIdpAlias,
-    });
+    }))!;
     await kcAdminClient.identityProviders.update(
       {alias: currentIdpAlias},
       {
         // alias and providerId are required to update
-        alias: idp.alias,
-        providerId: idp.providerId,
+        alias: idp.alias!,
+        providerId: idp.providerId!,
         displayName: 'test',
       },
     );
@@ -130,7 +130,7 @@ describe('Identity providers', () => {
     const idpMapperId = idpMapper[0].id;
 
     await kcAdminClient.identityProviders.updateMapper(
-      {alias: currentIdpAlias, id: idpMapperId},
+      {alias: currentIdpAlias, id: idpMapperId!},
       {
         id: idpMapperId,
         identityProviderAlias: currentIdpAlias,
@@ -141,12 +141,12 @@ describe('Identity providers', () => {
       },
     );
 
-    const updatedIdpMappers = await kcAdminClient.identityProviders.findOneMapper(
+    const updatedIdpMappers = (await kcAdminClient.identityProviders.findOneMapper(
       {
         alias: currentIdpAlias,
-        id: idpMapperId,
+        id: idpMapperId!,
       },
-    );
+    ))!;
 
     const userAttribute = updatedIdpMappers.config['user.attribute'];
     expect(userAttribute).to.equal('firstName');

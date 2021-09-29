@@ -585,13 +585,13 @@ export class Clients extends Resource<{realm?: string}> {
     });
     if (policyFound) {
       await this.updatePolicy(
-        {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
+        {id: payload.id, policyId: policyFound.id!, type: payload.policy.type!},
         payload.policy,
       );
       return this.findPolicyByName({id: payload.id, name: payload.policyName});
     } else {
       return this.createPolicy(
-        {id: payload.id, type: payload.policy.type},
+        {id: payload.id, type: payload.policy.type!},
         payload.policy,
       );
     }
@@ -812,14 +812,13 @@ export class Clients extends Resource<{realm?: string}> {
     realm?: string;
     id: string;
     name: string;
-  }): Promise<ProtocolMapperRepresentation> {
+  }): Promise<ProtocolMapperRepresentation | undefined> {
     const allProtocolMappers = await this.listProtocolMappers({
       id: payload.id,
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    const protocolMapper = allProtocolMappers.find(
+    return allProtocolMappers.find(
       (mapper) => mapper.name === payload.name,
     );
-    return protocolMapper ? protocolMapper : null;
   }
 }

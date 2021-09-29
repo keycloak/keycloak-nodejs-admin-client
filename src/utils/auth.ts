@@ -1,5 +1,5 @@
-import axios, {AxiosRequestConfig} from 'axios';
-import camelize from 'camelize';
+import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
+import camelize from 'camelize-ts';
 import querystring from 'query-string';
 import {defaultBaseUrl, defaultRealm} from './constants';
 
@@ -21,6 +21,17 @@ export interface Settings {
   baseUrl?: string;
   credentials: Credentials;
   requestConfig?: AxiosRequestConfig;
+}
+
+export interface TokenResponseRaw {
+  access_token: string;
+  expires_in: string;
+  refresh_expires_in: number;
+  refresh_token: string;
+  token_type: string;
+  not_before_policy: number;
+  session_state: string;
+  scope: string;
 }
 
 export interface TokenResponse {
@@ -67,6 +78,6 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     };
   }
 
-  const {data} = await axios.post(url, payload, config);
+  const {data} = await axios.post<any, AxiosResponse<TokenResponseRaw>>(url, payload, config);
   return camelize(data);
 };

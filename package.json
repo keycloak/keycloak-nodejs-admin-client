@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
-    "camelize": "^1.0.0",
+    "camelize-ts": "^1.0.8",
     "keycloak-js": "^15.0.2",
     "lodash": "^4.17.21",
     "query-string": "^7.0.1",

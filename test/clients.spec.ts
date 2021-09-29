@@ -35,13 +35,13 @@ describe('Clients', () => {
       id: createdClient.id,
     });
     expect(client).to.be.ok;
-    currentClient = client;
+    currentClient = client!;
   });
 
   after(async () => {
     // delete the current one
     await kcAdminClient.clients.del({
-      id: currentClient.id,
+      id: currentClient.id!,
     });
   });
 
@@ -51,7 +51,7 @@ describe('Clients', () => {
   });
 
   it('get single client', async () => {
-    const clientUniqueId = currentClient.id;
+    const clientUniqueId = currentClient.id!;
     const client = await kcAdminClient.clients.findOne({
       id: clientUniqueId,
     });
@@ -62,7 +62,7 @@ describe('Clients', () => {
   it('update single client', async () => {
     const {clientId, id: clientUniqueId} = currentClient;
     await kcAdminClient.clients.update(
-      {id: clientUniqueId},
+      {id: clientUniqueId!},
       {
         // clientId is required in client update. no idea why...
         clientId,
@@ -71,7 +71,7 @@ describe('Clients', () => {
     );
 
     const client = await kcAdminClient.clients.findOne({
-      id: clientUniqueId,
+      id: clientUniqueId!,
     });
     expect(client).to.include({
       description: 'test',
@@ -119,14 +119,14 @@ describe('Clients', () => {
     after(async () => {
       // delete client role
       await kcAdminClient.clients.delRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName: currentRoleName,
       });
     });
 
     it('list the client roles', async () => {
       const roles = await kcAdminClient.clients.listRoles({
-        id: currentClient.id,
+        id: currentClient.id!,
       });
 
       expect(roles[0]).to.include({
@@ -136,7 +136,7 @@ describe('Clients', () => {
 
     it('find the client role', async () => {
       const role = await kcAdminClient.clients.findRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName: currentRoleName,
       });
 
@@ -155,7 +155,7 @@ describe('Clients', () => {
       };
       await kcAdminClient.clients.updateRole(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
           roleName: currentRoleName,
         },
         delta,
@@ -163,7 +163,7 @@ describe('Clients', () => {
 
       // check the change
       const role = await kcAdminClient.clients.findRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName: currentRoleName,
       });
 
@@ -180,13 +180,13 @@ describe('Clients', () => {
 
       // delete
       await kcAdminClient.clients.delRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName,
       });
 
       // check it's null
       const role = await kcAdminClient.clients.findRole({
-        id: currentClient.id,
+        id: currentClient.id!,
         roleName,
       });
 
@@ -200,7 +200,7 @@ describe('Clients', () => {
       // update with serviceAccountsEnabled: true
       await kcAdminClient.clients.update(
         {
-          id: clientUniqueId,
+          id: clientUniqueId!,
         },
         {
           clientId,
@@ -211,7 +211,7 @@ describe('Clients', () => {
 
     it('get client secret', async () => {
       const credential = await kcAdminClient.clients.getClientSecret({
-        id: currentClient.id,
+        id: currentClient.id!,
       });
 
       expect(credential).to.have.all.keys('type', 'value');
@@ -220,12 +220,12 @@ describe('Clients', () => {
     it('generate new client secret', async () => {
       const newCredential = await kcAdminClient.clients.generateNewClientSecret(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
         },
       );
 
       const credential = await kcAdminClient.clients.getClientSecret({
-        id: currentClient.id,
+        id: currentClient.id!,
       });
 
       expect(newCredential).to.be.eql(credential);
@@ -234,7 +234,7 @@ describe('Clients', () => {
     it('generate new registration access token', async () => {
       const newRegistrationAccessToken = await kcAdminClient.clients.generateRegistrationAccessToken(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
         },
       );
 
@@ -243,7 +243,7 @@ describe('Clients', () => {
 
     it('get installation providers', async () => {
       const installationProvider = await kcAdminClient.clients.getInstallationProviders(
-        {id: currentClient.id, providerId: 'keycloak-oidc-jboss-subsystem'},
+        {id: currentClient.id!, providerId: 'keycloak-oidc-jboss-subsystem'},
       );
       expect(installationProvider).to.be.ok;
       expect(typeof installationProvider).to.be.equal('string');
@@ -252,7 +252,7 @@ describe('Clients', () => {
     it('get service account user', async () => {
       const serviceAccountUser = await kcAdminClient.clients.getServiceAccountUser(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
         },
       );
 
@@ -261,7 +261,7 @@ describe('Clients', () => {
   });
 
   describe('default client scopes', () => {
-    let dummyClientScope;
+    let dummyClientScope: ClientScopeRepresentation;
 
     beforeEach(async () => {
       dummyClientScope = {
@@ -272,9 +272,9 @@ describe('Clients', () => {
 
       // setup dummy client scope
       await kcAdminClient.clientScopes.create(dummyClientScope);
-      currentClientScope = await kcAdminClient.clientScopes.findOneByName({
-        name: dummyClientScope.name,
-      });
+      currentClientScope = (await kcAdminClient.clientScopes.findOneByName({
+        name: dummyClientScope.name!,
+      }))!;
     });
 
     afterEach(async () => {
@@ -283,8 +283,8 @@ describe('Clients', () => {
         const {id} = currentClient;
         const {id: clientScopeId} = currentClientScope;
         await kcAdminClient.clients.delDefaultClientScope({
-          clientScopeId,
-          id,
+          clientScopeId: clientScopeId!,
+          id: id!,
         });
       } catch (e) {
         // ignore
@@ -293,7 +293,7 @@ describe('Clients', () => {
       // cleanup client scopes
       try {
         await kcAdminClient.clientScopes.delByName({
-          name: dummyClientScope.name,
+          name: dummyClientScope.name!,
         });
       } catch (e) {
         // ignore
@@ -302,7 +302,7 @@ describe('Clients', () => {
 
     it('list default client scopes', async () => {
       const defaultClientScopes = await kcAdminClient.clients.listDefaultClientScopes(
-        {id: currentClient.id},
+        {id: currentClient.id!},
       );
 
       expect(defaultClientScopes).to.be.ok;
@@ -313,12 +313,12 @@ describe('Clients', () => {
       const {id: clientScopeId} = currentClientScope;
 
       await kcAdminClient.clients.addDefaultClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
 
       const defaultScopes = await kcAdminClient.clients.listDefaultClientScopes(
-        {id},
+        {id: id!},
       );
 
       expect(defaultScopes).to.be.ok;
@@ -334,16 +334,16 @@ describe('Clients', () => {
       const {id: clientScopeId} = currentClientScope;
 
       await kcAdminClient.clients.addDefaultClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
 
       await kcAdminClient.clients.delDefaultClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
       const defaultScopes = await kcAdminClient.clients.listDefaultClientScopes(
-        {id},
+        {id: id!},
       );
 
       const clientScope = defaultScopes.find(
@@ -354,7 +354,7 @@ describe('Clients', () => {
   });
 
   describe('optional client scopes', () => {
-    let dummyClientScope;
+    let dummyClientScope: ClientScopeRepresentation;
 
     beforeEach(async () => {
       dummyClientScope = {
@@ -365,9 +365,9 @@ describe('Clients', () => {
 
       // setup dummy client scope
       await kcAdminClient.clientScopes.create(dummyClientScope);
-      currentClientScope = await kcAdminClient.clientScopes.findOneByName({
-        name: dummyClientScope.name,
-      });
+      currentClientScope = (await kcAdminClient.clientScopes.findOneByName({
+        name: dummyClientScope.name!,
+      }))!;
     });
 
     afterEach(async () => {
@@ -376,8 +376,8 @@ describe('Clients', () => {
         const {id} = currentClient;
         const {id: clientScopeId} = currentClientScope;
         await kcAdminClient.clients.delOptionalClientScope({
-          clientScopeId,
-          id,
+          clientScopeId: clientScopeId!,
+          id: id!,
         });
       } catch (e) {
         // ignore
@@ -386,7 +386,7 @@ describe('Clients', () => {
       // cleanup client scopes
       try {
         await kcAdminClient.clientScopes.delByName({
-          name: dummyClientScope.name,
+          name: dummyClientScope.name!,
         });
       } catch (e) {
         // ignore
@@ -395,7 +395,7 @@ describe('Clients', () => {
 
     it('list optional client scopes', async () => {
       const optionalClientScopes = await kcAdminClient.clients.listOptionalClientScopes(
-        {id: currentClient.id},
+        {id: currentClient.id!},
       );
 
       expect(optionalClientScopes).to.be.ok;
@@ -406,12 +406,12 @@ describe('Clients', () => {
       const {id: clientScopeId} = currentClientScope;
 
       await kcAdminClient.clients.addOptionalClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
 
       const optionalScopes = await kcAdminClient.clients.listOptionalClientScopes(
-        {id},
+        {id: id!},
       );
 
       expect(optionalScopes).to.be.ok;
@@ -427,16 +427,16 @@ describe('Clients', () => {
       const {id: clientScopeId} = currentClientScope;
 
       await kcAdminClient.clients.addOptionalClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
 
       await kcAdminClient.clients.delOptionalClientScope({
-        id,
-        clientScopeId,
+        id: id!,
+        clientScopeId: clientScopeId!,
       });
       const optionalScopes = await kcAdminClient.clients.listOptionalClientScopes(
-        {id},
+        {id: id!},
       );
 
       const clientScope = optionalScopes.find(
@@ -466,13 +466,13 @@ describe('Clients', () => {
         const {id: clientUniqueId} = currentClient;
         const {
           id: mapperId,
-        } = await kcAdminClient.clients.findProtocolMapperByName({
-          id: clientUniqueId,
-          name: dummyMapper.name,
-        });
+        } = (await kcAdminClient.clients.findProtocolMapperByName({
+          id: clientUniqueId!,
+          name: dummyMapper.name!,
+        }))!;
         await kcAdminClient.clients.delProtocolMapper({
-          id: clientUniqueId,
-          mapperId,
+          id: clientUniqueId!,
+          mapperId: mapperId!,
         });
       } catch (e) {
         // ignore
@@ -482,21 +482,21 @@ describe('Clients', () => {
     it('list protocol mappers', async () => {
       const {id} = currentClient;
       const mapperList = await kcAdminClient.clients.listProtocolMappers({
-        id,
+        id: id!,
       });
       expect(mapperList).to.be.ok;
     });
 
     it('add multiple protocol mappers', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addMultipleProtocolMappers({id}, [
+      await kcAdminClient.clients.addMultipleProtocolMappers({id: id!}, [
         dummyMapper,
       ]);
 
-      const mapper = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      const mapper = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
       expect(mapper).to.be.ok;
       expect(mapper.protocol).to.eq(dummyMapper.protocol);
       expect(mapper.protocolMapper).to.eq(dummyMapper.protocolMapper);
@@ -504,12 +504,12 @@ describe('Clients', () => {
 
     it('add single protocol mapper', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
 
-      const mapper = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      const mapper = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
       expect(mapper).to.be.ok;
       expect(mapper.protocol).to.eq(dummyMapper.protocol);
       expect(mapper.protocolMapper).to.eq(dummyMapper.protocolMapper);
@@ -517,18 +517,18 @@ describe('Clients', () => {
 
     it('find protocol mapper by id', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
 
       const {
         id: mapperId,
-      } = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      } = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
 
       const mapper = await kcAdminClient.clients.findProtocolMapperById({
-        mapperId,
-        id,
+        mapperId: mapperId!,
+        id: id!,
       });
 
       expect(mapper).to.be.ok;
@@ -537,12 +537,12 @@ describe('Clients', () => {
 
     it('find protocol mapper by name', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
 
-      const mapper = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      const mapper = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
 
       expect(mapper).to.be.ok;
       expect(mapper.name).to.eql(dummyMapper.name);
@@ -550,12 +550,12 @@ describe('Clients', () => {
 
     it('find protocol mappers by protocol', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
 
       const mapperList = await kcAdminClient.clients.findProtocolMappersByProtocol(
         {
-          id,
-          protocol: dummyMapper.protocol,
+          id: id!,
+          protocol: dummyMapper.protocol!,
         },
       );
 
@@ -570,47 +570,47 @@ describe('Clients', () => {
       const {id} = currentClient;
 
       dummyMapper.config = {'access.token.claim': 'true'};
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
-      const mapper = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
+      const mapper = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
 
-      expect(mapper.config['access.token.claim']).to.eq('true');
+      expect(mapper.config!['access.token.claim']).to.eq('true');
 
       mapper.config = {'access.token.claim': 'false'};
 
       await kcAdminClient.clients.updateProtocolMapper(
-        {id, mapperId: mapper.id},
+        {id: id!, mapperId: mapper.id!},
         mapper,
       );
 
-      const updatedMapper = await kcAdminClient.clients.findProtocolMapperByName(
+      const updatedMapper = (await kcAdminClient.clients.findProtocolMapperByName(
         {
-          id,
-          name: dummyMapper.name,
+          id: id!,
+          name: dummyMapper.name!,
         },
-      );
+      ))!;
 
-      expect(updatedMapper.config['access.token.claim']).to.eq('false');
+      expect(updatedMapper.config!['access.token.claim']).to.eq('false');
     });
 
     it('delete protocol mapper', async () => {
       const {id} = currentClient;
-      await kcAdminClient.clients.addProtocolMapper({id}, dummyMapper);
+      await kcAdminClient.clients.addProtocolMapper({id: id!}, dummyMapper);
 
       const {
         id: mapperId,
-      } = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
-      });
+      } = (await kcAdminClient.clients.findProtocolMapperByName({
+        id: id!,
+        name: dummyMapper.name!,
+      }))!;
 
-      await kcAdminClient.clients.delProtocolMapper({id, mapperId});
+      await kcAdminClient.clients.delProtocolMapper({id: id!, mapperId: mapperId!});
 
       const mapper = await kcAdminClient.clients.findProtocolMapperByName({
-        id,
-        name: dummyMapper.name,
+        id: id!,
+        name: dummyMapper.name!,
       });
 
       expect(mapper).not.to.be.ok;
@@ -621,7 +621,7 @@ describe('Clients', () => {
     it('list client and realm scope mappings', async () => {
       const {id} = currentClient;
       const scopes = await kcAdminClient.clients.listScopeMappings({
-        id,
+        id: id!,
       });
       expect(scopes).to.be.ok;
     });
@@ -641,7 +641,7 @@ describe('Clients', () => {
         try {
           const {id} = currentClient;
           await kcAdminClient.clients.delRole({
-            id,
+            id: id!,
             roleName: dummyRoleName,
           });
         } catch (e) {
@@ -654,22 +654,22 @@ describe('Clients', () => {
 
         const availableRoles = await kcAdminClient.clients.listAvailableClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
         );
 
         await kcAdminClient.clients.addClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
           availableRoles,
         );
 
         const roles = await kcAdminClient.clients.listClientScopeMappings({
-          id: clientUniqueId,
-          client: clientUniqueId,
+          id: clientUniqueId!,
+          client: clientUniqueId!,
         });
 
         expect(roles).to.be.ok;
@@ -679,8 +679,8 @@ describe('Clients', () => {
       it('list scope mappings', async () => {
         const {id: clientUniqueId} = currentClient;
         const roles = await kcAdminClient.clients.listClientScopeMappings({
-          id: clientUniqueId,
-          client: clientUniqueId,
+          id: clientUniqueId!,
+          client: clientUniqueId!,
         });
         expect(roles).to.be.ok;
       });
@@ -689,8 +689,8 @@ describe('Clients', () => {
         const {id: clientUniqueId} = currentClient;
         const roles = await kcAdminClient.clients.listAvailableClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
         );
         expect(roles).to.be.ok;
@@ -700,8 +700,8 @@ describe('Clients', () => {
         const {id: clientUniqueId} = currentClient;
         const roles = await kcAdminClient.clients.listCompositeClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
         );
         expect(roles).to.be.ok;
@@ -712,22 +712,22 @@ describe('Clients', () => {
 
         const rolesBefore = await kcAdminClient.clients.listClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
         );
 
         await kcAdminClient.clients.delClientScopeMappings(
           {
-            id: clientUniqueId,
-            client: clientUniqueId,
+            id: clientUniqueId!,
+            client: clientUniqueId!,
           },
           rolesBefore,
         );
 
         const rolesAfter = await kcAdminClient.clients.listClientScopeMappings({
-          id: clientUniqueId,
-          client: clientUniqueId,
+          id: clientUniqueId!,
+          client: clientUniqueId!,
         });
 
         expect(rolesAfter).to.be.ok;
@@ -737,7 +737,7 @@ describe('Clients', () => {
       it('get effective scope mapping of all roles for a specific container', async () => {
         const {id: clientUniqueId} = currentClient;
         const roles = await kcAdminClient.clients.evaluatePermission({
-          id: clientUniqueId,
+          id: clientUniqueId!,
           roleContainer: 'master',
           type: 'granted',
           scope: 'openid',
@@ -751,7 +751,7 @@ describe('Clients', () => {
         const {id: clientUniqueId} = currentClient;
         const protocolMappers = await kcAdminClient.clients.evaluateListProtocolMapper(
           {
-            id: clientUniqueId,
+            id: clientUniqueId!,
             scope: 'openid',
           },
         );
@@ -767,7 +767,7 @@ describe('Clients', () => {
         });
         const accessToken = await kcAdminClient.clients.evaluateGenerateAccessToken(
           {
-            id: clientUniqueId,
+            id: clientUniqueId!,
             userId: user.id,
             scope: 'openid',
           },
@@ -801,13 +801,13 @@ describe('Clients', () => {
         const {id} = currentClient;
 
         const availableRoles = await kcAdminClient.clients.listAvailableRealmScopeMappings(
-          {id},
+          {id: id!},
         );
 
-        await kcAdminClient.clients.addRealmScopeMappings({id}, availableRoles);
+        await kcAdminClient.clients.addRealmScopeMappings({id: id!}, availableRoles);
 
         const roles = await kcAdminClient.clients.listRealmScopeMappings({
-          id,
+          id: id!,
         });
 
         expect(roles).to.be.ok;
@@ -817,7 +817,7 @@ describe('Clients', () => {
       it('list scope mappings', async () => {
         const {id} = currentClient;
         const roles = await kcAdminClient.clients.listRealmScopeMappings({
-          id,
+          id: id!,
         });
         expect(roles).to.be.ok;
       });
@@ -825,7 +825,7 @@ describe('Clients', () => {
       it('list available scope mappings', async () => {
         const {id} = currentClient;
         const roles = await kcAdminClient.clients.listAvailableRealmScopeMappings(
-          {id},
+          {id: id!},
         );
         expect(roles).to.be.ok;
       });
@@ -833,7 +833,7 @@ describe('Clients', () => {
       it('list composite scope mappings', async () => {
         const {id} = currentClient;
         const roles = await kcAdminClient.clients.listCompositeRealmScopeMappings(
-          {id},
+          {id: id!},
         );
         expect(roles).to.be.ok;
       });
@@ -842,13 +842,13 @@ describe('Clients', () => {
         const {id} = currentClient;
 
         const rolesBefore = await kcAdminClient.clients.listRealmScopeMappings({
-          id,
+          id: id!,
         });
 
-        await kcAdminClient.clients.delRealmScopeMappings({id}, rolesBefore);
+        await kcAdminClient.clients.delRealmScopeMappings({id: id!}, rolesBefore);
 
         const rolesAfter = await kcAdminClient.clients.listRealmScopeMappings({
-          id,
+          id: id!,
         });
 
         expect(rolesAfter).to.be.ok;
@@ -861,7 +861,7 @@ describe('Clients', () => {
     it('list clients user sessions', async () => {
       const clientUniqueId = currentClient.id;
       const userSessions = await kcAdminClient.clients.listSessions({
-        id: clientUniqueId,
+        id: clientUniqueId!,
       });
       expect(userSessions).to.be.ok;
     });
@@ -869,7 +869,7 @@ describe('Clients', () => {
     it('list clients offline user sessions', async () => {
       const clientUniqueId = currentClient.id;
       const userSessions = await kcAdminClient.clients.listOfflineSessions({
-        id: clientUniqueId,
+        id: clientUniqueId!,
       });
       expect(userSessions).to.be.ok;
     });
@@ -877,7 +877,7 @@ describe('Clients', () => {
     it('list clients user session count', async () => {
       const clientUniqueId = currentClient.id;
       const userSessions = await kcAdminClient.clients.getSessionCount({
-        id: clientUniqueId,
+        id: clientUniqueId!,
       });
       expect(userSessions).to.be.ok;
     });
@@ -885,7 +885,7 @@ describe('Clients', () => {
     it('list clients offline user session count', async () => {
       const clientUniqueId = currentClient.id;
       const userSessions = await kcAdminClient.clients.getOfflineSessionCount({
-        id: clientUniqueId,
+        id: clientUniqueId!,
       });
       expect(userSessions).to.be.ok;
     });
@@ -895,24 +895,24 @@ describe('Clients', () => {
     const host = '127.0.0.1';
     it('register a node manually', async () => {
       await kcAdminClient.clients.addClusterNode({
-        id: currentClient.id,
+        id: currentClient.id!,
         node: host,
       });
-      const client = await kcAdminClient.clients.findOne({
-        id: currentClient.id,
-      });
+      const client = (await kcAdminClient.clients.findOne({
+        id: currentClient.id!,
+      }))!;
 
-      expect(Object.keys(client.registeredNodes)).to.be.eql([host]);
+      expect(Object.keys(client.registeredNodes!)).to.be.eql([host]);
     });
 
     it('remove registered host', async () => {
       await kcAdminClient.clients.deleteClusterNode({
-        id: currentClient.id,
+        id: currentClient.id!,
         node: host,
       });
-      const client = await kcAdminClient.clients.findOne({
-        id: currentClient.id,
-      });
+      const client = (await kcAdminClient.clients.findOne({
+        id: currentClient.id!,
+      }))!;
 
       expect(client.registeredNodes).to.be.undefined;
     });
@@ -931,7 +931,7 @@ describe('Clients', () => {
 
     it('generate and download keys', async () => {
       const result = await kcAdminClient.clients.generateAndDownloadKey(
-        {id: currentClient.id, attr},
+        {id: currentClient.id!, attr},
         keystoreConfig,
       );
 
@@ -940,7 +940,7 @@ describe('Clients', () => {
 
     it('generate key and updated info', async () => {
       const certificate = await kcAdminClient.clients.generateKey({
-        id: currentClient.id,
+        id: currentClient.id!,
         attr,
       });
 
@@ -948,7 +948,7 @@ describe('Clients', () => {
       expect(certificate.certificate).to.be.ok;
 
       const info = await kcAdminClient.clients.getKeyInfo({
-        id: currentClient.id,
+        id: currentClient.id!,
         attr,
       });
       expect(info).to.be.eql(certificate);
@@ -956,7 +956,7 @@ describe('Clients', () => {
 
     it('download key', async () => {
       const result = await kcAdminClient.clients.downloadKey(
-        {id: currentClient.id, attr},
+        {id: currentClient.id!, attr},
         keystoreConfig,
       );
 
@@ -988,7 +988,7 @@ describe('Clients', () => {
 
     before('enable authorization services', async () => {
       await kcAdminClient.clients.update(
-        {id: currentClient.id},
+        {id: currentClient.id!},
         {
           clientId: currentClient.clientId,
           authorizationServicesEnabled: true,
@@ -1006,13 +1006,13 @@ describe('Clients', () => {
 
     after('delete test user', async () => {
       await kcAdminClient.users.del({
-        id: user.id,
+        id: user.id!,
       });
     });
 
     after('disable authorization services', async () => {
       await kcAdminClient.clients.update(
-        {id: currentClient.id},
+        {id: currentClient.id!},
         {
           clientId: currentClient.clientId,
           authorizationServicesEnabled: false,
@@ -1026,7 +1026,7 @@ describe('Clients', () => {
         await Promise.all(
           resourceConfig.scopeNames.map(async (name) => {
             const result = await kcAdminClient.clients.createAuthorizationScope(
-              {id: currentClient.id},
+              {id: currentClient.id!},
               {
                 name,
               },
@@ -1040,7 +1040,7 @@ describe('Clients', () => {
 
     it('list all authorization scopes', async () => {
       const result = await kcAdminClient.clients.listAllScopes({
-        id: currentClient.id,
+        id: currentClient.id!,
       });
       expect(result.sort((a, b) => (a.name < b.name ? -1 : 1))).to.deep.equal(
         scopes,
@@ -1049,7 +1049,7 @@ describe('Clients', () => {
 
     it('create resource', async () => {
       resource = await kcAdminClient.clients.createResource(
-        {id: currentClient.id},
+        {id: currentClient.id!},
         {
           name: resourceConfig.name,
           type: resourceConfig.type,
@@ -1061,8 +1061,8 @@ describe('Clients', () => {
 
     it('list scopes by resource', async () => {
       const result = await kcAdminClient.clients.listScopesByResource({
-        id: currentClient.id,
-        resourceName: resource._id,
+        id: currentClient.id!,
+        resourceName: resource._id!,
       });
       expect(result.sort((a, b) => (a.name < b.name ? -1 : 1))).to.deep.equal(
         scopes,
@@ -1071,7 +1071,7 @@ describe('Clients', () => {
 
     it('list resources', async () => {
       const result = await kcAdminClient.clients.listResources({
-        id: currentClient.id,
+        id: currentClient.id!,
       });
       expect(result).to.deep.include(resource);
     });
@@ -1079,8 +1079,8 @@ describe('Clients', () => {
     it('update resource', async () => {
       await kcAdminClient.clients.updateResource(
         {
-          id: currentClient.id,
-          resourceId: resource._id,
+          id: currentClient.id!,
+          resourceId: resource._id!,
         },
         {
           name: 'foo',
@@ -1092,8 +1092,8 @@ describe('Clients', () => {
       // Change name back to original value
       await kcAdminClient.clients.updateResource(
         {
-          id: currentClient.id,
-          resourceId: resource._id,
+          id: currentClient.id!,
+          resourceId: resource._id!,
         },
         {
           name: resourceConfig.name,
@@ -1105,13 +1105,13 @@ describe('Clients', () => {
     it('create policy', async () => {
       policy = await kcAdminClient.clients.createPolicy(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
           type: policyConfig.type,
         },
         {
           name: policyConfig.name,
           logic: policyConfig.logic,
-          users: [user.id],
+          users: [user.id!],
         },
       );
       expect(policy).to.be.ok;
@@ -1120,7 +1120,7 @@ describe('Clients', () => {
     it('create permission', async () => {
       permission = await kcAdminClient.clients.createPermission(
         {
-          id: currentClient.id,
+          id: currentClient.id!,
           type: 'scope',
         },
         {
@@ -1128,8 +1128,8 @@ describe('Clients', () => {
           logic: permissionConfig.logic,
           // @ts-ignore
           resources: [resource._id],
-          policies: [policy.id],
-          scopes: scopes.map((scope) => scope.id),
+          policies: [policy.id!],
+          scopes: scopes.map((scope) => scope.id!),
         },
       );
       expect(permission).to.be.ok;
@@ -1137,8 +1137,8 @@ describe('Clients', () => {
 
     it('get associated scopes for permission', async () => {
       const result = await kcAdminClient.clients.getAssociatedScopes({
-        id: currentClient.id,
-        permissionId: permission.id,
+        id: currentClient.id!,
+        permissionId: permission.id!,
       });
       expect(result.sort((a, b) => (a.name < b.name ? -1 : 1))).to.deep.equal(
         scopes,
@@ -1147,8 +1147,8 @@ describe('Clients', () => {
 
     it('get associated resources for permission', async () => {
       const result = await kcAdminClient.clients.getAssociatedResources({
-        id: currentClient.id,
-        permissionId: permission.id,
+        id: currentClient.id!,
+        permissionId: permission.id!,
       });
       expect(result).to.deep.equal([
         {
