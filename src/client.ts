@@ -92,7 +92,7 @@ export class KeycloakAdminClient {
   }
 
   public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return;
     }
 
