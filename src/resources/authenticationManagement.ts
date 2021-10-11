@@ -7,6 +7,7 @@ import AuthenticatorConfigRepresentation, {
   AuthenticationProviderRepresentation,
 } from '../defs/authenticatorConfigRepresentation';
 import AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation';
+import RequiredActionProviderSimpleRepresentation from '../defs/requiredActionProviderSimpleRepresentation';
 
 export class AuthenticationManagement extends Resource {
   /**
@@ -21,7 +22,9 @@ export class AuthenticationManagement extends Resource {
   });
 
   // Get required actions. Returns a list of required actions.
-  public getRequiredActions = this.makeRequest<void>({
+  public getRequiredActions = this.makeRequest<
+    RequiredActionProviderRepresentation[]
+  >({
     method: 'GET',
     path: '/required-actions',
   });
@@ -97,7 +100,9 @@ export class AuthenticationManagement extends Resource {
   });
 
   // Get unregistered required actions Returns a list of unregistered required actions.
-  public getUnregisteredRequiredActions = this.makeRequest<void>({
+  public getUnregisteredRequiredActions = this.makeRequest<
+    RequiredActionProviderSimpleRepresentation[]
+  >({
     method: 'GET',
     path: '/unregistered-required-actions',
   });

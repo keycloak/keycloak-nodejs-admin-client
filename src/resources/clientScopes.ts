@@ -129,7 +129,7 @@ export class ClientScopes extends Resource<{realm?: string}> {
 
   public findProtocolMapper = this.makeRequest<
     {id: string; mapperId: string},
-    ProtocolMapperRepresentation
+    ProtocolMapperRepresentation | undefined
   >({
     method: 'GET',
     path: '/client-scopes/{id}/protocol-mappers/models/{mapperId}',

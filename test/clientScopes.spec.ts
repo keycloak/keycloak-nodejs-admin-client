@@ -299,7 +299,7 @@ describe('Client Scopes', () => {
       });
 
       expect(mapper).to.be.ok;
-      expect(mapper.id).to.eql(mapperId);
+      expect(mapper?.id).to.eql(mapperId);
     });
 
     it('find protocol mapper by name', async () => {
