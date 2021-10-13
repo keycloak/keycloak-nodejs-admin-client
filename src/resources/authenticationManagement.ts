@@ -23,6 +23,7 @@ export class AuthenticationManagement extends Resource {
 
   // Get required actions. Returns a list of required actions.
   public getRequiredActions = this.makeRequest<
+    void,
     RequiredActionProviderRepresentation[]
   >({
     method: 'GET',
@@ -101,6 +102,7 @@ export class AuthenticationManagement extends Resource {
 
   // Get unregistered required actions Returns a list of unregistered required actions.
   public getUnregisteredRequiredActions = this.makeRequest<
+    void,
     RequiredActionProviderSimpleRepresentation[]
   >({
     method: 'GET',
