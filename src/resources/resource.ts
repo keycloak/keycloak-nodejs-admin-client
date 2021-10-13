@@ -20,7 +20,7 @@ export default class Resource<ParamType = {}> {
   public makeRequest = <PayloadType = any, ResponseType = any>(
     args: RequestArgs,
   ): ((payload?: PayloadType & ParamType) => Promise<ResponseType>) => {
-    return this.agent.request(args);
+    return this.agent.request<ResponseType>(args);
   };
 
   // update request will take three types: query, payload and response
@@ -34,6 +34,6 @@ export default class Resource<ParamType = {}> {
     query: QueryType & ParamType,
     payload: PayloadType,
   ) => Promise<ResponseType>) => {
-    return this.agent.updateRequest(args);
+    return this.agent.updateRequest<ResponseType>(args);
   };
 }

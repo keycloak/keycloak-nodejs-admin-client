@@ -56,7 +56,7 @@ export class Agent {
     this.basePath = path;
   }
 
-  public request({
+  public request<T>({
     method,
     path = '',
     urlParamKeys = [],
@@ -80,8 +80,8 @@ export class Agent {
       // Omit url parameters and query parameters from payload
       const omittedKeys = ignoredKeys
         ? [...allUrlParamKeys, ...queryParamKeys].filter(
-          (key) => !ignoredKeys.includes(key),
-        )
+            (key) => !ignoredKeys.includes(key),
+          )
         : [...allUrlParamKeys, ...queryParamKeys];
 
       payload = omit(payload, omittedKeys);
@@ -92,7 +92,7 @@ export class Agent {
         this.transformKey(queryParams, keyTransform);
       }
 
-      return this.requestWithParams({
+      return this.requestWithParams<T>({
         method,
         path,
         payload,
@@ -105,7 +105,7 @@ export class Agent {
     };
   }
 
-  public updateRequest({
+  public updateRequest<T>({
     method,
     path = '',
     urlParamKeys = [],
@@ -115,7 +115,7 @@ export class Agent {
     payloadKey,
     returnResourceIdInLocationHeader,
   }: RequestArgs) {
-    return async (query: any = {}, payload: any = {}) => {
+    return async (query: any = {}, payload: any = {}): Promise<T> => {
       const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
@@ -133,7 +133,7 @@ export class Agent {
         this.transformKey(queryParams, keyTransform);
       }
 
-      return this.requestWithParams({
+      return this.requestWithParams<T>({
         method,
         path,
         payload,
@@ -146,7 +146,7 @@ export class Agent {
     };
   }
 
-  private async requestWithParams({
+  private async requestWithParams<T>({
     method,
     path,
     payload,
@@ -164,7 +164,7 @@ export class Agent {
     catchNotFound: boolean;
     payloadKey?: string;
     returnResourceIdInLocationHeader?: {field: string};
-  }) {
+  }): Promise<T> {
     const newPath = urlJoin(this.basePath, path);
 
     // Parse template and replace with values from urlParams
@@ -198,9 +198,9 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-          ...requestConfig.params,
-          ...queryParams,
-        }
+            ...requestConfig.params,
+            ...queryParams,
+          }
         : queryParams;
     }
 
@@ -230,12 +230,16 @@ export class Agent {
 
         // return with format {[field]: string}
         const {field} = returnResourceIdInLocationHeader;
-        return {[field]: resourceId};
+        return {[field]: resourceId} as unknown as T;
       }
-      return res.data;
+      return res.data as T;
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.status === 404 && catchNotFound) {
-        return null;
+      if (
+        axios.isAxiosError(err) &&
+        err.response?.status === 404 &&
+        catchNotFound
+      ) {
+        return {} as unknown as T;
       }
       throw err;
     }
