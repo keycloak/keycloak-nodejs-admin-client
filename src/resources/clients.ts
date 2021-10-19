@@ -20,6 +20,7 @@ export interface ClientQuery {
   max?: number;
   clientId?: string;
   viewableOnly?: boolean;
+  search?: boolean;
 }
 
 export interface PolicyQuery {
