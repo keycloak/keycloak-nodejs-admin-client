@@ -130,6 +130,15 @@ describe('Roles', () => {
       expect(children).to.be.eql([rest]);
     });
 
+    it('search for composite roles', async () => {
+      const children = await client.roles.getCompositeRoles({
+        id: currentRole.id!,
+        search: 'not',
+      });
+
+      expect(children).to.be.an('array').that.is.length(0);
+    });
+
     it('delete composite roles', async () => {
       await client.roles.delCompositeRoles({id: currentRole.id!}, [compositeRole]);
       const children = await client.roles.getCompositeRoles({id: currentRole.id!});

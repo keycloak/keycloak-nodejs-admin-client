@@ -84,7 +84,7 @@ export class Roles extends Resource<{realm?: string}> {
   });
 
   public getCompositeRoles = this.makeRequest<
-    {id: string},
+    {id: string; search?: string; first?: number; max?: number},
     RoleRepresentation[]
   >({
     method: 'GET',
