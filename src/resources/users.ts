@@ -299,6 +299,30 @@ export class Users extends Resource<{realm?: string}> {
   });
 
   /**
+   * get user credentials
+   */
+  public getCredentials = this.makeRequest<
+    {id: string},
+    CredentialRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/credentials',
+    urlParamKeys: ['id']
+  });
+
+  /**
+   * delete user credentials
+   */
+  public deleteCredential = this.makeRequest<
+    {id: string; credentialId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/credentials/{credentialId}',
+    urlParamKeys: ['id', 'credentialId']
+  });
+
+  /**
    * send verify email
    */
   public sendVerifyEmail = this.makeRequest<
