@@ -116,7 +116,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   public importFromUrl = this.makeRequest<{
     fromUrl: string;
     providerId: string;
-  }>({
+  }, Record<string, string>>({
     method: 'POST',
     path: '/import-config',
   });
