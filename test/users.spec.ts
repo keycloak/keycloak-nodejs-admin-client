@@ -142,8 +142,53 @@ describe('Users', function () {
    */
 
   it('should reset user password', async () => {
-    // todo: find a way to validate the reset-password result
     const userId = currentUser.id;
+    await kcAdminClient.users.resetPassword({
+      id: userId!,
+      credential: {
+        temporary: false,
+        type: 'password',
+        value: 'test',
+      },
+    });
+  });
+
+  /**
+   * get user credentials
+   */
+  it('get user credentials', async () => {
+    const userId = currentUser.id;
+    const credentials = await kcAdminClient.users.getCredentials({
+      id: userId!,
+    });
+
+    expect(credentials.map(c => c.type)).to.include('password')
+  });
+
+  /**
+   * delete user credentials
+   */
+  it('delete user credentials', async () => {
+    const userId = currentUser.id;
+    const credentials = await kcAdminClient.users.getCredentials({
+      id: userId!,
+    });
+
+    expect(credentials.map(c => c.type)).to.include('password')
+
+    const credential = credentials[0];
+    await kcAdminClient.users.deleteCredential({
+      id: userId!,
+      credentialId: credential.id!,
+    });
+
+    const credentialsAfterDelete = await kcAdminClient.users.getCredentials({
+      id: userId!,
+    });
+
+    expect(credentialsAfterDelete).to.not.deep.include(credential);
+
+    // Add deleted password back
     await kcAdminClient.users.resetPassword({
       id: userId!,
       credential: {
