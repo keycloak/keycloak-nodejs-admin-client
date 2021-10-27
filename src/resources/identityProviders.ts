@@ -1,6 +1,7 @@
 import Resource from './resource';
 import IdentityProviderRepresentation from '../defs/identityProviderRepresentation';
 import IdentityProviderMapperRepresentation from '../defs/identityProviderMapperRepresentation';
+import {IdentityProviderMapperTypeRepresentation} from '../defs/identityProviderMapperTypeRepresentation';
 import {KeycloakAdminClient} from '../client';
 
 export class IdentityProviders extends Resource<{realm?: string}> {
@@ -106,17 +107,20 @@ export class IdentityProviders extends Resource<{realm?: string}> {
 
   public findMapperTypes = this.makeRequest<
     {alias: string},
-    Record<string, IdentityProviderMapperRepresentation>
+    Record<string, IdentityProviderMapperTypeRepresentation>
   >({
     method: 'GET',
     path: '/instances/{alias}/mapper-types',
     urlParamKeys: ['alias'],
   });
 
-  public importFromUrl = this.makeRequest<{
-    fromUrl: string;
-    providerId: string;
-  }, Record<string, string>>({
+  public importFromUrl = this.makeRequest<
+    {
+      fromUrl: string;
+      providerId: string;
+    },
+    Record<string, string>
+  >({
     method: 'POST',
     path: '/import-config',
   });

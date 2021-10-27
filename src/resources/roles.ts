@@ -3,12 +3,18 @@ import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import {KeycloakAdminClient} from '../client';
 
+export interface RoleQuery {
+  first?: number;
+  max?: number;
+  search?: string;
+}
+
 export class Roles extends Resource<{realm?: string}> {
   /**
    * Realm roles
    */
 
-  public find = this.makeRequest<{}, RoleRepresentation[]>({
+  public find = this.makeRequest<RoleQuery, RoleRepresentation[]>({
     method: 'GET',
     path: '/roles',
   });
