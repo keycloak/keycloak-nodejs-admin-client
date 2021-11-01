@@ -211,7 +211,7 @@ export class Users extends Resource<{realm?: string}> {
    * Group
    */
 
-  public listGroups = this.makeRequest<{id: string}, GroupRepresentation[]>({
+  public listGroups = this.makeRequest<{id: string, briefRepresentation?: boolean}, GroupRepresentation[]>({
     method: 'GET',
     path: '/{id}/groups',
     urlParamKeys: ['id'],
