@@ -45,6 +45,7 @@ export default interface RealmRepresentation {
   defaultLocale?: string;
   defaultOptionalClientScopes?: string[];
   defaultRoles?: string[];
+  defaultRole?: RolesRepresentation;
   directGrantFlow?: string;
   displayName?: string;
   displayNameHtml?: string;
