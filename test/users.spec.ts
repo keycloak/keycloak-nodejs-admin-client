@@ -158,11 +158,11 @@ describe('Users', function () {
    */
   it('get user credentials', async () => {
     const userId = currentUser.id;
-    const credentials = await kcAdminClient.users.getCredentials({
+    const result = await kcAdminClient.users.getCredentials({
       id: userId!,
     });
 
-    expect(credentials.map(c => c.type)).to.include('password')
+    expect(result.map(c => c.type)).to.include('password');
   });
 
   /**
@@ -170,13 +170,13 @@ describe('Users', function () {
    */
   it('delete user credentials', async () => {
     const userId = currentUser.id;
-    const credentials = await kcAdminClient.users.getCredentials({
+    const result = await kcAdminClient.users.getCredentials({
       id: userId!,
     });
 
-    expect(credentials.map(c => c.type)).to.include('password')
+    expect(result.map(c => c.type)).to.include('password');
 
-    const credential = credentials[0];
+    const credential = result[0];
     await kcAdminClient.users.deleteCredential({
       id: userId!,
       credentialId: credential.id!,

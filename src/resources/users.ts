@@ -307,7 +307,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/credentials',
-    urlParamKeys: ['id']
+    urlParamKeys: ['id'],
   });
 
   /**
@@ -319,7 +319,7 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'DELETE',
     path: '/{id}/credentials/{credentialId}',
-    urlParamKeys: ['id', 'credentialId']
+    urlParamKeys: ['id', 'credentialId'],
   });
 
   /**
