@@ -14,6 +14,7 @@ import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
 import CertificateRepresentation from '../defs/certificateRepresentation';
 import KeyStoreConfig from '../defs/keystoreConfig';
+import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 
 export interface ClientQuery {
   first?: number;
@@ -475,6 +476,16 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Resource
    */
+
+  public getResourceServer = this.makeRequest<
+    {id: string},
+    ResourceServerRepresentation
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server',
+    urlParamKeys: ['id'],
+  });
+
   public listResources = this.makeRequest<
     {id: string},
     ResourceRepresentation[]
