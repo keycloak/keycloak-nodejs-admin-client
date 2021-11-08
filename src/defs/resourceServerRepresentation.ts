@@ -11,9 +11,15 @@ export enum PolicyEnforcementMode {
   DISABLED = 'DISABLED',
 }
 
+export enum DecisionStrategyOption {
+  UNANIMOUS = 'UNANIMOUS',
+  AFFIRMATIVE = 'AFFIRMATIVE',
+}
+
 export default interface ResourceServerRepresentation {
   allowRemoteResourceManagement?: boolean;
   clientId?: string;
+  decisionStrategy: DecisionStrategyOption;
   id?: string;
   name?: string;
   policies?: PolicyRepresentation[];
