@@ -486,6 +486,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public updateResourceServer = this.makeUpdateRequest<
+    {id: string},
+    ResourceServerRepresentation,
+    void
+  >({
+    method: 'PUT',
+    path: '{id}/authz/resource-server',
+    urlParamKeys: ['id'],
+  });
+
   public listResources = this.makeRequest<
     {id: string},
     ResourceRepresentation[]
@@ -619,6 +629,15 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
+  });
+
+  public listPermissionsByResource = this.makeRequest<
+    {id: string; resourceId: string},
+    ResourceServerRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/resource/{resourceId}/permissions',
+    urlParamKeys: ['id', 'resourceId'],
   });
 
   public listScopesByResource = this.makeRequest<
@@ -829,8 +848,6 @@ export class Clients extends Resource<{realm?: string}> {
       id: payload.id,
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    return allProtocolMappers.find(
-      (mapper) => mapper.name === payload.name,
-    );
+    return allProtocolMappers.find((mapper) => mapper.name === payload.name);
   }
 }

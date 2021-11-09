@@ -103,12 +103,11 @@ describe('Clients', () => {
     before(async () => {
       const roleName = faker.internet.userName();
       // create a client role
-      const {
-        roleName: createdRoleName,
-      } = await kcAdminClient.clients.createRole({
-        id: currentClient.id,
-        name: roleName,
-      });
+      const {roleName: createdRoleName} =
+        await kcAdminClient.clients.createRole({
+          id: currentClient.id,
+          name: roleName,
+        });
 
       expect(createdRoleName).to.be.equal(roleName);
 
@@ -1067,6 +1066,21 @@ describe('Clients', () => {
       });
       expect(resourceServer).to.be.ok;
       expect(resourceServer.clientId).to.be.equal(currentClient.id);
+
+      resourceServer.decisionStrategy = 'UNANIMOUS';
+      await kcAdminClient.clients.updateResourceServer(
+        {id: currentClient.id!},
+        resourceServer,
+      );
+    });
+
+    it('list permission by resource', async () => {
+      const result = await kcAdminClient.clients.listPermissionsByResource({
+        id: currentClient.id!,
+        resourceId: resource._id!,
+      });
+
+      expect(result).to.be.ok;
     });
 
     it('list scopes by resource', async () => {
