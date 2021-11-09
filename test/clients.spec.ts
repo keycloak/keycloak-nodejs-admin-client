@@ -10,7 +10,6 @@ import ScopeRepresentation from '../src/defs/scopeRepresentation';
 import ResourceRepresentation from '../src/defs/resourceRepresentation';
 import UserRepresentation from '../src/defs/userRepresentation';
 import PolicyRepresentation, {Logic} from '../src/defs/policyRepresentation';
-import {DecisionStrategyOption} from '../src/defs/resourceServerRepresentation';
 const expect = chai.expect;
 
 describe('Clients', () => {
@@ -1068,11 +1067,20 @@ describe('Clients', () => {
       expect(resourceServer).to.be.ok;
       expect(resourceServer.clientId).to.be.equal(currentClient.id);
 
-      resourceServer.decisionStrategy = DecisionStrategyOption.UNANIMOUS;
+      resourceServer.decisionStrategy = 'UNANIMOUS';
       await kcAdminClient.clients.updateResourceServer(
         {id: currentClient.id!},
         resourceServer,
       );
+    });
+
+    it('list permission by resource', async () => {
+      const result = await kcAdminClient.clients.listPermissionsByResource({
+        id: currentClient.id!,
+        resourceId: resource._id!,
+      });
+
+      expect(result).to.be.ok;
     });
 
     it('list scopes by resource', async () => {

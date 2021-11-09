@@ -631,6 +631,15 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public listPermissionsByResource = this.makeRequest<
+    {id: string; resourceId: string},
+    ResourceServerRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/resource/{resourceId}/permissions',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
   public listScopesByResource = this.makeRequest<
     {id: string; resourceName: string},
     {id: string; name: string}[]
