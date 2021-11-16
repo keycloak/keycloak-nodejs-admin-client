@@ -1060,6 +1060,14 @@ describe('Clients', () => {
       expect(resource).to.be.ok;
     });
 
+    it('get resource', async () => {
+      const r = await kcAdminClient.clients.getResource({
+        id: currentClient.id!,
+        resourceId: resource._id!,
+      });
+      expect(r).to.deep.equal(resource);
+    });
+
     it('get resource server', async () => {
       const resourceServer = await kcAdminClient.clients.getResourceServer({
         id: currentClient.id!,
