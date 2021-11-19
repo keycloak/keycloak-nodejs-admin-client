@@ -1,0 +1,7 @@
+- [Erik Jan de Wit](https://github.com/edewit) (project lead)
+- [Stan Silvert](https://github.com/ssilvert) 
+- [Mark Franceschelli](https://github.com/mfrances17)
+- [Jenny Montrose](https://github.com/jenny-s51)
+- [Agnieszka Gancarczyk](https://github.com/agagancarczyk)
+- [Jon Koops](https://github.com/jonkoops)
+- [Asbjørn Dyhrberg Thegler](https://github.com/ath88)
