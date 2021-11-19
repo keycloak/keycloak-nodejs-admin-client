@@ -4,4 +4,3 @@
 - [Jenny Montrose](https://github.com/jenny-s51)
 - [Agnieszka Gancarczyk](https://github.com/agagancarczyk)
 - [Jon Koops](https://github.com/jonkoops)
-- [Asbjørn Dyhrberg Thegler](https://github.com/ath88)
