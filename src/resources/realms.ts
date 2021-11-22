@@ -1,6 +1,9 @@
 import Resource from './resource';
 import AdminEventRepresentation from '../defs/adminEventRepresentation';
-import RealmRepresentation from '../defs/realmRepresentation';
+import RealmRepresentation, {
+  PartialImportRealmRepresentation,
+  PartialImportResponse,
+} from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
 import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
@@ -51,6 +54,19 @@ export class Realms extends Resource {
     method: 'DELETE',
     path: '/{realm}',
     urlParamKeys: ['realm'],
+  });
+
+  public partialImport = this.makeRequest<
+    {
+      realm: string;
+      realmRep: PartialImportRealmRepresentation;
+    },
+    PartialImportResponse
+  >({
+    method: 'POST',
+    path: '/{realm}/partialImport',
+    urlParamKeys: ['realm'],
+    payloadKey: 'realmRep',
   });
 
   public export = this.makeRequest<

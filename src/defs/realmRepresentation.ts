@@ -116,3 +116,21 @@ export default interface RealmRepresentation {
   verifyEmail?: boolean;
   waitIncrementSeconds?: number;
 }
+
+export type PartialImportRealmRepresentation = RealmRepresentation & {
+  ifResourceExists: 'FAIL' | 'SKIP' | 'OVERWRITE';
+};
+
+export type PartialImportResponse = {
+  overwritten: number;
+  added: number;
+  skipped: number;
+  results: [
+    {
+      action: string;
+      resourceType: string;
+      resourceName: string;
+      id: string;
+    },
+  ];
+};

@@ -4,6 +4,7 @@ import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
 import faker from 'faker';
 import {fail} from 'assert';
+import {PartialImportRealmRepresentation} from '../src/defs/realmRepresentation';
 const expect = chai.expect;
 
 const createRealm = async (kcAdminClient: KeycloakAdminClient) => {
@@ -64,6 +65,34 @@ describe('Realms', () => {
       id: currentRealmId,
       realm: currentRealmName,
     });
+  });
+
+  const roleToImport: PartialImportRealmRepresentation = {
+    ifResourceExists: 'FAIL',
+    roles: {
+      realm: [
+        {
+          id: '9d2638c8-4c62-4c42-90ea-5f3c836d0cc8',
+          name: 'myRole',
+          scopeParamRequired: false,
+          composite: false,
+        },
+      ],
+    },
+  };
+
+  it('does partial import', async () => {
+    const result = await kcAdminClient.realms.partialImport({
+      realm: currentRealmName,
+      realmRep: roleToImport,
+    });
+    expect(result.added).to.be.eq(1);
+    expect(result.overwritten).to.be.eq(0);
+    expect(result.skipped).to.be.eq(0);
+    expect(result.results.length).to.be.eq(1);
+    expect(result.results[0].action).to.be.eq('ADDED');
+    expect(result.results[0].resourceName).to.be.eq('myRole');
+    expect(result.results[0].id).to.exist;
   });
 
   it('export a realm', async () => {
@@ -237,21 +266,19 @@ describe('Realms', () => {
     });
 
     it('get users management permissions', async () => {
-      const managementPermissions = await kcAdminClient.realms.getUsersManagementPermissions(
-        {
+      const managementPermissions =
+        await kcAdminClient.realms.getUsersManagementPermissions({
           realm: currentRealmName,
-        },
-      );
+        });
       expect(managementPermissions).to.be.ok;
     });
 
     it('enable users management permissions', async () => {
-      const managementPermissions = await kcAdminClient.realms.updateUsersManagementPermissions(
-        {
+      const managementPermissions =
+        await kcAdminClient.realms.updateUsersManagementPermissions({
           realm: currentRealmName,
           enabled: true,
-        },
-      );
+        });
       expect(managementPermissions).to.include({enabled: true});
     });
 
@@ -340,12 +367,14 @@ describe('Realms', () => {
     });
   });
 
-
   describe('Realm localization', () => {
     currentRealmName = 'master';
 
     it.skip('enable localization', async () => {
-      await kcAdminClient.realms.getRealmLocalizationTexts({realm: currentRealmName, selectedLocale: 'nl'});
+      await kcAdminClient.realms.getRealmLocalizationTexts({
+        realm: currentRealmName,
+        selectedLocale: 'nl',
+      });
     });
 
     it.skip('should add localization', async () => {
