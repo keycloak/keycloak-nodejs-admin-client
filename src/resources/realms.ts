@@ -59,7 +59,7 @@ export class Realms extends Resource {
   public partialImport = this.makeRequest<
     {
       realm: string;
-      realmRep: PartialImportRealmRepresentation;
+      rep: PartialImportRepresentation;
     },
     PartialImportResponse
   >({
