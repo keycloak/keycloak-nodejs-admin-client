@@ -84,7 +84,7 @@ describe('Realms', () => {
   it('does partial import', async () => {
     const result = await kcAdminClient.realms.partialImport({
       realm: currentRealmName,
-      realmRep: roleToImport,
+      rep: roleToImport,
     });
     expect(result.added).to.be.eq(1);
     expect(result.overwritten).to.be.eq(0);
