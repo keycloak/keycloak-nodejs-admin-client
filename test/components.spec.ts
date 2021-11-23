@@ -60,6 +60,15 @@ describe('User federation using component api', () => {
     });
   });
 
+  it('get a sub components', async () => {
+    const list = await kcAdminClient.components.listSubComponents({
+      id: currentUserFed.id!,
+      type: 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper',
+    });
+
+    expect(list).to.be.ok;
+  });
+
   it('update a user federation', async () => {
     await kcAdminClient.components.update(
       {id: currentUserFed.id!},
