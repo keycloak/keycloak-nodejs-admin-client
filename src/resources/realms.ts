@@ -66,7 +66,7 @@ export class Realms extends Resource {
     method: 'POST',
     path: '/{realm}/partialImport',
     urlParamKeys: ['realm'],
-    payloadKey: 'realmRep',
+    payloadKey: 'rep',
   });
 
   public export = this.makeRequest<
