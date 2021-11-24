@@ -102,6 +102,22 @@ await kcAdminClient.auth(credentials);
 setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
 ```
 
+## Building and running the tests
+To build the source do a build:
+
+```bash
+npm run build
+```
+Start keycloak in a docker container or run it locally:
+```bash
+docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest
+```
+If you started your container manually make sure there is an admin user named www3y3 with password www3y3 as admin on master realm.
+Then start the tests with:
+```bash
+npm run test
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
