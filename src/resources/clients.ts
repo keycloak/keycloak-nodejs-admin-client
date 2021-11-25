@@ -542,6 +542,15 @@ export class Clients extends Resource<{realm?: string}> {
     },
   );
 
+  public importResource = this.makeUpdateRequest<
+    {id: string},
+    ResourceServerRepresentation
+  >({
+    method: 'POST',
+    path: '/{id}/authz/resource-server/import',
+    urlParamKeys: ['id'],
+  });
+
   public evaluateResource = this.makeUpdateRequest<
     {id: string},
     ResourceEvaluation

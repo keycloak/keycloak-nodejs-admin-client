@@ -1048,6 +1048,20 @@ describe('Clients', () => {
       );
     });
 
+    it('import resource', async () => {
+      await kcAdminClient.clients.importResource(
+        {id: currentClient.id!},
+        {
+          allowRemoteResourceManagement: true,
+          policyEnforcementMode: 'ENFORCING',
+          resources: [],
+          policies: [],
+          scopes: [],
+          decisionStrategy: 'UNANIMOUS',
+        },
+      );
+    });
+
     it('create resource', async () => {
       resource = await kcAdminClient.clients.createResource(
         {id: currentClient.id!},
