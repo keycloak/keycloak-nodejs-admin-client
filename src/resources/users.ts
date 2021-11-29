@@ -323,6 +323,20 @@ export class Users extends Resource<{realm?: string}> {
   });
 
   /**
+   * update a credential label for a user
+   */
+  public updateCredentialLabel = this.makeUpdateRequest<
+    {id: string; credentialId: string},
+    string,
+    void
+  >({
+    method: 'PUT',
+    path: '/{id}/credentials/{credentialId}/userLabel',
+    urlParamKeys: ['id', 'credentialId'],
+    ignoredKeys: ['userLabel'],
+  });
+
+  /**
    * send verify email
    */
   public sendVerifyEmail = this.makeRequest<

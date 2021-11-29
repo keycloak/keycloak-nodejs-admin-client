@@ -206,7 +206,6 @@ export class Agent {
 
     try {
       const res = await axios(requestConfig);
-
       // now we get the response of the http request
       // if `resourceIdInLocationHeader` is true, we'll get the resourceId from the location header field
       // todo: find a better way to find the id in path, maybe some kind of pattern matching
