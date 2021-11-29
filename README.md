@@ -103,17 +103,22 @@ setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
 ```
 
 ## Building and running the tests
+
 To build the source do a build:
 
 ```bash
 npm run build
 ```
+
 Start keycloak in a docker container or run it locally:
+
 ```bash
 docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest
 ```
+
 If you started your container manually make sure there is an admin user named www3y3 with password www3y3 as admin on master realm.
 Then start the tests with:
+
 ```bash
 npm run test
 ```
@@ -179,6 +184,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Remove TOTP from the user (`PUT /{realm}/users/{id}/remove-totp`)
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
+- Update a credential label for a user (`PUT /{realm}/users/{id}/credentials/{credentialId}/userLabel`)
 
 ### User group-mapping
 

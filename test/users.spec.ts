@@ -212,6 +212,10 @@ describe('Users', function () {
 
     const credential = result[0];
 
+    kcAdminClient.setConfig({
+      requestConfig: {headers: {'Content-Type': 'text/plain'}},
+    });
+
     await kcAdminClient.users.updateCredentialLabel(
       {id: userId!, credentialId: credential.id!},
       'New user label'
@@ -221,7 +225,7 @@ describe('Users', function () {
       id: userId!,
     });
 
-    console.log(">>>>> credentialsAfterLabelUpdate ", credentialsAfterLabelUpdate);
+    expect(credentialsAfterLabelUpdate.map(c => c.userLabel)).to.include('New user label');
   });
 
   /**
