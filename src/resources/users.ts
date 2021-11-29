@@ -333,7 +333,6 @@ export class Users extends Resource<{realm?: string}> {
     method: 'PUT',
     path: '/{id}/credentials/{credentialId}/userLabel',
     urlParamKeys: ['id', 'credentialId'],
-    ignoredKeys: ['userLabel'],
   });
 
   /**
