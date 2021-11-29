@@ -200,6 +200,31 @@ describe('Users', function () {
   });
 
   /**
+   * update a credential label for a user
+   */
+  it('update a credential label for a user', async () => {
+    const userId = currentUser.id;
+    const result = await kcAdminClient.users.getCredentials({
+      id: userId!,
+    });
+
+    expect(result.map(c => c.type)).to.include('password');
+
+    const credential = result[0];
+
+    await kcAdminClient.users.updateCredentialLabel(
+      {id: userId!, credentialId: credential.id!},
+      'New user label'
+    );
+
+    const credentialsAfterLabelUpdate = await kcAdminClient.users.getCredentials({
+      id: userId!,
+    });
+
+    expect(credentialsAfterLabelUpdate.map(c => c.userLabel)).to.include('New user label');
+  });
+
+  /**
    * send verify email
    */
 

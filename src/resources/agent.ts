@@ -1,6 +1,6 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
-import axios, {AxiosRequestConfig, Method} from 'axios';
+import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
 import querystring from 'query-string';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
@@ -31,6 +31,7 @@ export interface RequestArgs {
    * Keys to be ignored, meaning that they will not be filtered out of the request payload even if they are a part of `urlParamKeys` or `queryParamKeys`,
    */
   ignoredKeys?: string[];
+  headers?: AxiosRequestHeaders;
 }
 
 export class Agent {
@@ -66,6 +67,7 @@ export class Agent {
     payloadKey,
     returnResourceIdInLocationHeader,
     ignoredKeys,
+    headers,
   }: RequestArgs) {
     return async (payload: any = {}) => {
       const baseParams = this.getBaseParams?.() ?? {};
@@ -101,6 +103,7 @@ export class Agent {
         catchNotFound,
         payloadKey,
         returnResourceIdInLocationHeader,
+        headers,
       });
     };
   }
@@ -114,6 +117,7 @@ export class Agent {
     keyTransform,
     payloadKey,
     returnResourceIdInLocationHeader,
+    headers
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
       const baseParams = this.getBaseParams?.() ?? {};
@@ -142,6 +146,7 @@ export class Agent {
         catchNotFound,
         payloadKey,
         returnResourceIdInLocationHeader,
+        headers,
       });
     };
   }
@@ -155,6 +160,7 @@ export class Agent {
     catchNotFound,
     payloadKey,
     returnResourceIdInLocationHeader,
+    headers
   }: {
     method: Method;
     path: string;
@@ -164,6 +170,7 @@ export class Agent {
     catchNotFound: boolean;
     payloadKey?: string;
     returnResourceIdInLocationHeader?: {field: string};
+    headers?: AxiosRequestHeaders;
   }) {
     const newPath = urlJoin(this.basePath, path);
 
@@ -184,6 +191,7 @@ export class Agent {
     requestConfig.headers = {
       ...requestConfig.headers,
       Authorization: `bearer ${await this.client.getAccessToken()}`,
+      ...headers
     };
 
     // Put payload into querystring if method is GET
@@ -206,7 +214,6 @@ export class Agent {
 
     try {
       const res = await axios(requestConfig);
-
       // now we get the response of the http request
       // if `resourceIdInLocationHeader` is true, we'll get the resourceId from the location header field
       // todo: find a better way to find the id in path, maybe some kind of pattern matching

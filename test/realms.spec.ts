@@ -378,9 +378,6 @@ describe('Realms', () => {
     });
 
     it.skip('should add localization', async () => {
-      kcAdminClient.setConfig({
-        requestConfig: {headers: {'Content-Type': 'text/plain'}},
-      });
       await kcAdminClient.realms.addLocalization(
         {realm: currentRealmName, selectedLocale: 'nl', key: 'theKey'},
         'value',

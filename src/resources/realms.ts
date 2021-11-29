@@ -324,6 +324,7 @@ export class Realms extends Resource {
     method: 'PUT',
     path: '/{realm}/localization/{selectedLocale}/{key}',
     urlParamKeys: ['realm', 'selectedLocale', 'key'],
+    headers: {'content-type': 'text/plain'},
   });
 
   public deleteRealmLocalizationTexts = this.makeRequest<
