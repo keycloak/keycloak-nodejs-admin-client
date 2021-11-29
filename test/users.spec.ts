@@ -212,10 +212,6 @@ describe('Users', function () {
 
     const credential = result[0];
 
-    kcAdminClient.setConfig({
-      requestConfig: {headers: {'Content-Type': 'text/plain'}},
-    });
-
     await kcAdminClient.users.updateCredentialLabel(
       {id: userId!, credentialId: credential.id!},
       'New user label'
