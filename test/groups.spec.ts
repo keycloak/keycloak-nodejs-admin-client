@@ -163,6 +163,14 @@ describe('Groups', () => {
       expect(currentRole).to.deep.include(roles[0]);
     });
 
+    it('list realm composite role-mappings of group', async () => {
+      const roles = await kcAdminClient.groups.listCompositeRealmRoleMappings({
+        id: currentGroup.id!,
+      });
+      // todo: add data integrity check later
+      expect(roles).to.be.ok;
+    });
+
     it('del realm role-mappings from group', async () => {
       await kcAdminClient.groups.delRealmRoleMappings({
         id: currentGroup.id!,
@@ -251,6 +259,15 @@ describe('Groups', () => {
 
       // currentRole will have an empty `attributes`, but role-mappings do not
       expect(currentRole).to.deep.include(roles[0]);
+    });
+
+    it('list composite client role-mappings for group', async () => {
+      const roles = await kcAdminClient.groups.listCompositeClientRoleMappings({
+        id: currentGroup.id!,
+        clientUniqueId: currentClient.id!,
+      });
+
+      expect(roles).to.be.ok;
     });
 
     it('del client role-mappings from group', async () => {
