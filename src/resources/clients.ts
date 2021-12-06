@@ -496,6 +496,16 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public importResources = this.makeUpdateRequest<
+    {id: string},
+    ResourceServerRepresentation,
+    void
+  >({
+    method: 'POST',
+    path: '{id}/authz/resource-server/import',
+    urlParamKeys: ['id'],
+  });
+
   public listResources = this.makeRequest<
     {id: string},
     ResourceRepresentation[]
