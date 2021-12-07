@@ -21,7 +21,10 @@ export class Realms extends Resource {
    * https://www.keycloak.org/docs-api/11.0/rest-api/#_realms_admin_resource
    */
 
-  public find = this.makeRequest<{}, RealmRepresentation[]>({
+  public find = this.makeRequest<
+    {briefRepresentation?: boolean},
+    RealmRepresentation[]
+  >({
     method: 'GET',
   });
 
