@@ -147,6 +147,16 @@ export class Groups extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  // Get effective realm-level role mappings This will recurse all composite roles to get the result.
+  public listCompositeRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/realm/composite',
+    urlParamKeys: ['id'],
+  });
+
   /**
    * Client role mappings
    * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
@@ -187,6 +197,15 @@ export class Groups extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
+    urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
+  public listCompositeClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}/composite',
     urlParamKeys: ['id', 'clientUniqueId'],
   });
 
