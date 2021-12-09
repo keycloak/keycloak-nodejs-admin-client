@@ -1062,6 +1062,15 @@ describe('Clients', () => {
       );
     });
 
+    it('export resource', async () => {
+      const result = await kcAdminClient.clients.exportResource({
+        id: currentClient.id!,
+      });
+
+      expect(result.allowRemoteResourceManagement).to.be.equal(true);
+      expect(result.resources.length).to.be.equal(1);
+    });
+
     it('create resource', async () => {
       resource = await kcAdminClient.clients.createResource(
         {id: currentClient.id!},

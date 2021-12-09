@@ -551,6 +551,12 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public exportResource = this.makeRequest<{id: string}>({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/settings',
+    urlParamKeys: ['id'],
+  });
+
   public evaluateResource = this.makeUpdateRequest<
     {id: string},
     ResourceEvaluation
