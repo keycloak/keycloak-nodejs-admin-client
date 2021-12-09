@@ -125,12 +125,12 @@ export type PartialImportResponse = {
   overwritten: number;
   added: number;
   skipped: number;
-  results: [
-    {
-      action: string;
-      resourceType: string;
-      resourceName: string;
-      id: string;
-    },
-  ];
+  results: PartialImportResult[];
+};
+
+export type PartialImportResult = {
+  action: string;
+  resourceType: string;
+  resourceName: string;
+  id: string;
 };
