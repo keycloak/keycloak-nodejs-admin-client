@@ -311,7 +311,7 @@ export class Realms extends Resource {
   });
 
   public getRealmLocalizationTexts = this.makeRequest<
-    {realm: string; selectedLocale: string},
+    {realm: string; selectedLocale: string; first?: number; max?: number},
     Record<string, string>
   >({
     method: 'GET',
