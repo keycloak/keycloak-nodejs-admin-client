@@ -337,7 +337,7 @@ export class Users extends Resource<{realm?: string}> {
   });
 
   // Move a credential to a position behind another credential
-  public lowerCredentialPriority = this.makeRequest<
+  public moveCredentialPositionDown = this.makeRequest<
     {
       id: string;
       credentialId: string;
@@ -351,7 +351,7 @@ export class Users extends Resource<{realm?: string}> {
   });
 
   // Move a credential to a first position in the credentials list of the user
-  public raiseCredentialPriority = this.makeRequest<
+  public moveCredentialPositionUp = this.makeRequest<
     {
       id: string;
       credentialId: string;

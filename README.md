@@ -185,6 +185,8 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
 - Update a credential label for a user (`PUT /{realm}/users/{id}/credentials/{credentialId}/userLabel`)
+- Move a credential to a position behind another credential (`POST /{realm}/users/{id}/credentials/{credentialId}/moveAfter/{newPreviousCredentialId}`)
+- Move a credential to a first position in the credentials list of the user (`PUT /{realm}/users/{id}/credentials/{credentialId}/moveToFirst`)
 
 ### User group-mapping
 
