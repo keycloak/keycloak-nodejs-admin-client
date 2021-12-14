@@ -336,6 +336,33 @@ export class Users extends Resource<{realm?: string}> {
     headers: {'content-type': 'text/plain'},
   });
 
+  // Move a credential to a position behind another credential
+  public moveCredentialPositionDown = this.makeRequest<
+    {
+      id: string;
+      credentialId: string;
+      newPreviousCredentialId: string;
+    },
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/credentials/{credentialId}/moveAfter/{newPreviousCredentialId}',
+    urlParamKeys: ['id', 'credentialId', 'newPreviousCredentialId'],
+  });
+
+  // Move a credential to a first position in the credentials list of the user
+  public moveCredentialPositionUp = this.makeRequest<
+    {
+      id: string;
+      credentialId: string;
+    },
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/credentials/{credentialId}/moveToFirst',
+    urlParamKeys: ['id', 'credentialId'],
+  });
+
   /**
    * send verify email
    */
