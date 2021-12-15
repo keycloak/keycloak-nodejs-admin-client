@@ -1,5 +1,4 @@
 stages:
-  - build
   - publish
 
 cache:
@@ -8,15 +7,6 @@ cache:
   paths:
     - .npm/
 
-build:
-  image: node:lts
-  stage: build
-  before_script:
-    - npm ci --cache .npm --prefer-offline
-    - npm install --cache .npm --prefer-offline
-  script:
-    - npm run build
-
 publish:
   image: node:lts
   before_script:
@@ -24,4 +14,6 @@ publish:
     - npm config set '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken' "${CI_JOB_TOKEN}"
   stage: publish
   script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
     - npm publish
