@@ -20,7 +20,8 @@ export interface UserQuery {
   max?: number;
   search?: string;
   username?: string;
-  [key: string]: string | number | undefined;
+  exact?: boolean;
+  [key: string]: string | number | undefined | boolean;
 }
 
 export class Users extends Resource<{realm?: string}> {
