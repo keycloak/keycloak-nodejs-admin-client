@@ -25,5 +25,3 @@ publish:
   stage: publish
   script:
     - npm publish
-  only:
-    - tags
