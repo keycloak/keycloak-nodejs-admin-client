@@ -11,6 +11,7 @@ import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation'
 import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
+import UserProfileConfig from '../defs/userProfileConfig';
 
 export interface UserQuery {
   email?: string;
@@ -67,6 +68,16 @@ export class Users extends Resource<{realm?: string}> {
   public count = this.makeRequest<UserQuery, number>({
     method: 'GET',
     path: '/count',
+  });
+
+  public getProfile = this.makeRequest<void, UserProfileConfig>({
+    method: 'GET',
+    path: '/profile',
+  });
+
+  public updateProfile = this.makeRequest<UserProfileConfig, UserProfileConfig>({
+    method: 'PUT',
+    path: '/profile',
   });
 
   /**
