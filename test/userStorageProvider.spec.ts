@@ -22,6 +22,9 @@ describe('Users federation provider', () => {
       parentId: 'master',
       providerId: 'ldap',
       providerType: 'org.keycloak.storage.UserStorageProvider',
+      config: {
+        editMode: ['READ_ONLY'],
+      },
     });
   });
 

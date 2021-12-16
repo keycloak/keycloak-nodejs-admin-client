@@ -21,6 +21,9 @@ describe('User federation using component api', () => {
       parentId: 'master',
       providerId: 'ldap',
       providerType: 'org.keycloak.storage.UserStorageProvider',
+      config: {
+        editMode: ['READ_ONLY'],
+      },
     });
     expect(component.id).to.be.ok;
 
