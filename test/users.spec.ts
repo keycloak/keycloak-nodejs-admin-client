@@ -86,6 +86,16 @@ describe('Users', function () {
     expect(numUsers).to.equal(1);
   });
 
+  it.skip('gets the profile', async () => {
+    const profile = await kcAdminClient.users.getProfile();
+    expect(profile).to.be.ok;
+  });
+
+  it.skip('updates the profile', async () => {
+    const profile = await kcAdminClient.users.updateProfile({});
+    expect(profile).to.be.ok;
+  });
+
   it('find users by custom attributes', async () => {
     // Searching by attributes is only available from Keycloak > 15
     const users = await kcAdminClient.users.find({key: 'value'});
