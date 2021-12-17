@@ -70,7 +70,7 @@ export class Users extends Resource<{realm?: string}> {
     path: '/count',
   });
 
-  public getProfile = this.makeRequest<void, UserProfileConfig>({
+  public getProfile = this.makeRequest<{}, UserProfileConfig>({
     method: 'GET',
     path: '/profile',
   });
