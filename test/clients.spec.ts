@@ -1043,9 +1043,25 @@ describe('Clients', () => {
       const result = await kcAdminClient.clients.listAllScopes({
         id: currentClient.id!,
       });
-      expect(result.sort((a, b) => (a.name < b.name ? -1 : 1))).to.deep.equal(
+      expect(result.sort((a, b) => (a.name! < b.name! ? -1 : 1))).to.deep.equal(
         scopes,
       );
+    });
+
+    it('list all resources by scope', async () => {
+      const result = await kcAdminClient.clients.listAllResourcesByScope({
+        id: currentClient.id!,
+        scopeId: scopes[0].id!,
+      });
+      expect(result).to.deep.equal([]);
+    });
+
+    it('list all permissions by scope', async () => {
+      const result = await kcAdminClient.clients.listAllPermissionsByScope({
+        id: currentClient.id!,
+        scopeId: scopes[0].id!,
+      });
+      expect(result).to.deep.equal([]);
     });
 
     it('import resource', async () => {

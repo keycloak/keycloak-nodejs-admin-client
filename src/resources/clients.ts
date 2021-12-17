@@ -15,6 +15,7 @@ import Resource from './resource';
 import CertificateRepresentation from '../defs/certificateRepresentation';
 import KeyStoreConfig from '../defs/keystoreConfig';
 import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
+import ScopeRepresentation from '../defs/scopeRepresentation';
 
 export interface ClientQuery {
   first?: number;
@@ -646,13 +647,28 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<
-    {id: string},
-    {id: string; name: string}[]
-  >({
+  public listAllScopes = this.makeRequest<{id: string}, ScopeRepresentation[]>({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
+  });
+
+  public listAllResourcesByScope = this.makeRequest<
+    {id: string; scopeId: string},
+    ResourceRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}/resources',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public listAllPermissionsByScope = this.makeRequest<
+    {id: string; scopeId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}/permissions',
+    urlParamKeys: ['id', 'scopeId'],
   });
 
   public listPermissionsByResource = this.makeRequest<
