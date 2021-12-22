@@ -1048,6 +1048,21 @@ describe('Clients', () => {
       );
     });
 
+    it('update authorization scope', async () => {
+      const updatedScope = {...scopes[0], displayName: 'Hello'};
+      await kcAdminClient.clients.updateAuthorizationScope(
+        {id: currentClient.id!, scopeId: scopes[0].id!},
+        updatedScope,
+      );
+
+      const fetchedScope = await kcAdminClient.clients.getAuthorizationScope({
+        id: currentClient.id!,
+        scopeId: scopes[0].id!,
+      });
+
+      expect(fetchedScope).to.deep.equal(updatedScope);
+    });
+
     it('list all resources by scope', async () => {
       const result = await kcAdminClient.clients.listAllResourcesByScope({
         id: currentClient.id!,

@@ -691,11 +691,38 @@ export class Clients extends Resource<{realm?: string}> {
 
   public createAuthorizationScope = this.makeUpdateRequest<
     {id: string},
-    {name: string; displayName?: string; iconUri?: string}
+    ScopeRepresentation
   >({
     method: 'POST',
     path: '{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
+  });
+
+  public updateAuthorizationScope = this.makeUpdateRequest<
+    {id: string; scopeId: string},
+    ScopeRepresentation
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public getAuthorizationScope = this.makeRequest<
+    {id: string; scopeId: string},
+    ScopeRepresentation
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public delAuthorizationScope = this.makeRequest<
+    {id: string; scopeId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
   });
 
   /**
