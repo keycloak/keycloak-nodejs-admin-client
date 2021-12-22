@@ -1221,8 +1221,6 @@ describe('Clients', () => {
       expect(permission).to.be.ok;
     });
 
-    it('create scope', async () => {});
-
     it('get associated scopes for permission', async () => {
       const result = await kcAdminClient.clients.getAssociatedScopes({
         id: currentClient.id!,
