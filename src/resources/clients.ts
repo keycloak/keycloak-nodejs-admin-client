@@ -17,15 +17,18 @@ import KeyStoreConfig from '../defs/keystoreConfig';
 import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 import ScopeRepresentation from '../defs/scopeRepresentation';
 
-export interface ClientQuery {
+export interface PaginatedQuery {
   first?: number;
   max?: number;
+}
+
+export interface ClientQuery extends PaginatedQuery {
   clientId?: string;
   viewableOnly?: boolean;
   search?: boolean;
 }
 
-export interface PolicyQuery {
+export interface PolicyQuery extends PaginatedQuery {
   id?: string;
   name?: string;
   type?: string;
@@ -34,8 +37,6 @@ export interface PolicyQuery {
   permission?: string;
   owner?: string;
   fields?: string;
-  first?: number;
-  max?: number;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -729,7 +730,12 @@ export class Clients extends Resource<{realm?: string}> {
    * Permissions
    */
   public findPermissions = this.makeRequest<
-    {id: string; name: string},
+    {
+      id: string;
+      name?: string;
+      resource?: string;
+      scope?: string;
+    } & PaginatedQuery,
     PolicyRepresentation[]
   >({
     method: 'GET',
@@ -790,6 +796,15 @@ export class Clients extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/policy/{permissionId}/resources',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getAssociatedPolicies = this.makeRequest<
+    {id: string; permissionId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
     urlParamKeys: ['id', 'permissionId'],
   });
 
