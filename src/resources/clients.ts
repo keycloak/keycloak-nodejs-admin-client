@@ -16,6 +16,7 @@ import CertificateRepresentation from '../defs/certificateRepresentation';
 import KeyStoreConfig from '../defs/keystoreConfig';
 import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 import ScopeRepresentation from '../defs/scopeRepresentation';
+import {PolicyProviderRepresentation} from '../defs/policyProviderRepresentation';
 
 export interface PaginatedQuery {
   first?: number;
@@ -620,6 +621,15 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '{id}/authz/resource-server/policy/{policyId}',
     urlParamKeys: ['id', 'policyId'],
+  });
+
+  public listPolicyProviders = this.makeRequest<
+    {id: string},
+    PolicyProviderRepresentation
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/providers',
+    urlParamKeys: ['id'],
   });
 
   public async createOrUpdatePolicy(payload: {

@@ -1260,5 +1260,12 @@ describe('Clients', () => {
         },
       ]);
     });
+
+    it('list policy providers', async () => {
+      const result = await kcAdminClient.clients.listPolicyProviders({
+        id: currentClient.id!,
+      });
+      expect(result).to.be.ok;
+    });
   });
 });
