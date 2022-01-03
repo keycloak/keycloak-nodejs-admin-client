@@ -1218,7 +1218,14 @@ describe('Clients', () => {
           scopes: scopes.map((scope) => scope.id!),
         },
       );
-      expect(permission).to.be.ok;
+
+      const p = await kcAdminClient.clients.findPermissions({
+        id: currentClient.id!,
+        name: permissionConfig.name,
+      });
+
+      expect(p.length).to.be.eq(1);
+      expect(p[0].logic).to.be.eq(permissionConfig.logic);
     });
 
     it('get associated scopes for permission', async () => {
@@ -1229,6 +1236,16 @@ describe('Clients', () => {
       expect(result.sort((a, b) => (a.name < b.name ? -1 : 1))).to.deep.equal(
         scopes,
       );
+    });
+
+    it('get associated policies for permission', async () => {
+      const result = await kcAdminClient.clients.getAssociatedPolicies({
+        id: currentClient.id!,
+        permissionId: permission.id!,
+      });
+
+      expect(result.length).to.be.eq(1);
+      expect(result[0].id).to.be.eq(policy.id);
     });
 
     it('get associated resources for permission', async () => {
