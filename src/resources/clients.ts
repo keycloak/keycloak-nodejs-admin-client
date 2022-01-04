@@ -16,7 +16,7 @@ import CertificateRepresentation from '../defs/certificateRepresentation';
 import KeyStoreConfig from '../defs/keystoreConfig';
 import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 import ScopeRepresentation from '../defs/scopeRepresentation';
-import {PolicyProviderRepresentation} from '../defs/policyProviderRepresentation';
+import PolicyProviderRepresentation from '../defs/policyProviderRepresentation';
 
 export interface PaginatedQuery {
   first?: number;
@@ -625,7 +625,7 @@ export class Clients extends Resource<{realm?: string}> {
 
   public listPolicyProviders = this.makeRequest<
     {id: string},
-    PolicyProviderRepresentation
+    PolicyProviderRepresentation[]
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/policy/providers',
@@ -658,7 +658,10 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<{id: string}, ScopeRepresentation[]>({
+  public listAllScopes = this.makeRequest<
+    {id: string} & PaginatedQuery,
+    ScopeRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
