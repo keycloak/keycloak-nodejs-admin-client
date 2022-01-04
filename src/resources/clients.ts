@@ -658,7 +658,10 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Scopes
    */
-  public listAllScopes = this.makeRequest<{id: string}, ScopeRepresentation[]>({
+  public listAllScopes = this.makeRequest<
+    {id: string} & PaginatedQuery,
+    ScopeRepresentation[]
+  >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
