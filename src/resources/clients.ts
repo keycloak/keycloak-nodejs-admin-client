@@ -29,6 +29,15 @@ export interface ClientQuery extends PaginatedQuery {
   search?: boolean;
 }
 
+export interface ResourceQuery extends PaginatedQuery {
+  id?: string;
+  name?: string;
+  type?: string;
+  owner?: string;
+  uri?: string;
+  deep?: boolean;
+}
+
 export interface PolicyQuery extends PaginatedQuery {
   id?: string;
   name?: string;
@@ -500,7 +509,7 @@ export class Clients extends Resource<{realm?: string}> {
   });
 
   public listResources = this.makeRequest<
-    {id: string},
+    ResourceQuery,
     ResourceRepresentation[]
   >({
     method: 'GET',
@@ -659,7 +668,7 @@ export class Clients extends Resource<{realm?: string}> {
    * Scopes
    */
   public listAllScopes = this.makeRequest<
-    {id: string} & PaginatedQuery,
+    {id: string; name?: string; deep?: boolean} & PaginatedQuery,
     ScopeRepresentation[]
   >({
     method: 'GET',
