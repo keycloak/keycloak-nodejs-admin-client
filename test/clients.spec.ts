@@ -1163,29 +1163,20 @@ describe('Clients', () => {
     });
 
     it('update resource', async () => {
+      resource.name = 'foo';
       await kcAdminClient.clients.updateResource(
         {
           id: currentClient.id!,
           resourceId: resource._id!,
         },
-        {
-          name: 'foo',
-        },
+        resource,
       );
-      // updateResource does not return the updated resource, so we would have to fetch the resource again
-      // to check. However, the endpoint is not implemented (yet?).
-      // expect(result).to.deep.equal({ ...resource, name: 'foo' });
-      // Change name back to original value
-      await kcAdminClient.clients.updateResource(
-        {
-          id: currentClient.id!,
-          resourceId: resource._id!,
-        },
-        {
-          name: resourceConfig.name,
-        },
-      );
-      // expect(result2).to.deep.equal(resource);
+      const result = await kcAdminClient.clients.getResource({
+        id: currentClient.id!,
+        resourceId: resource._id!,
+      });
+
+      expect(result.name).to.equal('foo');
     });
 
     it('create policy', async () => {
@@ -1201,6 +1192,14 @@ describe('Clients', () => {
         },
       );
       expect(policy).to.be.ok;
+    });
+
+    it('policy list dependencies', async () => {
+      const dependencies = await kcAdminClient.clients.listDependentPolicies({
+        id: currentClient.id!,
+        policyId: policy.id!,
+      });
+      expect(dependencies).to.be.ok;
     });
 
     it('create permission', async () => {
