@@ -626,6 +626,15 @@ export class Clients extends Resource<{realm?: string}> {
     catchNotFound: true,
   });
 
+  public listDependentPolicies = this.makeRequest<
+    {id: string; policyId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{policyId}/dependentPolicies',
+    urlParamKeys: ['id', 'policyId'],
+  });
+
   public delPolicy = this.makeRequest<{id: string; policyId: string}, void>({
     method: 'DELETE',
     path: '{id}/authz/resource-server/policy/{policyId}',
