@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import {fail} from 'assert';
 const expect = chai.expect;
