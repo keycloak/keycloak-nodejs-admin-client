@@ -3,7 +3,7 @@ import camelize from 'camelize-ts';
 import querystring from 'query-string';
 import {defaultBaseUrl, defaultRealm} from './constants';
 
-export type GrantTypes = 'client_credentials' | 'password';
+export type GrantTypes = 'client_credentials' | 'password' | 'refresh_token';
 
 export interface Credentials {
   username?: string;
