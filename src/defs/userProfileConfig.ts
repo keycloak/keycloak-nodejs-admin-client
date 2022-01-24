@@ -38,5 +38,5 @@ export interface UserProfileGroup {
   name?: string;
   displayHeader?: string;
   displayDescription?: string;
-  annotations?: Record<string, unknown>[];
+  annotations?: Record<string, unknown>;
 }
