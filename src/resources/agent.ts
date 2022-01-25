@@ -69,7 +69,7 @@ export class Agent {
     ignoredKeys,
     headers,
   }: RequestArgs) {
-    return async (payload: any = {}) => {
+    return async (payload: any = {}, options?: Pick<RequestArgs, 'catchNotFound'>) => {
       const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
@@ -100,7 +100,9 @@ export class Agent {
         payload,
         urlParams,
         queryParams,
+        // catchNotFound precedence: global > local > default
         catchNotFound,
+        ...(this.client.getGlobalRequestArgOptions() ?? options ?? {}),
         payloadKey,
         returnResourceIdInLocationHeader,
         headers,
