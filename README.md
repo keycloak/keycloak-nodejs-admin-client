@@ -19,6 +19,7 @@ npm install @keycloak/keycloak-admin-client
 ## Usage
 
 ```js
+// ESModule import
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 
 // To configure the client, pass an object to override any of these  options:
@@ -29,7 +30,10 @@ import KcAdminClient from '@keycloak/keycloak-admin-client';
 //     /* Axios request config options https://github.com/axios/axios#request-config */
 //   },
 // }
-const kcAdminClient = new KcAdminClient();
+const kcAdminClient = new KcAdminClient.default();
+// OR CommonJS require
+// const KcAdminClient =  require('@keycloak/keycloak-admin-client').default;
+// const kcAdminClient = new KcAdminClient();
 
 // Authorize with username / password
 await kcAdminClient.auth({
