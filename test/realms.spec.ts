@@ -1,11 +1,12 @@
 // tslint:disable:no-unused-expression
-import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
 import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
-import {PartialImportRealmRepresentation} from '../src/defs/realmRepresentation';
-import GroupRepresentation from '../src/defs/groupRepresentation';
+import * as chai from 'chai';
+import {KeycloakAdminClient} from '../src/client.js';
+import type GroupRepresentation from '../src/defs/groupRepresentation.js';
+import type {PartialImportRealmRepresentation} from '../src/defs/realmRepresentation.js';
+import {credentials} from './constants.js';
+
 const expect = chai.expect;
 
 const createRealm = async (kcAdminClient: KeycloakAdminClient) => {

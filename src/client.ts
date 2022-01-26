@@ -1,25 +1,24 @@
-import {getToken, Credentials} from './utils/auth';
-import {defaultBaseUrl, defaultRealm} from './utils/constants';
-import {Cache} from './resources/cache';
-import {Users} from './resources/users';
-import {Groups} from './resources/groups';
-import {Roles} from './resources/roles';
-import {Clients} from './resources/clients';
-import {Realms} from './resources/realms';
-import {ClientScopes} from './resources/clientScopes';
-import {ClientPolicies} from './resources/clientPolicies';
-import {IdentityProviders} from './resources/identityProviders';
-import {Components} from './resources/components';
-import {AuthenticationManagement} from './resources/authenticationManagement';
-import {ServerInfo} from './resources/serverInfo';
-import {WhoAmI} from './resources/whoAmI';
-import {AttackDetection} from './resources/attackDetection';
-import {AxiosRequestConfig} from 'axios';
-
-import {Sessions} from './resources/sessions';
-import {UserStorageProvider} from './resources/userStorageProvider';
-import type {KeycloakInstance, KeycloakInitOptions, KeycloakConfig} from 'keycloak-js';
-import {RequestArgs} from './resources/agent';
+import type {AxiosRequestConfig} from 'axios';
+import type {KeycloakConfig, KeycloakInitOptions, KeycloakInstance} from 'keycloak-js';
+import type {RequestArgs} from './resources/agent.js';
+import {AttackDetection} from './resources/attackDetection.js';
+import {AuthenticationManagement} from './resources/authenticationManagement.js';
+import {Cache} from './resources/cache.js';
+import {ClientPolicies} from './resources/clientPolicies.js';
+import {Clients} from './resources/clients.js';
+import {ClientScopes} from './resources/clientScopes.js';
+import {Components} from './resources/components.js';
+import {Groups} from './resources/groups.js';
+import {IdentityProviders} from './resources/identityProviders.js';
+import {Realms} from './resources/realms.js';
+import {Roles} from './resources/roles.js';
+import {ServerInfo} from './resources/serverInfo.js';
+import {Sessions} from './resources/sessions.js';
+import {Users} from './resources/users.js';
+import {UserStorageProvider} from './resources/userStorageProvider.js';
+import {WhoAmI} from './resources/whoAmI.js';
+import {Credentials, getToken} from './utils/auth.js';
+import {defaultBaseUrl, defaultRealm} from './utils/constants.js';
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -52,7 +51,7 @@ export class KeycloakAdminClient {
   public realmName: string;
   public accessToken?: string;
   public refreshToken?: string;
-  public keycloak?: KeycloakInstance;
+  public keycloak!: KeycloakInstance;
 
   private requestConfig?: AxiosRequestConfig;
   private globalRequestArgOptions?: Pick<RequestArgs, 'catchNotFound'>;
@@ -100,8 +99,8 @@ export class KeycloakAdminClient {
       return;
     }
 
-    const Keycloak = (await import('keycloak-js')).default;
-    this.keycloak = Keycloak(config);
+    const Keycloak: any = (await import('keycloak-js')).default;
+    this.keycloak = new Keycloak(config);
 
     if (init) {
       await this.keycloak.init(init);

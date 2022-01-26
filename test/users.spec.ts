@@ -1,16 +1,16 @@
 // tslint:disable:no-unused-expression
-import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
 import {faker} from '@faker-js/faker';
-import UserRepresentation from '../src/defs/userRepresentation';
-import RoleRepresentation from '../src/defs/roleRepresentation';
-import ClientRepresentation from '../src/defs/clientRepresentation';
-import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
-import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
-import {omit} from 'lodash';
-import GroupRepresentation from '../src/defs/groupRepresentation';
 import {fail} from 'assert';
+import * as chai from 'chai';
+import {omit} from 'lodash-es';
+import {KeycloakAdminClient} from '../src/client.js';
+import type ClientRepresentation from '../src/defs/clientRepresentation.js';
+import type FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation.js';
+import type GroupRepresentation from '../src/defs/groupRepresentation.js';
+import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation.js';
+import type RoleRepresentation from '../src/defs/roleRepresentation.js';
+import type UserRepresentation from '../src/defs/userRepresentation.js';
+import {credentials} from './constants.js';
 
 const expect = chai.expect;
 

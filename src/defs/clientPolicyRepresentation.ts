@@ -1,4 +1,4 @@
-import ClientPolicyConditionRepresentation from './clientPolicyConditionRepresentation';
+import type ClientPolicyConditionRepresentation from './clientPolicyConditionRepresentation.js';
 
 /**
  * https://www.keycloak.org/docs-api/15.0/rest-api/#_clientpolicyrepresentation

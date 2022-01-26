@@ -1,4 +1,4 @@
-import {ConfigPropertyRepresentation} from './configPropertyRepresentation';
+import type {ConfigPropertyRepresentation} from './configPropertyRepresentation.js';
 
 export interface IdentityProviderMapperTypeRepresentation {
   id?: string;

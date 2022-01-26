@@ -1,8 +1,7 @@
-import AccessTokenAccess from './AccessTokenAccess';
-import AccessTokenCertConf from './accessTokenCertConf';
-import AddressClaimSet from './addressClaimSet';
-import PermissionRepresentation from './PermissonRepresentation';
-import {Category} from './resourceServerRepresentation';
+import type AccessTokenAccess from './AccessTokenAccess.js';
+import type AccessTokenCertConf from './accessTokenCertConf.js';
+import type AddressClaimSet from './addressClaimSet.js';
+import type {Category} from './resourceServerRepresentation.js';
 
 export default interface AccessTokenRepresentation {
   acr?: string;

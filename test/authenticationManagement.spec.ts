@@ -1,10 +1,11 @@
 // tslint:disable:no-unused-expression
-import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
 import {faker} from '@faker-js/faker';
-import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import {fail} from 'assert';
+import * as chai from 'chai';
+import {KeycloakAdminClient} from '../src/client.js';
+import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation.js';
+import {credentials} from './constants.js';
+
 const expect = chai.expect;
 
 describe('Authentication management', () => {

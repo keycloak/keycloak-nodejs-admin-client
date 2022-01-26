@@ -1,17 +1,16 @@
-import Resource from './resource';
-import UserRepresentation from '../defs/userRepresentation';
-import UserConsentRepresentation from '../defs/userConsentRepresentation';
-import UserSessionRepresentation from '../defs/userSessionRepresentation';
-import {KeycloakAdminClient} from '../client';
-import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {
-  RoleMappingPayload,
-} from '../defs/roleRepresentation';
-import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation';
-import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
-import GroupRepresentation from '../defs/groupRepresentation';
-import CredentialRepresentation from '../defs/credentialRepresentation';
-import UserProfileConfig from '../defs/userProfileConfig';
+import Resource from './resource.js';
+import type UserRepresentation from '../defs/userRepresentation.js';
+import type UserConsentRepresentation from '../defs/userConsentRepresentation.js';
+import type UserSessionRepresentation from '../defs/userSessionRepresentation.js';
+import type {KeycloakAdminClient} from '../client.js';
+import type MappingsRepresentation from '../defs/mappingsRepresentation.js';
+import type RoleRepresentation from '../defs/roleRepresentation.js';
+import type { RoleMappingPayload } from '../defs/roleRepresentation.js';
+import type {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation.js';
+import type FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation.js';
+import type GroupRepresentation from '../defs/groupRepresentation.js';
+import type CredentialRepresentation from '../defs/credentialRepresentation.js';
+import type UserProfileConfig from '../defs/userProfileConfig.js';
 
 export interface UserQuery {
   email?: string;

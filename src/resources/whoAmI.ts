@@ -1,6 +1,6 @@
-import WhoAmIRepresentation from '../defs/whoAmIRepresentation';
-import KeycloakAdminClient from '..';
-import Resource from './resource';
+import type WhoAmIRepresentation from '../defs/whoAmIRepresentation.js';
+import type KeycloakAdminClient from '../index.js';
+import Resource from './resource.js';
 
 export class WhoAmI extends Resource<{realm?: string}> {
   constructor(client: KeycloakAdminClient) {

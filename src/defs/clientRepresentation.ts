@@ -1,8 +1,8 @@
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_clientrepresentation
  */
-import ResourceServerRepresentation from './resourceServerRepresentation';
-import ProtocolMapperRepresentation from './protocolMapperRepresentation';
+import type ResourceServerRepresentation from './resourceServerRepresentation.js';
+import type ProtocolMapperRepresentation from './protocolMapperRepresentation.js';
 
 export default interface ClientRepresentation {
   access?: Record<string, boolean>;

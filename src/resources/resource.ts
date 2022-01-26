@@ -1,5 +1,5 @@
-import {KeycloakAdminClient} from '../client';
-import {Agent, RequestArgs} from './agent';
+import type {KeycloakAdminClient} from '../client.js';
+import {Agent, RequestArgs} from './agent.js';
 
 export default class Resource<ParamType = {}> {
   private agent: Agent;

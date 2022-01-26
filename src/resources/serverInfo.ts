@@ -1,6 +1,6 @@
-import Resource from './resource';
-import {ServerInfoRepresentation} from '../defs/serverInfoRepesentation';
-import KeycloakAdminClient from '..';
+import Resource from './resource.js';
+import type {ServerInfoRepresentation} from '../defs/serverInfoRepesentation.js';
+import type KeycloakAdminClient from '../index.js';
 
 export class ServerInfo extends Resource {
   constructor(client: KeycloakAdminClient) {

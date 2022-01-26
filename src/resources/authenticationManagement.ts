@@ -1,13 +1,12 @@
-import Resource from './resource';
-import RequiredActionProviderRepresentation from '../defs/requiredActionProviderRepresentation';
-import {KeycloakAdminClient} from '../client';
-import AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation';
-import AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation';
-import AuthenticatorConfigRepresentation, {
-  AuthenticationProviderRepresentation,
-} from '../defs/authenticatorConfigRepresentation';
-import AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation';
-import RequiredActionProviderSimpleRepresentation from '../defs/requiredActionProviderSimpleRepresentation';
+import Resource from './resource.js';
+import type RequiredActionProviderRepresentation from '../defs/requiredActionProviderRepresentation.js';
+import type {KeycloakAdminClient} from '../client.js';
+import type AuthenticationExecutionInfoRepresentation from '../defs/authenticationExecutionInfoRepresentation.js';
+import type AuthenticationFlowRepresentation from '../defs/authenticationFlowRepresentation.js';
+import type AuthenticatorConfigRepresentation from '../defs/authenticatorConfigRepresentation.js';
+import type { AuthenticationProviderRepresentation } from '../defs/authenticatorConfigRepresentation.js';
+import type AuthenticatorConfigInfoRepresentation from '../defs/authenticatorConfigInfoRepresentation.js';
+import type RequiredActionProviderSimpleRepresentation from '../defs/requiredActionProviderSimpleRepresentation.js';
 
 export class AuthenticationManagement extends Resource {
   /**

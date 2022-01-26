@@ -1,6 +1,6 @@
 import * as chai from 'chai';
-import {getToken} from '../src/utils/auth';
-import {credentials} from './constants';
+import {getToken} from '../src/utils/auth.js';
+import {credentials} from './constants.js';
 
 const expect = chai.expect;
 

@@ -1,8 +1,8 @@
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_resourcerepresentation
  */
-import {ResourceOwnerRepresentation} from './resourceServerRepresentation';
-import ScopeRepresentation from './scopeRepresentation';
+import type {ResourceOwnerRepresentation} from './resourceServerRepresentation.js';
+import type ScopeRepresentation from './scopeRepresentation.js';
 
 export default interface ResourceRepresentation {
   name?: string;
