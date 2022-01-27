@@ -8,6 +8,11 @@ export enum DecisionStrategy {
   CONSENSUS = 'CONSENSUS',
 }
 
+export enum DecisionEffect {
+  PERMIT = 'PERMIT',
+  DENY = 'DENY',
+}
+
 export enum Logic {
   POSITIVE = 'POSITIVE',
   NEGATIVE = 'NEGATIVE',
