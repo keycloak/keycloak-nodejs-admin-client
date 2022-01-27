@@ -205,7 +205,6 @@ describe('Realms', () => {
     });
 
     it('add group to default groups', async () => {
-      console.error('group', currentGroup);
       await kcAdminClient.realms.addDefaultGroup({
         id: currentGroup.id!,
         realm: currentRealmName,
@@ -218,6 +217,20 @@ describe('Realms', () => {
       expect(defaultGroups).to.be.ok;
       expect(defaultGroups.length).to.be.eq(1);
       expect(defaultGroups[0].id).to.be.eq(currentGroup.id);
+    });
+
+    it('remove group from default groups', async () => {
+      await kcAdminClient.realms.removeDefaultGroup({
+        id: currentGroup.id!,
+        realm: currentRealmName,
+      });
+
+      const defaultGroups = await kcAdminClient.realms.getDefaultGroups({
+        realm: currentRealmName,
+      });
+
+      expect(defaultGroups).to.be.ok;
+      expect(defaultGroups.length).to.be.eq(0);
     });
   });
 

@@ -102,6 +102,12 @@ export class Realms extends Resource {
     urlParamKeys: ['realm', 'id'],
   });
 
+  public removeDefaultGroup = this.makeRequest<{realm: string; id: string}>({
+    method: 'DELETE',
+    path: '/{realm}/default-groups/{id}',
+    urlParamKeys: ['realm', 'id'],
+  });
+
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */
