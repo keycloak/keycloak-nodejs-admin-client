@@ -5,6 +5,7 @@ import {credentials} from './constants';
 import faker from '@faker-js/faker';
 import {fail} from 'assert';
 import {PartialImportRealmRepresentation} from '../src/defs/realmRepresentation';
+import GroupRepresentation from '../src/defs/groupRepresentation';
 const expect = chai.expect;
 
 const createRealm = async (kcAdminClient: KeycloakAdminClient) => {
@@ -181,6 +182,55 @@ describe('Realms', () => {
       });
       expect(initialAccess).to.be.ok;
       expect(initialAccess[0].count).to.be.eq(1);
+    });
+  });
+
+  describe('Realm default groups', () => {
+    const groupName = 'my-group';
+    let currentGroup: GroupRepresentation;
+
+    before(async () => {
+      kcAdminClient = new KeycloakAdminClient();
+      await kcAdminClient.auth(credentials);
+
+      currentRealmName = (await createRealm(kcAdminClient)).realmName;
+      currentGroup = await kcAdminClient.groups.create({
+        name: groupName,
+        realm: currentRealmName,
+      });
+    });
+
+    after(async () => {
+      deleteRealm(kcAdminClient, currentRealmName);
+    });
+
+    it('add group to default groups', async () => {
+      await kcAdminClient.realms.addDefaultGroup({
+        id: currentGroup.id!,
+        realm: currentRealmName,
+      });
+
+      const defaultGroups = await kcAdminClient.realms.getDefaultGroups({
+        realm: currentRealmName,
+      });
+
+      expect(defaultGroups).to.be.ok;
+      expect(defaultGroups.length).to.be.eq(1);
+      expect(defaultGroups[0].id).to.be.eq(currentGroup.id);
+    });
+
+    it('remove group from default groups', async () => {
+      await kcAdminClient.realms.removeDefaultGroup({
+        id: currentGroup.id!,
+        realm: currentRealmName,
+      });
+
+      const defaultGroups = await kcAdminClient.realms.getDefaultGroups({
+        realm: currentRealmName,
+      });
+
+      expect(defaultGroups).to.be.ok;
+      expect(defaultGroups.length).to.be.eq(0);
     });
   });
 

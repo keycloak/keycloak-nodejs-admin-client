@@ -14,6 +14,7 @@ import {KeycloakAdminClient} from '../client';
 import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
 import ComponentRepresentation from '../defs/componentRepresentation';
 import GlobalRequestResult from '../defs/globalRequestResult';
+import GroupRepresentation from '../defs/groupRepresentation';
 
 export class Realms extends Resource {
   /**
@@ -84,6 +85,27 @@ export class Realms extends Resource {
     path: '/{realm}/partial-export',
     urlParamKeys: ['realm'],
     queryParamKeys: ['exportClients', 'exportGroupsAndRoles'],
+  });
+
+  public getDefaultGroups = this.makeRequest<
+    {realm: string},
+    GroupRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{realm}/default-groups',
+    urlParamKeys: ['realm'],
+  });
+
+  public addDefaultGroup = this.makeRequest<{realm: string; id: string}>({
+    method: 'PUT',
+    path: '/{realm}/default-groups/{id}',
+    urlParamKeys: ['realm', 'id'],
+  });
+
+  public removeDefaultGroup = this.makeRequest<{realm: string; id: string}>({
+    method: 'DELETE',
+    path: '/{realm}/default-groups/{id}',
+    urlParamKeys: ['realm', 'id'],
   });
 
   /**
