@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "axios": "^0.25.0",
-    "camelize-ts": "^1.0.8",
+    "camelize-ts": "^2.0.3",
     "keycloak-js": "^16.0.0",
     "lodash": "^4.17.21",
     "query-string": "^7.0.1",
