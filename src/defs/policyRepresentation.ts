@@ -9,8 +9,8 @@ export enum DecisionStrategy {
 }
 
 export enum DecisionEffect {
-  PERMIT = 'PERMIT',
-  DENY = 'DENY',
+  Permit = 'PERMIT',
+  Deny = 'DENY',
 }
 
 export enum Logic {
