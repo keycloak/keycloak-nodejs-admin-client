@@ -23,7 +23,7 @@
     "axios": "^0.25.0",
     "camelize-ts": "^1.0.8",
     "keycloak-js": "^16.0.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "query-string": "^7.0.1",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"
@@ -33,7 +33,7 @@
     "@types/axios": "^0.14.0",
     "@types/chai": "^4.2.14",
     "@types/faker": "^6.6.9",
-    "@types/lodash": "^4.14.165",
+    "@types/lodash-es": "^4.17.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.1",
     "@types/url-join": "^4.0.0",

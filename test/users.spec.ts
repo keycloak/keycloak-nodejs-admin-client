@@ -8,7 +8,7 @@ import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
 import {RequiredActionAlias} from '../src/defs/requiredActionProviderRepresentation';
 import FederatedIdentityRepresentation from '../src/defs/federatedIdentityRepresentation';
-import {omit} from 'lodash';
+import {omit} from 'lodash-es';
 import GroupRepresentation from '../src/defs/groupRepresentation';
 import {fail} from 'assert';
 

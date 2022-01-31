@@ -2,7 +2,7 @@ import urlJoin from 'url-join';
 import template from 'url-template';
 import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
 import querystring from 'query-string';
-import {pick, omit, isUndefined, last} from 'lodash';
+import {pick, omit, isUndefined, last} from 'lodash-es';
 import {KeycloakAdminClient} from '../client';
 
 // constants
