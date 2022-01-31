@@ -19,11 +19,13 @@ import {AxiosRequestConfig} from 'axios';
 import {Sessions} from './resources/sessions';
 import {UserStorageProvider} from './resources/userStorageProvider';
 import type {KeycloakInstance, KeycloakInitOptions, KeycloakConfig} from 'keycloak-js';
+import {RequestArgs} from './resources/agent';
 
 export interface ConnectionConfig {
   baseUrl?: string;
   realmName?: string;
   requestConfig?: AxiosRequestConfig;
+  requestArgOptions?: Pick<RequestArgs, 'catchNotFound'>;
 }
 
 export class KeycloakAdminClient {
@@ -53,6 +55,7 @@ export class KeycloakAdminClient {
   public keycloak?: KeycloakInstance;
 
   private requestConfig?: AxiosRequestConfig;
+  private globalRequestArgOptions?: Pick<RequestArgs, 'catchNotFound'>;
 
   constructor(connectionConfig?: ConnectionConfig) {
     this.baseUrl =
@@ -60,6 +63,7 @@ export class KeycloakAdminClient {
     this.realmName =
       (connectionConfig && connectionConfig.realmName) || defaultRealm;
     this.requestConfig = connectionConfig && connectionConfig.requestConfig;
+    this.globalRequestArgOptions = connectionConfig && connectionConfig.requestArgOptions;
 
     // Initialize resources
     this.users = new Users(this);
@@ -126,6 +130,10 @@ export class KeycloakAdminClient {
 
   public getRequestConfig() {
     return this.requestConfig;
+  }
+
+  public getGlobalRequestArgOptions(): Pick<RequestArgs, 'catchNotFound'> | undefined {
+    return this.globalRequestArgOptions;
   }
 
   public setConfig(connectionConfig: ConnectionConfig) {

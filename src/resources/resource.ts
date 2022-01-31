@@ -19,7 +19,7 @@ export default class Resource<ParamType = {}> {
 
   public makeRequest = <PayloadType = any, ResponseType = any>(
     args: RequestArgs,
-  ): ((payload?: PayloadType & ParamType) => Promise<ResponseType>) => {
+  ): ((payload?: PayloadType & ParamType, options?: Pick<RequestArgs, 'catchNotFound'>) => Promise<ResponseType>) => {
     return this.agent.request(args);
   };
 
