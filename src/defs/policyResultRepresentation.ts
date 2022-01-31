@@ -5,5 +5,5 @@ export default interface PolicyResultRepresentation {
   policy?: PolicyRepresentation;
   status?: DecisionEffect;
   associatedPolicies?: PolicyResultRepresentation[];
-  scopes?: ScopeRepresentation[];
+  scopes?: string[];
 }
