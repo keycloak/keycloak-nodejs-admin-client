@@ -40,3 +40,5 @@ export type PolicyEnforcementMode = 'ENFORCING' | 'PERMISSIVE' | 'DISABLED';
 export type DecisionStrategy = 'AFFIRMATIVE' | 'UNANIMOUS' | 'CONSENSUS';
 
 export type Logic = 'POSITIVE' | 'NEGATIVE';
+
+export type Category = 'INTERNAL' | 'ACCESS' | 'ID' | 'ADMIN' | 'USERINFO';
