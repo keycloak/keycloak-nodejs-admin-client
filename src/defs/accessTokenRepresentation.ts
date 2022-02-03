@@ -1,4 +1,7 @@
+import AccessTokenAccess from './AccessTokenAccess';
+import AccessTokenCertConf from './accessTokenCertConf';
 import AddressClaimSet from './addressClaimSet';
+import PermissionRepresentation from './PermissonRepresentation';
 import {Category} from './resourceServerRepresentation';
 
 export default interface AccessTokenRepresentation {
@@ -7,22 +10,13 @@ export default interface AccessTokenRepresentation {
   'allowed-origins'?: string[];
   at_hash?: string;
   auth_time?: number;
-  authorization?: {
-    permissions: {
-      claims?: {[index: string]: string};
-      rsid?: string;
-      rsname?: string;
-      scopes?: string[];
-    }[];
-  };
+  authorization?: AccessTokenRepresentation;
   azp?: string;
   birthdate?: string;
   c_hash?: string;
   category?: Category;
   claims_locales?: string;
-  cnf?: {
-    'x5t#S256'?: string;
-  };
+  cnf?: AccessTokenCertConf;
   email?: string;
   email_verified?: boolean;
   exp?: number;
@@ -44,10 +38,7 @@ export default interface AccessTokenRepresentation {
   picture?: string;
   preferred_username?: string;
   profile?: string;
-  realm_access?: {
-    roles?: string[];
-    verify_caller?: boolean;
-  };
+  realm_access?: AccessTokenAccess;
   s_hash?: string;
   scope?: string;
   session_state?: string;
