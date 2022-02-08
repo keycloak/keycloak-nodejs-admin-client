@@ -769,7 +769,7 @@ describe('Clients', () => {
         expect(protocolMappers.length).to.be.gt(10);
       });
 
-      it('get JSON with payload of example access token', async () => {
+      it('get JSON with payload of examples', async () => {
         const {id: clientUniqueId} = currentClient;
         const username = faker.internet.userName();
         const user = await kcAdminClient.users.create({
@@ -781,9 +781,20 @@ describe('Clients', () => {
             userId: user.id,
             scope: 'openid',
           },
-        );
+        const idToken = await kcAdminClient.clients.evaluateGenerateIdToken({
+          id: clientUniqueId!,
+          userId: user.id,
+          scope: 'openid',
+        });
+        const userInfo = await kcAdminClient.clients.evaluateGenerateUserInfo({
+          id: clientUniqueId!,
+          userId: user.id,
+          scope: 'openid',
+        });
 
         expect(accessToken).to.be.ok;
+        expect(idToken).to.be.ok;
+        expect(userInfo).to.be.ok;
         await kcAdminClient.users.del({id: user.id});
       });
     });
