@@ -563,7 +563,10 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  public exportResource = this.makeRequest<{id: string}>({
+  public exportResource = this.makeRequest<
+    {id: string},
+    ResourceServerRepresentation
+  >({
     method: 'GET',
     path: '/{id}/authz/resource-server/settings',
     urlParamKeys: ['id'],
@@ -835,7 +838,8 @@ export class Clients extends Resource<{realm?: string}> {
     PolicyRepresentation[]
   >({
     method: 'GET',
-    path: '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
+    path:
+      '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
     urlParamKeys: ['id', 'permissionId'],
   });
 
