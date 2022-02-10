@@ -31,4 +31,5 @@ export default interface PolicyRepresentation {
   scopes?: string[];
   type?: string;
   users?: string[];
+  roles?: {id: string, required: boolean}[];
 }
