@@ -1,6 +1,6 @@
 import urlJoin from 'url-join';
 import template from 'url-template';
-import axios, {AxiosRequestConfig, Method} from 'axios';
+import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
 import querystring from 'query-string';
 import {pick, omit, isUndefined, last} from 'lodash';
 import {KeycloakAdminClient} from '../client';
@@ -27,6 +27,11 @@ export interface RequestArgs {
   // to represent the newly created resource
   // detail: keycloak/keycloak-nodejs-admin-client issue #11
   returnResourceIdInLocationHeader?: {field: string};
+  /**
+   * Keys to be ignored, meaning that they will not be filtered out of the request payload even if they are a part of `urlParamKeys` or `queryParamKeys`,
+   */
+  ignoredKeys?: string[];
+  headers?: AxiosRequestHeaders;
 }
 
 export class Agent {
@@ -61,9 +66,11 @@ export class Agent {
     keyTransform,
     payloadKey,
     returnResourceIdInLocationHeader,
+    ignoredKeys,
+    headers,
   }: RequestArgs) {
-    return async (payload: any = {}) => {
-      const baseParams = this.getBaseParams();
+    return async (payload: any = {}, options?: Pick<RequestArgs, 'catchNotFound'>) => {
+      const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(payload, queryParamKeys) : null;
@@ -73,7 +80,13 @@ export class Agent {
       const urlParams = {...baseParams, ...pick(payload, allUrlParamKeys)};
 
       // Omit url parameters and query parameters from payload
-      payload = omit(payload, [...allUrlParamKeys, ...queryParamKeys]);
+      const omittedKeys = ignoredKeys
+        ? [...allUrlParamKeys, ...queryParamKeys].filter(
+          (key) => !ignoredKeys.includes(key),
+        )
+        : [...allUrlParamKeys, ...queryParamKeys];
+
+      payload = omit(payload, omittedKeys);
 
       // Transform keys of both payload and queryParams
       if (keyTransform) {
@@ -87,9 +100,12 @@ export class Agent {
         payload,
         urlParams,
         queryParams,
+        // catchNotFound precedence: global > local > default
         catchNotFound,
+        ...(this.client.getGlobalRequestArgOptions() ?? options ?? {}),
         payloadKey,
         returnResourceIdInLocationHeader,
+        headers,
       });
     };
   }
@@ -103,9 +119,10 @@ export class Agent {
     keyTransform,
     payloadKey,
     returnResourceIdInLocationHeader,
+    headers
   }: RequestArgs) {
     return async (query: any = {}, payload: any = {}) => {
-      const baseParams = this.getBaseParams();
+      const baseParams = this.getBaseParams?.() ?? {};
 
       // Filter query parameters by queryParamKeys
       const queryParams = queryParamKeys ? pick(query, queryParamKeys) : null;
@@ -131,6 +148,7 @@ export class Agent {
         catchNotFound,
         payloadKey,
         returnResourceIdInLocationHeader,
+        headers,
       });
     };
   }
@@ -144,6 +162,7 @@ export class Agent {
     catchNotFound,
     payloadKey,
     returnResourceIdInLocationHeader,
+    headers
   }: {
     method;
     path: string;
@@ -153,13 +172,14 @@ export class Agent {
     catchNotFound: boolean;
     payloadKey?: string;
     returnResourceIdInLocationHeader?: {field: string};
+    headers?: AxiosRequestHeaders;
   }) {
     const newPath = urlJoin(this.basePath, path);
 
     // Parse template and replace with values from urlParams
     const pathTemplate = template.parse(newPath);
     const parsedPath = pathTemplate.expand(urlParams);
-    const url = `${this.getBaseUrl()}${parsedPath}`;
+    const url = `${this.getBaseUrl?.() ?? ''}${parsedPath}`;
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
@@ -173,6 +193,7 @@ export class Agent {
     requestConfig.headers = {
       ...requestConfig.headers,
       Authorization: `bearer ${await this.client.getAccessToken()}`,
+      ...headers
     };
 
     // Put payload into querystring if method is GET
@@ -187,27 +208,28 @@ export class Agent {
     if (queryParams) {
       requestConfig.params = requestConfig.params
         ? {
-            ...requestConfig.params,
-            ...queryParams,
-          }
+          ...requestConfig.params,
+          ...queryParams,
+        }
         : queryParams;
     }
 
     try {
       const res = await axios(requestConfig);
-
       // now we get the response of the http request
       // if `resourceIdInLocationHeader` is true, we'll get the resourceId from the location header field
       // todo: find a better way to find the id in path, maybe some kind of pattern matching
       // for now, we simply split the last sub-path of the path returned in location header field
       if (returnResourceIdInLocationHeader) {
         const locationHeader = res.headers.location;
-        if (!locationHeader) {
+
+        if (typeof locationHeader !== 'string') {
           throw new Error(
             `location header is not found in request: ${res.config.url}`,
           );
         }
-        const resourceId: string = last(locationHeader.split(SLASH));
+
+        const resourceId = last(locationHeader.split(SLASH));
         if (!resourceId) {
           // throw an error to let users know the response is not expected
           throw new Error(
@@ -221,7 +243,7 @@ export class Agent {
       }
       return res.data;
     } catch (err) {
-      if (err.response && err.response.status === 404 && catchNotFound) {
+      if (axios.isAxiosError(err) && err.response?.status === 404 && catchNotFound) {
         return null;
       }
       throw err;

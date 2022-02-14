@@ -5,6 +5,9 @@ import GroupRepresentation from './groupRepresentation';
 import IdentityProviderRepresentation from './identityProviderRepresentation';
 import RequiredActionProviderRepresentation from './requiredActionProviderRepresentation';
 import RolesRepresentation from './rolesRepresentation';
+import ClientProfilesRepresentation from './clientProfilesRepresentation';
+import ClientPoliciesRepresentation from './clientPoliciesRepresentation';
+import RoleRepresentation from './roleRepresentation';
 
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realmrepresentation
@@ -35,12 +38,15 @@ export default interface RealmRepresentation {
   // ClientScopeRepresentation
   clientScopes?: any[];
   clients?: ClientRepresentation[];
+  clientPolicies?: ClientPoliciesRepresentation;
+  clientProfiles?: ClientProfilesRepresentation;
   components?: {[index: string]: ComponentExportRepresentation};
   defaultDefaultClientScopes?: string[];
   defaultGroups?: string[];
   defaultLocale?: string;
   defaultOptionalClientScopes?: string[];
   defaultRoles?: string[];
+  defaultRole?: RoleRepresentation;
   directGrantFlow?: string;
   displayName?: string;
   displayNameHtml?: string;
@@ -110,3 +116,21 @@ export default interface RealmRepresentation {
   verifyEmail?: boolean;
   waitIncrementSeconds?: number;
 }
+
+export type PartialImportRealmRepresentation = RealmRepresentation & {
+  ifResourceExists: 'FAIL' | 'SKIP' | 'OVERWRITE';
+};
+
+export type PartialImportResponse = {
+  overwritten: number;
+  added: number;
+  skipped: number;
+  results: PartialImportResult[];
+};
+
+export type PartialImportResult = {
+  action: string;
+  resourceType: string;
+  resourceName: string;
+  id: string;
+};

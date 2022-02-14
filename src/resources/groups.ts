@@ -2,7 +2,9 @@ import {KeycloakAdminClient} from '../client';
 import GroupRepresentation from '../defs/groupRepresentation';
 import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {RoleMappingPayload} from '../defs/roleRepresentation';
+import RoleRepresentation, {
+  RoleMappingPayload,
+} from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import Resource from './resource';
 
@@ -10,6 +12,7 @@ export interface GroupQuery {
   first?: number;
   max?: number;
   search?: string;
+  briefRepresentation?: boolean;
 }
 
 export interface GroupCountQuery {
@@ -31,7 +34,10 @@ export class Groups extends Resource<{realm?: string}> {
    * Single user
    */
 
-  public findOne = this.makeRequest<{id: string}, GroupRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    GroupRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -53,7 +59,6 @@ export class Groups extends Resource<{realm?: string}> {
     path: '/{id}',
     urlParamKeys: ['id'],
   });
-
 
   public count = this.makeRequest<GroupCountQuery, {count: number}>({
     method: 'GET',
@@ -142,6 +147,16 @@ export class Groups extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  // Get effective realm-level role mappings This will recurse all composite roles to get the result.
+  public listCompositeRealmRoleMappings = this.makeRequest<
+    {id: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/realm/composite',
+    urlParamKeys: ['id'],
+  });
+
   /**
    * Client role mappings
    * https://www.keycloak.org/docs-api/11.0/rest-api/#_client_role_mappings_resource
@@ -182,6 +197,15 @@ export class Groups extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/role-mappings/clients/{clientUniqueId}/available',
+    urlParamKeys: ['id', 'clientUniqueId'],
+  });
+
+  public listCompositeClientRoleMappings = this.makeRequest<
+    {id: string; clientUniqueId: string},
+    RoleRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/role-mappings/clients/{clientUniqueId}/composite',
     urlParamKeys: ['id', 'clientUniqueId'],
   });
 

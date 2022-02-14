@@ -7,3 +7,11 @@ export default interface AuthenticatorConfigRepresentation {
   alias?: string;
   config?: {[index: string]: string};
 }
+
+// we defined this type ourself as the original is just `{[index: string]: any}[]`
+// but the admin console does assume these properties are there.
+export interface AuthenticationProviderRepresentation {
+  id?: string;
+  displayName?: string;
+  description?: string;
+}

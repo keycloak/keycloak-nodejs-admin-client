@@ -14,15 +14,31 @@ import GlobalRequestResult from '../defs/globalRequestResult';
 import Resource from './resource';
 import CertificateRepresentation from '../defs/certificateRepresentation';
 import KeyStoreConfig from '../defs/keystoreConfig';
+import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
+import ScopeRepresentation from '../defs/scopeRepresentation';
+import PolicyProviderRepresentation from '../defs/policyProviderRepresentation';
 
-export interface ClientQuery {
+export interface PaginatedQuery {
   first?: number;
   max?: number;
-  clientId?: string;
-  viewableOnly?: boolean;
 }
 
-export interface PolicyQuery {
+export interface ClientQuery extends PaginatedQuery {
+  clientId?: string;
+  viewableOnly?: boolean;
+  search?: boolean;
+}
+
+export interface ResourceQuery extends PaginatedQuery {
+  id?: string;
+  name?: string;
+  type?: string;
+  owner?: string;
+  uri?: string;
+  deep?: boolean;
+}
+
+export interface PolicyQuery extends PaginatedQuery {
   id?: string;
   name?: string;
   type?: string;
@@ -31,8 +47,6 @@ export interface PolicyQuery {
   permission?: string;
   owner?: string;
   fields?: string;
-  first?: number;
-  max?: number;
 }
 
 export class Clients extends Resource<{realm?: string}> {
@@ -49,7 +63,10 @@ export class Clients extends Resource<{realm?: string}> {
    * Single client
    */
 
-  public findOne = this.makeRequest<{id: string}, ClientRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    ClientRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -342,7 +359,7 @@ export class Clients extends Resource<{realm?: string}> {
     RoleRepresentation[]
   >({
     method: 'GET',
-    path: '/{id}/scope-mappings/clients/{client}/available',
+    path: '/{id}/scope-mappings/clients/{client}/composite',
     urlParamKeys: ['id', 'client'],
   });
 
@@ -427,7 +444,7 @@ export class Clients extends Resource<{realm?: string}> {
     RoleRepresentation[]
   >({
     method: 'GET',
-    path: '/{id}/scope-mappings/realm/available',
+    path: '/{id}/scope-mappings/realm/composite',
     urlParamKeys: ['id'],
   });
 
@@ -471,8 +488,28 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Resource
    */
-  public listResources = this.makeRequest<
+
+  public getResourceServer = this.makeRequest<
     {id: string},
+    ResourceServerRepresentation
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server',
+    urlParamKeys: ['id'],
+  });
+
+  public updateResourceServer = this.makeUpdateRequest<
+    {id: string},
+    ResourceServerRepresentation,
+    void
+  >({
+    method: 'PUT',
+    path: '{id}/authz/resource-server',
+    urlParamKeys: ['id'],
+  });
+
+  public listResources = this.makeRequest<
+    ResourceQuery,
     ResourceRepresentation[]
   >({
     method: 'GET',
@@ -490,8 +527,17 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public getResource = this.makeRequest<
+    {id: string; resourceId: string},
+    ResourceRepresentation
+  >({
+    method: 'GET',
+    path: '{id}/authz/resource-server/resource/{resourceId}',
+    urlParamKeys: ['id', 'resourceId'],
+  });
+
   public updateResource = this.makeUpdateRequest<
-    {id: string, resourceId: string},
+    {id: string; resourceId: string},
     ResourceRepresentation,
     void
   >({
@@ -500,13 +546,30 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'resourceId'],
   });
 
-  public delResource = this.makeRequest<
-    {id: string, resourceId: string},
-    void
+  public delResource = this.makeRequest<{id: string; resourceId: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/authz/resource-server/resource/{resourceId}',
+      urlParamKeys: ['id', 'resourceId'],
+    },
+  );
+
+  public importResource = this.makeUpdateRequest<
+    {id: string},
+    ResourceServerRepresentation
   >({
-    method: 'DELETE',
-    path: '/{id}/authz/resource-server/resource/{resourceId}',
-    urlParamKeys: ['id', 'resourceId'],
+    method: 'POST',
+    path: '/{id}/authz/resource-server/import',
+    urlParamKeys: ['id'],
+  });
+
+  public exportResource = this.makeRequest<
+    {id: string},
+    ResourceServerRepresentation
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/settings',
+    urlParamKeys: ['id'],
   });
 
   public evaluateResource = this.makeUpdateRequest<
@@ -521,10 +584,7 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Policy
    */
-  public listPolicies = this.makeRequest<
-    PolicyQuery,
-    PolicyRepresentation[]
-  >({
+  public listPolicies = this.makeRequest<PolicyQuery, PolicyRepresentation[]>({
     method: 'GET',
     path: '{id}/authz/resource-server/policy',
     urlParamKeys: ['id'],
@@ -569,10 +629,28 @@ export class Clients extends Resource<{realm?: string}> {
     catchNotFound: true,
   });
 
+  public listDependentPolicies = this.makeRequest<
+    {id: string; policyId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{policyId}/dependentPolicies',
+    urlParamKeys: ['id', 'policyId'],
+  });
+
   public delPolicy = this.makeRequest<{id: string; policyId: string}, void>({
     method: 'DELETE',
     path: '{id}/authz/resource-server/policy/{policyId}',
     urlParamKeys: ['id', 'policyId'],
+  });
+
+  public listPolicyProviders = this.makeRequest<
+    {id: string},
+    PolicyProviderRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/providers',
+    urlParamKeys: ['id'],
   });
 
   public async createOrUpdatePolicy(payload: {
@@ -586,13 +664,13 @@ export class Clients extends Resource<{realm?: string}> {
     });
     if (policyFound) {
       await this.updatePolicy(
-        {id: payload.id, policyId: policyFound.id, type: payload.policy.type},
+        {id: payload.id, policyId: policyFound.id!, type: payload.policy.type!},
         payload.policy,
       );
       return this.findPolicyByName({id: payload.id, name: payload.policyName});
     } else {
       return this.createPolicy(
-        {id: payload.id, type: payload.policy.type},
+        {id: payload.id, type: payload.policy.type!},
         payload.policy,
       );
     }
@@ -602,11 +680,39 @@ export class Clients extends Resource<{realm?: string}> {
    * Scopes
    */
   public listAllScopes = this.makeRequest<
-    {id: string}
+    {id: string; name?: string; deep?: boolean} & PaginatedQuery,
+    ScopeRepresentation[]
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
+  });
+
+  public listAllResourcesByScope = this.makeRequest<
+    {id: string; scopeId: string},
+    ResourceRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}/resources',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public listAllPermissionsByScope = this.makeRequest<
+    {id: string; scopeId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}/permissions',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public listPermissionsByResource = this.makeRequest<
+    {id: string; resourceId: string},
+    ResourceServerRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/resource/{resourceId}/permissions',
+    urlParamKeys: ['id', 'resourceId'],
   });
 
   public listScopesByResource = this.makeRequest<
@@ -620,18 +726,50 @@ export class Clients extends Resource<{realm?: string}> {
 
   public createAuthorizationScope = this.makeUpdateRequest<
     {id: string},
-    {name: string; displayName?: string; iconUri?: string}
+    ScopeRepresentation
   >({
     method: 'POST',
     path: '{id}/authz/resource-server/scope',
     urlParamKeys: ['id'],
   });
 
+  public updateAuthorizationScope = this.makeUpdateRequest<
+    {id: string; scopeId: string},
+    ScopeRepresentation
+  >({
+    method: 'PUT',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public getAuthorizationScope = this.makeRequest<
+    {id: string; scopeId: string},
+    ScopeRepresentation
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
+  public delAuthorizationScope = this.makeRequest<
+    {id: string; scopeId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/authz/resource-server/scope/{scopeId}',
+    urlParamKeys: ['id', 'scopeId'],
+  });
+
   /**
    * Permissions
    */
   public findPermissions = this.makeRequest<
-    {id: string; name: string},
+    {
+      id: string;
+      name?: string;
+      resource?: string;
+      scope?: string;
+    } & PaginatedQuery,
     PolicyRepresentation[]
   >({
     method: 'GET',
@@ -670,11 +808,39 @@ export class Clients extends Resource<{realm?: string}> {
 
   public findOnePermission = this.makeRequest<
     {id: string; type: string; permissionId: string},
-    PolicyRepresentation
+    PolicyRepresentation | undefined
   >({
     method: 'GET',
     path: '/{id}/authz/resource-server/permission/{type}/{permissionId}',
     urlParamKeys: ['id', 'type', 'permissionId'],
+  });
+
+  public getAssociatedScopes = this.makeRequest<
+    {id: string; permissionId: string},
+    {id: string; name: string}[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/scopes',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getAssociatedResources = this.makeRequest<
+    {id: string; permissionId: string},
+    {_id: string; name: string}[]
+  >({
+    method: 'GET',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/resources',
+    urlParamKeys: ['id', 'permissionId'],
+  });
+
+  public getAssociatedPolicies = this.makeRequest<
+    {id: string; permissionId: string},
+    PolicyRepresentation[]
+  >({
+    method: 'GET',
+    path:
+      '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
+    urlParamKeys: ['id', 'permissionId'],
   });
 
   public getOfflineSessionCount = this.makeRequest<
@@ -695,61 +861,83 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'providerId'],
   });
 
-  public pushRevocation = this.makeRequest<{id: string}, void>({
+  public pushRevocation = this.makeRequest<{id: string}, GlobalRequestResult>({
     method: 'POST',
     path: '/{id}/push-revocation',
     urlParamKeys: ['id'],
   });
 
-  public addClusterNode = this.makeRequest<{id: string, node: string}, void>({
+  public addClusterNode = this.makeRequest<{id: string; node: string}, void>({
     method: 'POST',
     path: '/{id}/nodes',
     urlParamKeys: ['id'],
   });
 
-  public deleteClusterNode = this.makeRequest<{id: string, node: string}, void>({
-    method: 'DELETE',
-    path: '/{id}/nodes/{node}',
-    urlParamKeys: ['id', 'node'],
-  });
+  public deleteClusterNode = this.makeRequest<{id: string; node: string}, void>(
+    {
+      method: 'DELETE',
+      path: '/{id}/nodes/{node}',
+      urlParamKeys: ['id', 'node'],
+    },
+  );
 
-  public testNodesAvailable = this.makeRequest<{id: string}, GlobalRequestResult>({
+  public testNodesAvailable = this.makeRequest<
+    {id: string},
+    GlobalRequestResult
+  >({
     method: 'GET',
     path: '/{id}/test-nodes-available',
     urlParamKeys: ['id'],
   });
 
-  public getKeyInfo = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+  public getKeyInfo = this.makeRequest<
+    {id: string; attr: string},
+    CertificateRepresentation
+  >({
     method: 'GET',
     path: '/{id}/certificates/{attr}',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public generateKey = this.makeRequest<{id: string, attr: string}, CertificateRepresentation>({
+  public generateKey = this.makeRequest<
+    {id: string; attr: string},
+    CertificateRepresentation
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/generate',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public downloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+  public downloadKey = this.makeUpdateRequest<
+    {id: string; attr: string},
+    KeyStoreConfig,
+    string
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/download',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public generateAndDownloadKey = this.makeUpdateRequest<{id: string, attr: string}, KeyStoreConfig, string>({
+  public generateAndDownloadKey = this.makeUpdateRequest<
+    {id: string; attr: string},
+    KeyStoreConfig,
+    string
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/generate-and-download',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public uploadKey = this.makeUpdateRequest<{id: string, attr: string}, any>({
+  public uploadKey = this.makeUpdateRequest<{id: string; attr: string}, any>({
     method: 'POST',
     path: '/{id}/certificates/{attr}/upload',
     urlParamKeys: ['id', 'attr'],
   });
 
-  public uploadCertificate = this.makeUpdateRequest<{id: string, attr: string}, any>({
+  public uploadCertificate = this.makeUpdateRequest<
+    {id: string; attr: string},
+    any
+  >({
     method: 'POST',
     path: '/{id}/certificates/{attr}/upload-certificate',
     urlParamKeys: ['id', 'attr'],
@@ -772,14 +960,11 @@ export class Clients extends Resource<{realm?: string}> {
     realm?: string;
     id: string;
     name: string;
-  }): Promise<ProtocolMapperRepresentation> {
+  }): Promise<ProtocolMapperRepresentation | undefined> {
     const allProtocolMappers = await this.listProtocolMappers({
       id: payload.id,
       ...(payload.realm ? {realm: payload.realm} : {}),
     });
-    const protocolMapper = allProtocolMappers.find(
-      (mapper) => mapper.name === payload.name,
-    );
-    return protocolMapper ? protocolMapper : null;
+    return allProtocolMappers.find((mapper) => mapper.name === payload.name);
   }
 }

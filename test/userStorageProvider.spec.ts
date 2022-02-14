@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 
 import ComponentRepresentation from '../src/defs/componentRepresentation';
 
@@ -22,31 +22,34 @@ describe('Users federation provider', () => {
       parentId: 'master',
       providerId: 'ldap',
       providerType: 'org.keycloak.storage.UserStorageProvider',
+      config: {
+        editMode: ['READ_ONLY'],
+      },
     });
   });
 
   after(async () => {
     await kcAdminClient.components.del({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 
   it('list storage provider', async () => {
     const name = await kcAdminClient.userStorageProvider.name({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(name).to.be.ok;
   });
 
   it('remove imported users', async () => {
     await kcAdminClient.userStorageProvider.removeImportedUsers({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 
   it('unlink users', async () => {
     await kcAdminClient.userStorageProvider.unlinkUsers({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
   });
 });

@@ -1,29 +1,25 @@
-## keycloak-admin
+## Keycloak Admin Client
 
-[![npm version](https://badge.fury.io/js/keycloak-admin.svg)](https://badge.fury.io/js/keycloak-admin) [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/Node.js%20CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions)
+[![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions/workflows/main.yaml)
 [![npm version](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client.svg)](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client)
-
-Node.js Keycloak admin client
 
 ## Features
 
 - TypeScript supported
-- Keycloak version 11 supported
+- Latest Keycloak version supported
 - [Complete resource definitions](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/src/defs)
 - [Well-tested for supported APIs](https://github.com/keycloak/keycloak-nodejs-admin-client/tree/master/test)
 
 ## Install
 
 ```sh
-yarn add keycloak-admin
+npm install @keycloak/keycloak-admin-client
 ```
 
 ## Usage
 
 ```js
-import KcAdminClient from 'keycloak-admin';
-// or
-// const KcAdminClient = require('keycloak-admin').default;
+import KcAdminClient from '@keycloak/keycloak-admin-client';
 
 // To configure the client, pass an object to override any of these  options:
 // {
@@ -106,6 +102,27 @@ await kcAdminClient.auth(credentials);
 setInterval(() => kcAdminClient.auth(credentials), 58 * 1000); // 58 seconds
 ```
 
+## Building and running the tests
+
+To build the source do a build:
+
+```bash
+npm run build
+```
+
+Start keycloak in a docker container or run it locally:
+
+```bash
+docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest
+```
+
+If you started your container manually make sure there is an admin user named www3y3 with password www3y3 as admin on master realm.
+Then start the tests with:
+
+```bash
+npm run test
+```
+
 ## Supported APIs
 
 ### [Realm admin](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realms_admin_resource)
@@ -123,6 +140,10 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get admin events (`GET /{realm}/admin-events`)
 - Remove all user sessions (`POST /{realm}/logout-all`)
 - Remove a specific user session (`DELETE /{realm}/sessions/{session}`)
+- Get client policies policies (`GET /{realm}/client-policies/policies`)
+- Update client policies policies (`PUT /{realm}/client-policies/policies`)
+- Get client policies profiles (`GET /{realm}/client-policies/profiles`)
+- Update client policies profiles (`PUT /{realm}/client-policies/profiles`)
 
 ### [Role](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_resource)
 
@@ -163,6 +184,9 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Remove TOTP from the user (`PUT /{realm}/users/{id}/remove-totp`)
 - Set up a temporary password for the user User will have to reset the temporary password next time they log in. (`PUT /{realm}/users/{id}/reset-password`)
 - Send an email-verification email to the user An email contains a link the user can click to verify their email address. (`PUT /{realm}/users/{id}/send-verify-email`)
+- Update a credential label for a user (`PUT /{realm}/users/{id}/credentials/{credentialId}/userLabel`)
+- Move a credential to a position behind another credential (`POST /{realm}/users/{id}/credentials/{credentialId}/moveAfter/{newPreviousCredentialId}`)
+- Move a credential to a first position in the credentials list of the user (`PUT /{realm}/users/{id}/credentials/{credentialId}/moveToFirst`)
 
 ### User group-mapping
 
@@ -206,6 +230,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get realm-level role mappings (`GET /{realm}/groups/{id}/role-mappings/realm`)
 - Delete realm-level role mappings (`DELETE /{realm}/groups/{id}/role-mappings/realm`)
 - Get realm-level roles that can be mapped (`GET /{realm}/groups/{id}/role-mappings/realm/available`)
+- Get effective realm-level role mappings This will recurse all composite roles to get the result. (`GET /{realm}/groups/{id}/role-mappings/realm/composite`)
 
 ### [Client](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_clients_resource)
 
@@ -235,6 +260,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get client-level role mappings for the group (`GET /{realm}/groups/{id}/role-mappings/clients/{client}`)
 - Delete client-level roles from group role mapping (`DELETE /{realm}/groups/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the group (`GET /{realm}/groups/{id}/role-mappings/clients/{client}/available`)
+- Get effective client-level role mappings This will recurse all composite roles to get the result. (`GET /{realm}/groups/{id}/role-mappings/clients/{client}/composite`)
 
 ### [Client role-mapping for user](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_role_mappings_resource)
 
@@ -244,6 +270,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Get client-level role mappings for the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Delete client-level roles from user role mapping (`DELETE /{realm}/users/{id}/role-mappings/clients/{client}`)
 - Get available client-level roles that can be mapped to the user (`GET /{realm}/users/{id}/role-mappings/clients/{client}/available`)
+- Get effective client-level role mappings This will recurse all composite roles to get the result. (`GET /{realm}/users/{id}/role-mappings/clients/{client}/composite`)
 
 ### [Client Attribute Certificate](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_client_attribute_certificate_resource)
 
@@ -427,7 +454,5 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - [User Storage Provider](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_user_storage_provider_resource)
 
 ## Maintainers
-
-Checkout [MAINTAINERS.md](https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/MAINTAINERS.md) for detailed maintainers list.
 
 This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under keycloak organization.

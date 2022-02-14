@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import ComponentRepresentation from '../src/defs/componentRepresentation';
 const expect = chai.expect;
 
@@ -21,24 +21,27 @@ describe('User federation using component api', () => {
       parentId: 'master',
       providerId: 'ldap',
       providerType: 'org.keycloak.storage.UserStorageProvider',
+      config: {
+        editMode: ['READ_ONLY'],
+      },
     });
     expect(component.id).to.be.ok;
 
     // assign current user fed
-    const fed = await kcAdminClient.components.findOne({
+    const fed = (await kcAdminClient.components.findOne({
       id: component.id,
-    });
+    }))!;
     currentUserFed = fed;
   });
 
   after(async () => {
     await kcAdminClient.components.del({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
 
     // check deleted
     const idp = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(idp).to.be.null;
   });
@@ -53,16 +56,25 @@ describe('User federation using component api', () => {
 
   it('get a user federation', async () => {
     const fed = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
     expect(fed).to.include({
       id: currentUserFed.id,
     });
   });
 
+  it('get a sub components', async () => {
+    const list = await kcAdminClient.components.listSubComponents({
+      id: currentUserFed.id!,
+      type: 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper',
+    });
+
+    expect(list).to.be.ok;
+  });
+
   it('update a user federation', async () => {
     await kcAdminClient.components.update(
-      {id: currentUserFed.id},
+      {id: currentUserFed.id!},
       {
         // parentId, providerId, providerType required for update
         parentId: 'master',
@@ -72,7 +84,7 @@ describe('User federation using component api', () => {
       },
     );
     const updated = await kcAdminClient.components.findOne({
-      id: currentUserFed.id,
+      id: currentUserFed.id!,
     });
 
     expect(updated).to.include({

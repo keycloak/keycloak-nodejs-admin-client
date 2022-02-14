@@ -1,5 +1,6 @@
 import Resource from './resource';
 import ComponentRepresentation from '../defs/componentRepresentation';
+import ComponentTypeRepresentation from '../defs/componentTypeRepresentation';
 import {KeycloakAdminClient} from '../client';
 
 export interface ComponentQuery {
@@ -23,7 +24,10 @@ export class Components extends Resource<{realm?: string}> {
     returnResourceIdInLocationHeader: {field: 'id'},
   });
 
-  public findOne = this.makeRequest<{id: string}, ComponentRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    ComponentRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -44,6 +48,16 @@ export class Components extends Resource<{realm?: string}> {
     method: 'DELETE',
     path: '/{id}',
     urlParamKeys: ['id'],
+  });
+
+  public listSubComponents = this.makeRequest<
+    {id: string; type: string},
+    ComponentTypeRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/sub-component-types',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['type'],
   });
 
   constructor(client: KeycloakAdminClient) {

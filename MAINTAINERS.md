@@ -1,7 +1,6 @@
-# Maintainers
-
-## The team
-
-## Originally developed by
-
-This repo is originally developed by [Canner](https://www.cannercms.com) and [InfuseAI](https://infuseai.io) before being transferred under Keycloak organization.
+- [Erik Jan de Wit](https://github.com/edewit) (project lead)
+- [Stan Silvert](https://github.com/ssilvert) 
+- [Mark Franceschelli](https://github.com/mfrances17)
+- [Jenny Montrose](https://github.com/jenny-s51)
+- [Agnieszka Gancarczyk](https://github.com/agagancarczyk)
+- [Jon Koops](https://github.com/jonkoops)

@@ -1,6 +1,9 @@
 import Resource from './resource';
 import AdminEventRepresentation from '../defs/adminEventRepresentation';
-import RealmRepresentation from '../defs/realmRepresentation';
+import RealmRepresentation, {
+  PartialImportRealmRepresentation,
+  PartialImportResponse,
+} from '../defs/realmRepresentation';
 import EventRepresentation from '../defs/eventRepresentation';
 import EventType from '../defs/eventTypes';
 import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
@@ -10,6 +13,8 @@ import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
 import {KeycloakAdminClient} from '../client';
 import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
 import ComponentRepresentation from '../defs/componentRepresentation';
+import GlobalRequestResult from '../defs/globalRequestResult';
+import GroupRepresentation from '../defs/groupRepresentation';
 
 export class Realms extends Resource {
   /**
@@ -17,7 +22,10 @@ export class Realms extends Resource {
    * https://www.keycloak.org/docs-api/11.0/rest-api/#_realms_admin_resource
    */
 
-  public find = this.makeRequest<{}, RealmRepresentation[]>({
+  public find = this.makeRequest<
+    {briefRepresentation?: boolean},
+    RealmRepresentation[]
+  >({
     method: 'GET',
   });
 
@@ -26,7 +34,10 @@ export class Realms extends Resource {
     returnResourceIdInLocationHeader: {field: 'realmName'},
   });
 
-  public findOne = this.makeRequest<{realm: string}, RealmRepresentation>({
+  public findOne = this.makeRequest<
+    {realm: string},
+    RealmRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{realm}',
     urlParamKeys: ['realm'],
@@ -49,6 +60,19 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public partialImport = this.makeRequest<
+    {
+      realm: string;
+      rep: PartialImportRealmRepresentation;
+    },
+    PartialImportResponse
+  >({
+    method: 'POST',
+    path: '/{realm}/partialImport',
+    urlParamKeys: ['realm'],
+    payloadKey: 'rep',
+  });
+
   public export = this.makeRequest<
     {
       realm: string;
@@ -61,6 +85,27 @@ export class Realms extends Resource {
     path: '/{realm}/partial-export',
     urlParamKeys: ['realm'],
     queryParamKeys: ['exportClients', 'exportGroupsAndRoles'],
+  });
+
+  public getDefaultGroups = this.makeRequest<
+    {realm: string},
+    GroupRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{realm}/default-groups',
+    urlParamKeys: ['realm'],
+  });
+
+  public addDefaultGroup = this.makeRequest<{realm: string; id: string}>({
+    method: 'PUT',
+    path: '/{realm}/default-groups/{id}',
+    urlParamKeys: ['realm', 'id'],
+  });
+
+  public removeDefaultGroup = this.makeRequest<{realm: string; id: string}>({
+    method: 'DELETE',
+    path: '/{realm}/default-groups/{id}',
+    urlParamKeys: ['realm', 'id'],
   });
 
   /**
@@ -244,10 +289,14 @@ export class Realms extends Resource {
     urlParamKeys: ['realm', 'session'],
   });
 
-  public pushRevocation = this.makeRequest<{realm: string}, void>({
+  public pushRevocation = this.makeRequest<
+    {realm: string},
+    GlobalRequestResult
+  >({
     method: 'POST',
     path: '/{realm}/push-revocation',
     urlParamKeys: ['realm'],
+    ignoredKeys: ['realm'],
   });
 
   public getKeys = this.makeRequest<
@@ -284,7 +333,7 @@ export class Realms extends Resource {
   });
 
   public getRealmLocalizationTexts = this.makeRequest<
-    {realm: string; selectedLocale: string},
+    {realm: string; selectedLocale: string; first?: number; max?: number},
     Record<string, string>
   >({
     method: 'GET',
@@ -300,6 +349,7 @@ export class Realms extends Resource {
     method: 'PUT',
     path: '/{realm}/localization/{selectedLocale}/{key}',
     urlParamKeys: ['realm', 'selectedLocale', 'key'],
+    headers: {'content-type': 'text/plain'},
   });
 
   public deleteRealmLocalizationTexts = this.makeRequest<

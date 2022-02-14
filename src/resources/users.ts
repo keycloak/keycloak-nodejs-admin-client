@@ -11,6 +11,7 @@ import {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation'
 import FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation';
 import GroupRepresentation from '../defs/groupRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
+import UserProfileConfig from '../defs/userProfileConfig';
 
 export interface UserQuery {
   email?: string;
@@ -20,10 +21,12 @@ export interface UserQuery {
   max?: number;
   search?: string;
   username?: string;
+  exact?: boolean;
+  [key: string]: string | number | undefined | boolean;
 }
 
 export class Users extends Resource<{realm?: string}> {
-  public find = this.makeRequest<UserQuery & {[key: string]: string | number}, UserRepresentation[]>({
+  public find = this.makeRequest<UserQuery, UserRepresentation[]>({
     method: 'GET',
   });
 
@@ -36,7 +39,10 @@ export class Users extends Resource<{realm?: string}> {
    * Single user
    */
 
-  public findOne = this.makeRequest<{id: string}, UserRepresentation>({
+  public findOne = this.makeRequest<
+    {id: string},
+    UserRepresentation | undefined
+  >({
     method: 'GET',
     path: '/{id}',
     urlParamKeys: ['id'],
@@ -62,6 +68,16 @@ export class Users extends Resource<{realm?: string}> {
   public count = this.makeRequest<UserQuery, number>({
     method: 'GET',
     path: '/count',
+  });
+
+  public getProfile = this.makeRequest<{}, UserProfileConfig>({
+    method: 'GET',
+    path: '/profile',
+  });
+
+  public updateProfile = this.makeRequest<UserProfileConfig, UserProfileConfig>({
+    method: 'PUT',
+    path: '/profile',
   });
 
   /**
@@ -197,6 +213,7 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
     payloadKey: 'actions',
     queryParamKeys: ['lifespan', 'redirectUri', 'clientId'],
+    headers: {'content-type': 'application/json'},
     keyTransform: {
       clientId: 'client_id',
       redirectUri: 'redirect_uri',
@@ -207,7 +224,7 @@ export class Users extends Resource<{realm?: string}> {
    * Group
    */
 
-  public listGroups = this.makeRequest<{id: string}, GroupRepresentation[]>({
+  public listGroups = this.makeRequest<{id: string, briefRepresentation?: boolean}, GroupRepresentation[]>({
     method: 'GET',
     path: '/{id}/groups',
     urlParamKeys: ['id'],
@@ -219,13 +236,18 @@ export class Users extends Resource<{realm?: string}> {
     urlParamKeys: ['id', 'groupId'],
   });
 
-  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>({
-    method: 'DELETE',
-    path: '/{id}/groups/{groupId}',
-    urlParamKeys: ['id', 'groupId'],
-  });
+  public delFromGroup = this.makeRequest<{id: string; groupId: string}, string>(
+    {
+      method: 'DELETE',
+      path: '/{id}/groups/{groupId}',
+      urlParamKeys: ['id', 'groupId'],
+    },
+  );
 
-  public countGroups = this.makeRequest<{id: string, search?: string}, {count: number}>({
+  public countGroups = this.makeRequest<
+    {id: string; search?: string},
+    {count: number}
+  >({
     method: 'GET',
     path: '/{id}/groups/count',
     urlParamKeys: ['id'],
@@ -290,6 +312,71 @@ export class Users extends Resource<{realm?: string}> {
   });
 
   /**
+   * get user credentials
+   */
+  public getCredentials = this.makeRequest<
+    {id: string},
+    CredentialRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/credentials',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * delete user credentials
+   */
+  public deleteCredential = this.makeRequest<
+    {id: string; credentialId: string},
+    void
+  >({
+    method: 'DELETE',
+    path: '/{id}/credentials/{credentialId}',
+    urlParamKeys: ['id', 'credentialId'],
+  });
+
+  /**
+   * update a credential label for a user
+   */
+  public updateCredentialLabel = this.makeUpdateRequest<
+    {id: string; credentialId: string},
+    string,
+    void
+  >({
+    method: 'PUT',
+    path: '/{id}/credentials/{credentialId}/userLabel',
+    urlParamKeys: ['id', 'credentialId'],
+    headers: {'content-type': 'text/plain'},
+  });
+
+  // Move a credential to a position behind another credential
+  public moveCredentialPositionDown = this.makeRequest<
+    {
+      id: string;
+      credentialId: string;
+      newPreviousCredentialId: string;
+    },
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/credentials/{credentialId}/moveAfter/{newPreviousCredentialId}',
+    urlParamKeys: ['id', 'credentialId', 'newPreviousCredentialId'],
+  });
+
+  // Move a credential to a first position in the credentials list of the user
+  public moveCredentialPositionUp = this.makeRequest<
+    {
+      id: string;
+      credentialId: string;
+    },
+    void
+  >({
+    method: 'POST',
+    path: '/{id}/credentials/{credentialId}/moveToFirst',
+    urlParamKeys: ['id', 'credentialId'],
+  });
+
+  /**
    * send verify email
    */
   public sendVerifyEmail = this.makeRequest<
@@ -348,6 +435,16 @@ export class Users extends Resource<{realm?: string}> {
   >({
     method: 'GET',
     path: '/{id}/consents',
+    urlParamKeys: ['id'],
+  });
+
+  public impersonation = this.makeUpdateRequest<
+    {id: string},
+    {user: string; realm: string},
+    Record<string, any>
+  >({
+    method: 'POST',
+    path: '/{id}/impersonation',
     urlParamKeys: ['id'],
   });
 
