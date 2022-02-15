@@ -411,6 +411,26 @@ export class Clients extends Resource<{realm?: string}> {
     queryParamKeys: ['scope', 'userId'],
   });
 
+  public evaluateGenerateUserInfo = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    object
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-userinfo',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
+  });
+
+  public evaluateGenerateIdToken = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    object
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-id-token',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
+  });
+
   public addRealmScopeMappings = this.makeUpdateRequest<
     {id: string},
     RoleRepresentation[],
