@@ -775,12 +775,11 @@ describe('Clients', () => {
         const user = await kcAdminClient.users.create({
           username,
         });
-        const accessToken = await kcAdminClient.clients.evaluateGenerateAccessToken(
-          {
-            id: clientUniqueId!,
-            userId: user.id,
-            scope: 'openid',
-          },
+        const accessToken = await kcAdminClient.clients.evaluateGenerateAccessToken({
+          id: clientUniqueId!,
+          userId: user.id,
+          scope: 'openid',
+        });
         const idToken = await kcAdminClient.clients.evaluateGenerateIdToken({
           id: clientUniqueId!,
           userId: user.id,
