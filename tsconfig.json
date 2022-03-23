@@ -10,8 +10,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "strict": true,
-    "baseUrl": "types"
+    "strict": true
   },
   "include": ["src/**/*.ts", "docs/**/*.ts", "test/*"],
   "exclude": ["./node_modules"]
