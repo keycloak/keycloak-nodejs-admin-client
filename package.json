@@ -32,7 +32,6 @@
     "@faker-js/faker": "^6.0.0",
     "@types/axios": "^0.14.0",
     "@types/chai": "^4.2.14",
-    "@types/faker": "^6.6.9",
     "@types/lodash": "^4.14.165",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.1",
