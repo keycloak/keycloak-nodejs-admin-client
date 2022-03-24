@@ -18,6 +18,11 @@ export enum Logic {
   NEGATIVE = 'NEGATIVE',
 }
 
+export interface RolesPayload {
+  id: string, 
+  required?: boolean
+}
+
 export default interface PolicyRepresentation {
   config?: Record<string, any>;
   decisionStrategy?: DecisionStrategy;
@@ -31,5 +36,5 @@ export default interface PolicyRepresentation {
   scopes?: string[];
   type?: string;
   users?: string[];
-  roles?: {id: string, required?: boolean}[];
+  roles?: RolesPayload[];
 }
