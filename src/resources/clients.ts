@@ -403,10 +403,30 @@ export class Clients extends Resource<{realm?: string}> {
 
   public evaluateGenerateAccessToken = this.makeRequest<
     {id: string; scope: string; userId: string},
-    object
+    Record<string, unknown>
   >({
     method: 'GET',
     path: '/{id}/evaluate-scopes/generate-example-access-token',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
+  });
+
+  public evaluateGenerateUserInfo = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    Record<string, unknown>
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-userinfo',
+    urlParamKeys: ['id'],
+    queryParamKeys: ['scope', 'userId'],
+  });
+
+  public evaluateGenerateIdToken = this.makeRequest<
+    {id: string; scope: string; userId: string},
+    Record<string, unknown>
+  >({
+    method: 'GET',
+    path: '/{id}/evaluate-scopes/generate-example-id-token',
     urlParamKeys: ['id'],
     queryParamKeys: ['scope', 'userId'],
   });

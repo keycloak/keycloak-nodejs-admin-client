@@ -1,6 +1,6 @@
 {
   "name": "@keycloak/keycloak-admin-client",
-  "version": "17.0.0-dev.29",
+  "version": "18.0.0-dev.8",
   "description": "keycloak admin client",
   "main": "lib/index.js",
   "files": [
@@ -20,19 +20,17 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "axios": "^0.25.0",
+    "axios": "^0.26.1",
     "camelize-ts": "^1.0.8",
-    "keycloak-js": "^16.0.0",
+    "keycloak-js": "^17.0.1",
     "lodash": "^4.17.21",
     "query-string": "^7.0.1",
     "url-join": "^4.0.0",
     "url-template": "^2.0.8"
   },
   "devDependencies": {
-    "@faker-js/faker": "^5.5.3",
-    "@types/axios": "^0.14.0",
+    "@faker-js/faker": "^6.0.0",
     "@types/chai": "^4.2.14",
-    "@types/faker": "^6.6.9",
     "@types/lodash": "^4.14.165",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.1",

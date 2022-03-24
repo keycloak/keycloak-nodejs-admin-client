@@ -138,7 +138,7 @@ describe('Authentication management', () => {
     it('should fetch authenticator providers', async () => {
       const providers = await kcAdminClient.authenticationManagement.getAuthenticatorProviders();
       expect(providers).is.ok;
-      expect(providers.length).to.be.eq(36);
+      expect(providers.length).to.be.eq(38);
     });
   });
   describe('Flows', () => {
