@@ -7,6 +7,7 @@ export interface RoleQuery {
   first?: number;
   max?: number;
   search?: string;
+  briefRepresentation?: boolean;
 }
 
 export class Roles extends Resource<{realm?: string}> {
