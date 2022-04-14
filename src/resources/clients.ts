@@ -17,6 +17,7 @@ import KeyStoreConfig from '../defs/keystoreConfig';
 import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 import ScopeRepresentation from '../defs/scopeRepresentation';
 import PolicyProviderRepresentation from '../defs/policyProviderRepresentation';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 
 export interface PaginatedQuery {
   first?: number;
@@ -858,8 +859,7 @@ export class Clients extends Resource<{realm?: string}> {
     PolicyRepresentation[]
   >({
     method: 'GET',
-    path:
-      '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
+    path: '/{id}/authz/resource-server/policy/{permissionId}/associatedPolicies',
     urlParamKeys: ['id', 'permissionId'],
   });
 
@@ -961,6 +961,25 @@ export class Clients extends Resource<{realm?: string}> {
     method: 'POST',
     path: '/{id}/certificates/{attr}/upload-certificate',
     urlParamKeys: ['id', 'attr'],
+  });
+
+  public updateFineGrainPermission = this.makeUpdateRequest<
+    {id: string},
+    ManagementPermissionReference,
+    ManagementPermissionReference
+  >({
+    method: 'PUT',
+    path: '/{id}/management/permissions',
+    urlParamKeys: ['id'],
+  });
+
+  public listFineGrainPermissions = this.makeRequest<
+    {id: string},
+    ManagementPermissionReference
+  >({
+    method: 'GET',
+    path: '/{id}/management/permissions',
+    urlParamKeys: ['id'],
   });
 
   constructor(client: KeycloakAdminClient) {
