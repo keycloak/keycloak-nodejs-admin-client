@@ -415,6 +415,27 @@ describe('Realms', () => {
         expect(error).to.be.ok;
       }
     });
+
+    it('should fail with invalid ldap server capabilities', async () => {
+      try {
+        await kcAdminClient.realms.ldapServerCapabilities(
+          {realm: 'master'},
+          {
+            action: 'testConnection',
+            authType: 'simple',
+            bindCredential: '1',
+            bindDn: '1',
+            connectionTimeout: '',
+            connectionUrl: '1',
+            startTls: '',
+            useTruststoreSpi: 'ldapsOnly',
+          },
+        );
+        fail('exception should have been thrown');
+      } catch (error) {
+        expect(error).to.be.ok;
+      }
+    });
   });
 
   describe('Realm localization', () => {

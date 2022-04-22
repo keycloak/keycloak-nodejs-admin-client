@@ -326,6 +326,15 @@ export class Realms extends Resource {
     urlParamKeys: ['realm'],
   });
 
+  public ldapServerCapabilities = this.makeUpdateRequest<
+    {realm: string},
+    TestLdapConnectionRepresentation
+  >({
+    method: 'POST',
+    path: '/{realm}/ldap-server-capabilities',
+    urlParamKeys: ['realm'],
+  });
+
   public getRealmSpecificLocales = this.makeRequest<{realm: string}, string[]>({
     method: 'GET',
     path: '/{realm}/localization',
