@@ -15,6 +15,7 @@ import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresen
 import ComponentRepresentation from '../defs/componentRepresentation';
 import GlobalRequestResult from '../defs/globalRequestResult';
 import GroupRepresentation from '../defs/groupRepresentation';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 
 export class Realms extends Resource {
   /**
@@ -255,7 +256,7 @@ export class Realms extends Resource {
    */
   public getUsersManagementPermissions = this.makeRequest<
     {realm: string},
-    void
+    ManagementPermissionReference
   >({
     method: 'GET',
     path: '/{realm}/users-management-permissions',
@@ -264,7 +265,7 @@ export class Realms extends Resource {
 
   public updateUsersManagementPermissions = this.makeRequest<
     {realm: string; enabled: boolean},
-    void
+    ManagementPermissionReference
   >({
     method: 'PUT',
     path: '/{realm}/users-management-permissions',
