@@ -1,6 +1,6 @@
 {
   "name": "@keycloak/keycloak-admin-client",
-  "version": "18.0.0",
+  "version": "18.0.1-dev.0",
   "description": "keycloak admin client",
   "main": "lib/index.js",
   "files": [
