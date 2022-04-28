@@ -2,6 +2,7 @@ import Resource from './resource';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import {KeycloakAdminClient} from '../client';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 
 export interface RoleQuery {
   first?: number;
@@ -140,6 +141,28 @@ export class Roles extends Resource<{realm?: string}> {
   public delById = this.makeRequest<{id: string}, void>({
     method: 'DELETE',
     path: '/roles-by-id/{id}',
+    urlParamKeys: ['id'],
+  });
+
+  /**
+   * Authorization permissions
+   */
+  public updatePermission = this.makeUpdateRequest<
+    {id: string},
+    ManagementPermissionReference,
+    ManagementPermissionReference
+  >({
+    method: 'PUT',
+    path: '/roles-by-id/{id}/management/permissions',
+    urlParamKeys: ['id'],
+  });
+
+  public listPermissions = this.makeRequest<
+    {id: string},
+    ManagementPermissionReference
+  >({
+    method: 'GET',
+    path: '/roles-by-id/{id}/management/permissions',
     urlParamKeys: ['id'],
   });
 
