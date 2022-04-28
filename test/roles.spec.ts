@@ -104,6 +104,25 @@ describe('Roles', () => {
     expect(users).to.be.an('array');
   });
 
+  it('Enable fine grained permissions', async () => {
+    const permission = await client.roles.updatePermission(
+      {id: currentRole.id!},
+      {enabled: true},
+    );
+    expect(permission).to.include({
+      enabled: true,
+    });
+  });
+
+  it('List fine grained permissions for this role', async () => {
+    const permissions = (await client.roles.listPermissions({
+      id: currentRole.id!,
+    }))!;
+
+    expect(permissions.scopePermissions).to.be.an('object');
+  });
+
+
   describe('Composite roles', () => {
     const compositeRoleName = 'compositeRole';
     let compositeRole: RoleRepresentation;
