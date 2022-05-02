@@ -37,7 +37,7 @@ export interface SpiInfoRepresentation {
 
 export interface ProviderRepresentation {
   order: number;
-  operationalInfo: {[index: string]: string};
+  operationalInfo?: {[index: string]: string};
 }
 
 export interface ClientInstallationRepresentation {
