@@ -3,6 +3,7 @@ import IdentityProviderRepresentation from '../defs/identityProviderRepresentati
 import IdentityProviderMapperRepresentation from '../defs/identityProviderMapperRepresentation';
 import {IdentityProviderMapperTypeRepresentation} from '../defs/identityProviderMapperTypeRepresentation';
 import {KeycloakAdminClient} from '../client';
+import {ManagementPermissionReference} from '../defs/managementPermissionReference';
 
 export class IdentityProviders extends Resource<{realm?: string}> {
   /**
@@ -123,6 +124,25 @@ export class IdentityProviders extends Resource<{realm?: string}> {
   >({
     method: 'POST',
     path: '/import-config',
+  });
+
+  public updatePermission = this.makeUpdateRequest<
+    {alias: string},
+    ManagementPermissionReference,
+    ManagementPermissionReference
+  >({
+    method: 'PUT',
+    path: '/instances/{alias}/management/permissions',
+    urlParamKeys: ['alias'],
+  });
+
+  public listPermissions = this.makeRequest<
+    {alias: string},
+    ManagementPermissionReference
+  >({
+    method: 'GET',
+    path: '/instances/{alias}/management/permissions',
+    urlParamKeys: ['alias'],
   });
 
   constructor(client: KeycloakAdminClient) {

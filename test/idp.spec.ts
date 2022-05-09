@@ -47,12 +47,11 @@ describe('Identity providers', () => {
       id: idpMapperId!,
     });
 
-    const idpMapperUpdated = await kcAdminClient.identityProviders.findOneMapper(
-      {
+    const idpMapperUpdated =
+      await kcAdminClient.identityProviders.findOneMapper({
         alias: currentIdpAlias,
         id: idpMapperId!,
-      },
-    );
+      });
 
     // check idp mapper deleted
     expect(idpMapperUpdated).to.be.null;
@@ -141,12 +140,11 @@ describe('Identity providers', () => {
       },
     );
 
-    const updatedIdpMappers = (await kcAdminClient.identityProviders.findOneMapper(
-      {
+    const updatedIdpMappers =
+      (await kcAdminClient.identityProviders.findOneMapper({
         alias: currentIdpAlias,
         id: idpMapperId!,
-      },
-    ))!;
+      }))!;
 
     const userAttribute = updatedIdpMappers.config['user.attribute'];
     expect(userAttribute).to.equal('firstName');
@@ -155,10 +153,31 @@ describe('Identity providers', () => {
   it('Import from url', async () => {
     const result = await kcAdminClient.identityProviders.importFromUrl({
       providerId: 'oidc',
-      fromUrl: 'http://localhost:8080/auth/realms/master/.well-known/openid-configuration',
+      fromUrl:
+        'http://localhost:8080/auth/realms/master/.well-known/openid-configuration',
     });
 
     expect(result).to.be.ok;
-    expect(result.authorizationUrl).to.equal('http://localhost:8080/auth/realms/master/protocol/openid-connect/auth');
+    expect(result.authorizationUrl).to.equal(
+      'http://localhost:8080/auth/realms/master/protocol/openid-connect/auth',
+    );
+  });
+
+  it('Enable fine grained permissions', async () => {
+    const permission = await kcAdminClient.identityProviders.updatePermission(
+      {alias: currentIdpAlias},
+      {enabled: true},
+    );
+    expect(permission).to.include({
+      enabled: true,
+    });
+  });
+
+  it('list permissions', async () => {
+    const permissions = await kcAdminClient.identityProviders.listPermissions({
+      alias: currentIdpAlias,
+    });
+
+    expect(permissions.scopePermissions).to.be.an('object');
   });
 });
