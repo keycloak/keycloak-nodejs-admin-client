@@ -116,7 +116,7 @@ Start keycloak in a docker container or run it locally:
 docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest
 ```
 
-If you started your container manually make sure there is an admin user named www3y3 with password www3y3 as admin on master realm.
+If you started your container manually make sure there is an admin user named wwwy3y3 with password wwwy3y3 as admin on master realm.
 Then start the tests with:
 
 ```bash
