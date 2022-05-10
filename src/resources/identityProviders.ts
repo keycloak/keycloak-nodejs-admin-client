@@ -11,7 +11,7 @@ export class IdentityProviders extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/11.0/rest-api/#_identity_providers_resource
    */
 
-  public find = this.makeRequest<void, IdentityProviderRepresentation[]>({
+  public find = this.makeRequest<{}, IdentityProviderRepresentation[]>({
     method: 'GET',
     path: '/instances',
   });
