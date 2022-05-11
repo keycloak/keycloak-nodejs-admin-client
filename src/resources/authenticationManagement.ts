@@ -109,7 +109,7 @@ export class AuthenticationManagement extends Resource {
     path: '/unregistered-required-actions',
   });
 
-  public getFlows = this.makeRequest<void, AuthenticationFlowRepresentation[]>({
+  public getFlows = this.makeRequest<{}, AuthenticationFlowRepresentation[]>({
     method: 'GET',
     path: '/flows',
   });

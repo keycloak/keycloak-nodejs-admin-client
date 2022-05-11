@@ -39,7 +39,7 @@ export class ClientPolicies extends Resource<{realm?: string}> {
 
   /* Client Policies */
 
-  public listPolicies = this.makeRequest<void, ClientPoliciesRepresentation>({
+  public listPolicies = this.makeRequest<{}, ClientPoliciesRepresentation>({
     method: 'GET',
     path: '/policies',
   });
