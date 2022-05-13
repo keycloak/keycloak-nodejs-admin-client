@@ -168,6 +168,12 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
+  public invalidateSecret = this.makeRequest<{id: string}, void>({
+    method: 'DELETE',
+    path: '/{id}/client-secret/rotated',
+    urlParamKeys: ['id'],
+  });
+
   public generateRegistrationAccessToken = this.makeRequest<
     {id: string},
     {registrationAccessToken: string}
