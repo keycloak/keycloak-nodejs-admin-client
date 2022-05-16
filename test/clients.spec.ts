@@ -239,6 +239,12 @@ describe('Clients', () => {
       expect(newRegistrationAccessToken).to.be.ok;
     });
 
+    it('invalidate rotation token', async () => {
+      await kcAdminClient.clients.invalidateSecret({
+        id: currentClient.id!,
+      });
+    });
+
     it('get installation providers', async () => {
       const installationProvider =
         await kcAdminClient.clients.getInstallationProviders({
