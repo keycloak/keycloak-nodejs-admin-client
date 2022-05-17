@@ -13,11 +13,19 @@ describe('Sessions', () => {
     await client.auth(credentials);
   });
 
-  it('list sessions', async () => {
-    const sessions = await client.sessions.find();
+  it('gets client session stats', async () => {
+    const sessions = await client.sessions.getClientSessionStats();
     expect(sessions).to.be.ok;
     expect(sessions.length).to.be.eq(1);
     expect(sessions[0].clientId).to.be.eq('admin-cli');
   });
 
+  it('deletes a session', async () => {
+    const user = (await client.users.find({username: credentials.username}))[0];
+    const userSession = (await client.clients.listSessions({id: user.id!}))[0];
+
+    await client.sessions.delete({session: userSession.id!});
+
+    expect(await client.clients.listSessions({id: user.id!})).to.be.empty;
+  });
 });
