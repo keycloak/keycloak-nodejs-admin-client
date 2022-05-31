@@ -29,7 +29,7 @@
     "url-template": "^2.0.8"
   },
   "devDependencies": {
-    "@faker-js/faker": "^6.0.0",
+    "@faker-js/faker": "^7.1.0",
     "@types/chai": "^4.2.14",
     "@types/lodash": "^4.14.165",
     "@types/mocha": "^9.0.0",
