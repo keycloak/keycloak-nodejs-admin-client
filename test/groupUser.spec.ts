@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import faker from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 import {omit, pick} from 'lodash';
 import {KeycloakAdminClient} from '../src/client';
 import ClientRepresentation from '../src/defs/clientRepresentation';

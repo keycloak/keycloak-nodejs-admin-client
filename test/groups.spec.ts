@@ -2,7 +2,7 @@
 import * as chai from 'chai';
 import {KeycloakAdminClient} from '../src/client';
 import {credentials} from './constants';
-import faker from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 import GroupRepresentation from '../src/defs/groupRepresentation';
 import RoleRepresentation from '../src/defs/roleRepresentation';
 import ClientRepresentation from '../src/defs/clientRepresentation';
