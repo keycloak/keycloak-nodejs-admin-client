@@ -18,6 +18,7 @@ import ResourceServerRepresentation from '../defs/resourceServerRepresentation';
 import ScopeRepresentation from '../defs/scopeRepresentation';
 import PolicyProviderRepresentation from '../defs/policyProviderRepresentation';
 import {ManagementPermissionReference} from '../defs/managementPermissionReference';
+import PolicyEvaluationResponse from '../defs/policyEvaluationResponse';
 
 export interface PaginatedQuery {
   first?: number;
@@ -601,7 +602,8 @@ export class Clients extends Resource<{realm?: string}> {
 
   public evaluateResource = this.makeUpdateRequest<
     {id: string},
-    ResourceEvaluation
+    ResourceEvaluation,
+    PolicyEvaluationResponse
   >({
     method: 'POST',
     path: '{id}/authz/resource-server/policy/evaluate',
