@@ -1,9 +1,9 @@
-import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
-import Resource from './resource';
-import {KeycloakAdminClient} from '../client';
-import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
-import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation from '../defs/roleRepresentation';
+import type ClientScopeRepresentation from '../defs/clientScopeRepresentation.js';
+import Resource from './resource.js';
+import type {KeycloakAdminClient} from '../client.js';
+import type ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation.js';
+import type MappingsRepresentation from '../defs/mappingsRepresentation.js';
+import type RoleRepresentation from '../defs/roleRepresentation.js';
 
 export class ClientScopes extends Resource<{realm?: string}> {
   public find = this.makeRequest<{}, ClientScopeRepresentation[]>({

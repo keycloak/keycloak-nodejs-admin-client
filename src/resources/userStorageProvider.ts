@@ -1,6 +1,6 @@
-import {KeycloakAdminClient} from '../client';
-import SynchronizationResultRepresentation from '../defs/synchronizationResultRepresentation';
-import Resource from './resource';
+import type {KeycloakAdminClient} from '../client.js';
+import type SynchronizationResultRepresentation from '../defs/synchronizationResultRepresentation.js';
+import Resource from './resource.js';
 
 type ActionType = 'triggerFullSync' | 'triggerChangedUsersSync';
 type DirectionType = 'fedToKeycloak' | 'keycloakToFed';

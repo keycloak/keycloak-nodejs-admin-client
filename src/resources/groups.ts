@@ -1,12 +1,11 @@
-import {KeycloakAdminClient} from '../client';
-import GroupRepresentation from '../defs/groupRepresentation';
-import {ManagementPermissionReference} from '../defs/managementPermissionReference';
-import MappingsRepresentation from '../defs/mappingsRepresentation';
-import RoleRepresentation, {
-  RoleMappingPayload,
-} from '../defs/roleRepresentation';
-import UserRepresentation from '../defs/userRepresentation';
-import Resource from './resource';
+import type {KeycloakAdminClient} from '../client.js';
+import type GroupRepresentation from '../defs/groupRepresentation.js';
+import type {ManagementPermissionReference} from '../defs/managementPermissionReference.js';
+import type MappingsRepresentation from '../defs/mappingsRepresentation.js';
+import type RoleRepresentation from '../defs/roleRepresentation.js';
+import type { RoleMappingPayload } from '../defs/roleRepresentation.js';
+import type UserRepresentation from '../defs/userRepresentation.js';
+import Resource from './resource.js';
 
 export interface GroupQuery {
   first?: number;

@@ -1,9 +1,9 @@
-import ComponentTypeRepresentation from './componentTypeRepresentation';
-import {ConfigPropertyRepresentation} from './configPropertyRepresentation';
-import PasswordPolicyTypeRepresentation from './passwordPolicyTypeRepresentation';
-import ProfileInfoRepresentation from './profileInfoRepresentation';
-import ProtocolMapperRepresentation from './protocolMapperRepresentation';
-import SystemInfoRepresentation from './systemInfoRepersantation';
+import type ComponentTypeRepresentation from './componentTypeRepresentation.js';
+import type {ConfigPropertyRepresentation} from './configPropertyRepresentation.js';
+import type PasswordPolicyTypeRepresentation from './passwordPolicyTypeRepresentation.js';
+import type ProfileInfoRepresentation from './profileInfoRepresentation.js';
+import type ProtocolMapperRepresentation from './protocolMapperRepresentation.js';
+import type SystemInfoRepresentation from './systemInfoRepersantation.js';
 
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_serverinforepresentation

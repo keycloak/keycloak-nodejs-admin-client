@@ -1,5 +1,5 @@
-import Resource from './resource';
-import KeycloakAdminClient from '..';
+import Resource from './resource.js';
+import type KeycloakAdminClient from '../index.js';
 
 export class Sessions extends Resource<{realm?: string}> {
 

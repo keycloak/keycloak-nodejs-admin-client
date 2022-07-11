@@ -1,10 +1,10 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import {KeycloakAdminClient} from '../src/client';
-import {credentials} from './constants';
-import ClientScopeRepresentation from '../src/defs/clientScopeRepresentation';
-import ProtocolMapperRepresentation from '../src/defs/protocolMapperRepresentation';
-import ClientRepresentation from '../src/defs/clientRepresentation';
+import {KeycloakAdminClient} from '../src/client.js';
+import type ClientRepresentation from '../src/defs/clientRepresentation.js';
+import type ClientScopeRepresentation from '../src/defs/clientScopeRepresentation.js';
+import type ProtocolMapperRepresentation from '../src/defs/protocolMapperRepresentation.js';
+import {credentials} from './constants.js';
 
 const expect = chai.expect;
 

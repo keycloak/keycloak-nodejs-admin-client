@@ -1,13 +1,13 @@
-import ClientRepresentation from './clientRepresentation';
-import ComponentExportRepresentation from './componentExportRepresentation';
-import UserRepresentation from './userRepresentation';
-import GroupRepresentation from './groupRepresentation';
-import IdentityProviderRepresentation from './identityProviderRepresentation';
-import RequiredActionProviderRepresentation from './requiredActionProviderRepresentation';
-import RolesRepresentation from './rolesRepresentation';
-import ClientProfilesRepresentation from './clientProfilesRepresentation';
-import ClientPoliciesRepresentation from './clientPoliciesRepresentation';
-import RoleRepresentation from './roleRepresentation';
+import type ClientRepresentation from './clientRepresentation.js';
+import type ComponentExportRepresentation from './componentExportRepresentation.js';
+import type UserRepresentation from './userRepresentation.js';
+import type GroupRepresentation from './groupRepresentation.js';
+import type IdentityProviderRepresentation from './identityProviderRepresentation.js';
+import type RequiredActionProviderRepresentation from './requiredActionProviderRepresentation.js';
+import type RolesRepresentation from './rolesRepresentation.js';
+import type ClientProfilesRepresentation from './clientProfilesRepresentation.js';
+import type ClientPoliciesRepresentation from './clientPoliciesRepresentation.js';
+import type RoleRepresentation from './roleRepresentation.js';
 
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_realmrepresentation

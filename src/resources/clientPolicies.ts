@@ -1,8 +1,7 @@
-import Resource from './resource';
-import {KeycloakAdminClient} from '../client';
-import ClientProfilesRepresentation from '../defs/clientProfilesRepresentation';
-import ClientPoliciesRepresentation from '../defs/clientPoliciesRepresentation';
-import ClientPolicyRepresentation from '../defs/clientPolicyRepresentation';
+import Resource from './resource.js';
+import type {KeycloakAdminClient} from '../client.js';
+import type ClientProfilesRepresentation from '../defs/clientProfilesRepresentation.js';
+import type ClientPoliciesRepresentation from '../defs/clientPoliciesRepresentation.js';
 
 /**
  * https://www.keycloak.org/docs-api/15.0/rest-api/#_client_registration_policy_resource

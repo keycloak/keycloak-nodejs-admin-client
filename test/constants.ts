@@ -1,4 +1,4 @@
-import {Credentials} from '../src/utils/auth';
+import type {Credentials} from '../src/utils/auth.js';
 
 export const credentials: Credentials = {
   username: 'wwwy3y3',

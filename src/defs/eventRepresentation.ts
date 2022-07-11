@@ -1,7 +1,7 @@
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_eventrepresentation
  */
-import EventType from './eventTypes';
+import type EventType from './eventTypes.js';
 
 export default interface EventRepresentation {
   clientId?: string;

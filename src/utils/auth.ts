@@ -1,7 +1,7 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 import camelize from 'camelize-ts';
 import querystring from 'query-string';
-import {defaultBaseUrl, defaultRealm} from './constants';
+import {defaultBaseUrl, defaultRealm} from './constants.js';
 
 export type GrantTypes = 'client_credentials' | 'password' | 'refresh_token';
 
@@ -78,6 +78,6 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
     };
   }
 
-  const {data} = await axios.post<any, AxiosResponse<TokenResponseRaw>>(url, payload, config);
+  const {data} = await axios.default.post<any, AxiosResponse<TokenResponseRaw>>(url, payload, config);
   return camelize(data);
 };

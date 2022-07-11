@@ -1,7 +1,7 @@
-import Resource from './resource';
-import ComponentRepresentation from '../defs/componentRepresentation';
-import ComponentTypeRepresentation from '../defs/componentTypeRepresentation';
-import {KeycloakAdminClient} from '../client';
+import Resource from './resource.js';
+import type ComponentRepresentation from '../defs/componentRepresentation.js';
+import type ComponentTypeRepresentation from '../defs/componentTypeRepresentation.js';
+import type {KeycloakAdminClient} from '../client.js';
 
 export interface ComponentQuery {
   name?: string;

@@ -1,7 +1,7 @@
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_mappingsrepresentation
  */
-import RoleRepresentation from './roleRepresentation';
+import type RoleRepresentation from './roleRepresentation.js';
 
 export default interface MappingsRepresentation {
   clientMappings?: Record<string, any>;

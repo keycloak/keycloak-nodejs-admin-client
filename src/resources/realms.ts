@@ -1,21 +1,18 @@
-import Resource from './resource';
-import AdminEventRepresentation from '../defs/adminEventRepresentation';
-import RealmRepresentation, {
-  PartialImportRealmRepresentation,
-  PartialImportResponse,
-} from '../defs/realmRepresentation';
-import EventRepresentation from '../defs/eventRepresentation';
-import EventType from '../defs/eventTypes';
-import KeysMetadataRepresentation from '../defs/keyMetadataRepresentation';
-import ClientInitialAccessPresentation from '../defs/clientInitialAccessPresentation';
-import TestLdapConnectionRepresentation from '../defs/testLdapConnection';
+import Resource from './resource.js';
+import type AdminEventRepresentation from '../defs/adminEventRepresentation.js';
+import type RealmRepresentation from '../defs/realmRepresentation.js';
+import type {PartialImportRealmRepresentation, PartialImportResponse} from '../defs/realmRepresentation.js';
+import type EventRepresentation from '../defs/eventRepresentation.js';
+import type EventType from '../defs/eventTypes.js';
+import type KeysMetadataRepresentation from '../defs/keyMetadataRepresentation.js';
+import type ClientInitialAccessPresentation from '../defs/clientInitialAccessPresentation.js';
+import type TestLdapConnectionRepresentation from '../defs/testLdapConnection.js';
 
-import {KeycloakAdminClient} from '../client';
-import {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation';
-import ComponentRepresentation from '../defs/componentRepresentation';
-import GlobalRequestResult from '../defs/globalRequestResult';
-import GroupRepresentation from '../defs/groupRepresentation';
-import {ManagementPermissionReference} from '../defs/managementPermissionReference';
+import type {KeycloakAdminClient} from '../client.js';
+import type {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRepresentation.js';
+import type GlobalRequestResult from '../defs/globalRequestResult.js';
+import type GroupRepresentation from '../defs/groupRepresentation.js';
+import type {ManagementPermissionReference} from '../defs/managementPermissionReference.js';
 
 export class Realms extends Resource {
   /**

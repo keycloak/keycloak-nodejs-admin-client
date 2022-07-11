@@ -1,4 +1,4 @@
-import AuthDetailsRepresentation from './authDetailsRepresentation';
+import type AuthDetailsRepresentation from './authDetailsRepresentation.js';
 
 export default interface AdminEventRepresentation {
     authDetails?: AuthDetailsRepresentation;

@@ -1,9 +1,9 @@
 /**
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_policyrepresentation
  */
-import PolicyRepresentation from './policyRepresentation';
-import ResourceRepresentation from './resourceRepresentation';
-import ScopeRepresentation from './scopeRepresentation';
+import type PolicyRepresentation from './policyRepresentation.js';
+import type ResourceRepresentation from './resourceRepresentation.js';
+import type ScopeRepresentation from './scopeRepresentation.js';
 
 export default interface ResourceServerRepresentation {
   id?: string;

@@ -1,7 +1,7 @@
-import PolicyRepresentation, {DecisionEffect} from './policyRepresentation';
-import PolicyResultRepresentation from './policyResultRepresentation';
-import ResourceRepresentation from './resourceRepresentation';
-import ScopeRepresentation from './scopeRepresentation';
+import type {DecisionEffect} from './policyRepresentation.js';
+import type PolicyResultRepresentation from './policyResultRepresentation.js';
+import type ResourceRepresentation from './resourceRepresentation.js';
+import type ScopeRepresentation from './scopeRepresentation.js';
 
 export default interface EvaluationResultRepresentation {
   resource?: ResourceRepresentation;

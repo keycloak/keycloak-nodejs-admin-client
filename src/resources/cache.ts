@@ -1,5 +1,5 @@
-import Resource from './resource';
-import {KeycloakAdminClient} from '../client';
+import Resource from './resource.js';
+import type {KeycloakAdminClient} from '../client.js';
 
 export class Cache extends Resource<{realm?: string}> {
 
