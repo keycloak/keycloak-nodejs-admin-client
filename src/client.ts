@@ -1,5 +1,4 @@
 import type {AxiosRequestConfig} from 'axios';
-import type {KeycloakConfig, KeycloakInitOptions, KeycloakInstance} from 'keycloak-js';
 import type {RequestArgs} from './resources/agent.js';
 import {AttackDetection} from './resources/attackDetection.js';
 import {AuthenticationManagement} from './resources/authenticationManagement.js';
@@ -19,6 +18,10 @@ import {UserStorageProvider} from './resources/userStorageProvider.js';
 import {WhoAmI} from './resources/whoAmI.js';
 import {Credentials, getToken} from './utils/auth.js';
 import {defaultBaseUrl, defaultRealm} from './utils/constants.js';
+
+export interface TokenProvider {
+  getAccessToken: () => Promise<string | undefined>
+}
 
 export interface ConnectionConfig {
   baseUrl?: string;
@@ -51,10 +54,10 @@ export class KeycloakAdminClient {
   public realmName: string;
   public accessToken?: string;
   public refreshToken?: string;
-  public keycloak!: KeycloakInstance;
 
   private requestConfig?: AxiosRequestConfig;
   private globalRequestArgOptions?: Pick<RequestArgs, 'catchNotFound'>;
+  private tokenProvider?: TokenProvider;
 
   constructor(connectionConfig?: ConnectionConfig) {
     this.baseUrl =
@@ -94,21 +97,12 @@ export class KeycloakAdminClient {
     this.refreshToken = refreshToken;
   }
 
-  public async init(init?: KeycloakInitOptions, config?: KeycloakConfig) {
-    if (typeof window === 'undefined') {
-      return;
+  public registerTokenProvider(provider: TokenProvider) {
+    if (this.tokenProvider) {
+      throw new Error('An existing token provider was already registered.');
     }
 
-    const Keycloak: any = (await import('keycloak-js')).default;
-    this.keycloak = new Keycloak(config);
-
-    if (init) {
-      await this.keycloak.init(init);
-    }
-
-    if (this.keycloak.authServerUrl) {
-      this.baseUrl = this.keycloak.authServerUrl;
-    }
+    this.tokenProvider = provider;
   }
 
   public setAccessToken(token: string) {
@@ -116,14 +110,10 @@ export class KeycloakAdminClient {
   }
 
   public async getAccessToken() {
-    if (this.keycloak) {
-      try {
-        await this.keycloak.updateToken(5);
-      } catch (error) {
-        this.keycloak.login();
-      }
-      return this.keycloak.token;
+    if (this.tokenProvider) {
+      return this.tokenProvider.getAccessToken();
     }
+
     return this.accessToken;
   }
 
