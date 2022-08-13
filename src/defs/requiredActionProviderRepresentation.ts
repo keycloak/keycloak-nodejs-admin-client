@@ -2,13 +2,15 @@
  * https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_requiredactionproviderrepresentation
  */
 
-export enum RequiredActionAlias {
+export enum RequiredActionAliasDefault {
   VERIFY_EMAIL = 'VERIFY_EMAIL',
   UPDATE_PROFILE = 'UPDATE_PROFILE',
   CONFIGURE_TOTP = 'CONFIGURE_TOTP',
   UPDATE_PASSWORD = 'UPDATE_PASSWORD',
   terms_and_conditions = 'terms_and_conditions',
 }
+
+export type RequiredActionAlias = RequiredActionAliasDefault | string;
 
 export default interface RequiredActionProviderRepresentation {
   alias?: string;
