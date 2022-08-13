@@ -155,16 +155,16 @@ describe('Identity providers', () => {
     const result = await kcAdminClient.identityProviders.importFromUrl({
       providerId: 'oidc',
       fromUrl:
-        'http://localhost:8080/auth/realms/master/.well-known/openid-configuration',
+        'http://localhost:8080/realms/master/.well-known/openid-configuration',
     });
 
     expect(result).to.be.ok;
     expect(result.authorizationUrl).to.equal(
-      'http://localhost:8080/auth/realms/master/protocol/openid-connect/auth',
+      'http://localhost:8080/realms/master/protocol/openid-connect/auth',
     );
   });
 
-  it('Enable fine grained permissions', async () => {
+  it.skip('Enable fine grained permissions', async () => {
     const permission = await kcAdminClient.identityProviders.updatePermission(
       {alias: currentIdpAlias},
       {enabled: true},
@@ -174,7 +174,7 @@ describe('Identity providers', () => {
     });
   });
 
-  it('list permissions', async () => {
+  it.skip('list permissions', async () => {
     const permissions = await kcAdminClient.identityProviders.listPermissions({
       alias: currentIdpAlias,
     });

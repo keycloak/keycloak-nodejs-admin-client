@@ -16,6 +16,6 @@ describe('Who am I', () => {
   it('list who I am', async () => {
     const whoAmI = await client.whoAmI.find();
     expect(whoAmI).to.be.ok;
-    expect(whoAmI.displayName).to.be.equal('wwwy3y3');
+    expect(whoAmI.displayName).to.be.equal('admin');
   });
 });

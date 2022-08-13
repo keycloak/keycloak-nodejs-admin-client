@@ -23,7 +23,7 @@ import KcAdminClient from '@keycloak/keycloak-admin-client';
 
 // To configure the client, pass an object to override any of these  options:
 // {
-//   baseUrl: 'http://127.0.0.1:8080/auth',
+//   baseUrl: 'http://127.0.0.1:8080',
 //   realmName: 'master',
 //   requestConfig: {
 //     /* Axios request config options https://github.com/axios/axios#request-config */
@@ -33,8 +33,8 @@ const kcAdminClient = new KcAdminClient();
 
 // Authorize with username / password
 await kcAdminClient.auth({
-  username: 'wwwy3y3',
-  password: 'wwwy3y3',
+  username: 'admin',
+  password: 'admin',
   grantType: 'password',
   clientId: 'admin-cli',
   totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
@@ -66,7 +66,7 @@ To refresh the access token provided by Keycloak, an OpenID client like [panva/n
 import {Issuer} from 'openid-client';
 
 const keycloakIssuer = await Issuer.discover(
-  'http://localhost:8080/auth/realms/master',
+  'http://localhost:8080/realms/master',
 );
 
 const client = new keycloakIssuer.Client({
@@ -77,8 +77,8 @@ const client = new keycloakIssuer.Client({
 // Use the grant type 'password'
 let tokenSet = await client.grant({
   grant_type: 'password',
-  username: 'wwwy3y3',
-  password: 'wwwy3y3',
+  username: 'admin',
+  password: 'admin',
 });
 
 // Periodically using refresh_token grant flow to get new access token here
@@ -110,17 +110,17 @@ To build the source do a build:
 npm run build
 ```
 
-Start keycloak in a docker container or run it locally:
+Start the Keycloak server:
 
 ```bash
-docker run --name keycloak -d -p 127.0.0.1:8080:8080 -e KEYCLOAK_USER=wwwy3y3 -e KEYCLOAK_PASSWORD=wwwy3y3 quay.io/keycloak/keycloak:latest
+npm run server:start
 ```
 
-If you started your container manually make sure there is an admin user named wwwy3y3 with password wwwy3y3 as admin on master realm.
+If you started your container manually make sure there is an admin user named 'admin' with password 'admin'.
 Then start the tests with:
 
 ```bash
-npm run test
+npm test
 ```
 
 ## Supported APIs

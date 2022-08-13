@@ -32,7 +32,7 @@ describe('Realms', () => {
     const user = await kcAdminClient.users.create({
       realm: currentRealmId,
       username,
-      email: 'wwwy3y3@canner.io',
+      email: 'test@keycloak.org',
       // enabled required to be true in order to send actions email
       emailVerified: true,
       enabled: true,

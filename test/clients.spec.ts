@@ -1287,7 +1287,7 @@ describe('Clients', () => {
       expect(result).to.be.ok;
     });
 
-    it('Enable fine grained permissions', async () => {
+    it.skip('Enable fine grained permissions', async () => {
       const permission = await kcAdminClient.clients.updateFineGrainPermission(
         {id: currentClient.id!},
         {enabled: true},
@@ -1297,7 +1297,7 @@ describe('Clients', () => {
       });
     });
 
-    it('List fine grained permissions for this client', async () => {
+    it.skip('List fine grained permissions for this client', async () => {
       const permissions = (await kcAdminClient.clients.listFineGrainPermissions(
         {id: currentClient.id!},
       ))!;
