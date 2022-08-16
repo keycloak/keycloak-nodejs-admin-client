@@ -11,7 +11,7 @@ export default interface UserRepresentation {
   totp?: boolean;
   emailVerified?: boolean;
   disableableCredentialTypes?: string[];
-  requiredActions?: RequiredActionAlias[];
+  requiredActions?: (RequiredActionAlias | string)[];
   notBefore?: number;
   access?: Record<string, boolean>;
 

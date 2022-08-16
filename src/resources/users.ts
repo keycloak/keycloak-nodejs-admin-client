@@ -5,7 +5,7 @@ import type UserSessionRepresentation from '../defs/userSessionRepresentation.js
 import type {KeycloakAdminClient} from '../client.js';
 import type MappingsRepresentation from '../defs/mappingsRepresentation.js';
 import type RoleRepresentation from '../defs/roleRepresentation.js';
-import type { RoleMappingPayload } from '../defs/roleRepresentation.js';
+import type {RoleMappingPayload} from '../defs/roleRepresentation.js';
 import type {RequiredActionAlias} from '../defs/requiredActionProviderRepresentation.js';
 import type FederatedIdentityRepresentation from '../defs/federatedIdentityRepresentation.js';
 import type GroupRepresentation from '../defs/groupRepresentation.js';
@@ -203,7 +203,7 @@ export class Users extends Resource<{realm?: string}> {
       clientId?: string;
       lifespan?: number;
       redirectUri?: string;
-      actions?: RequiredActionAlias[];
+      actions?: (RequiredActionAlias | string)[];
     },
     void
   >({
