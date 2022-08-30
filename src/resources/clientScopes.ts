@@ -11,9 +11,10 @@ export class ClientScopes extends Resource<{realm?: string}> {
     path: '/client-scopes',
   });
 
-  public create = this.makeRequest<ClientScopeRepresentation, void>({
+  public create = this.makeRequest<ClientScopeRepresentation, {id: string}>({
     method: 'POST',
     path: '/client-scopes',
+    returnResourceIdInLocationHeader: {field: 'id'},
   });
 
   /**
