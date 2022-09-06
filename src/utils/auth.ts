@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 import camelize from 'camelize-ts';
-import querystring from 'query-string';
+import querystring from 'fast-querystring';
 import {defaultBaseUrl, defaultRealm} from './constants.js';
 
 export type GrantTypes = 'client_credentials' | 'password' | 'refresh_token';

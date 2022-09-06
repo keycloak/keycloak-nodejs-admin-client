@@ -26,8 +26,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "camelize-ts": "^2.1.1",
+    "fast-querystring": "^0.6.4",
     "lodash-es": "^4.17.21",
-    "query-string": "^7.0.1",
     "url-join": "^5.0.0",
     "url-template": "^3.0.0"
   },

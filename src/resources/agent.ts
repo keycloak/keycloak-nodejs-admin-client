@@ -1,7 +1,7 @@
 import urlJoin from 'url-join';
 import {parseTemplate} from 'url-template';
 import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
-import querystring from 'query-string';
+import querystring from 'fast-querystring';
 import {pick, omit, isUndefined, last} from 'lodash-es';
 import type {KeycloakAdminClient} from '../client.js';
 
