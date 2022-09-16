@@ -324,7 +324,7 @@ describe('Realms', () => {
       expect(managementPermissions).to.be.ok;
     });
 
-    it.skip('enable users management permissions', async () => {
+    it('enable users management permissions', async () => {
       const managementPermissions =
         await kcAdminClient.realms.updateUsersManagementPermissions({
           realm: currentRealmName,
@@ -442,21 +442,21 @@ describe('Realms', () => {
   describe('Realm localization', () => {
     currentRealmName = 'master';
 
-    it.skip('enable localization', async () => {
+    it('enable localization', async () => {
       await kcAdminClient.realms.getRealmLocalizationTexts({
         realm: currentRealmName,
         selectedLocale: 'nl',
       });
     });
 
-    it.skip('should add localization', async () => {
+    it('should add localization', async () => {
       await kcAdminClient.realms.addLocalization(
         {realm: currentRealmName, selectedLocale: 'nl', key: 'theKey'},
         'value',
       );
     });
 
-    it.skip('should get realm specific locales', async () => {
+    it('should get realm specific locales', async () => {
       const locales = await kcAdminClient.realms.getRealmSpecificLocales({
         realm: currentRealmName,
       });
@@ -465,7 +465,7 @@ describe('Realms', () => {
       expect(locales).to.be.deep.eq(['nl']);
     });
 
-    it.skip('should get localization for specified locale', async () => {
+    it('should get localization for specified locale', async () => {
       const texts = await kcAdminClient.realms.getRealmLocalizationTexts({
         realm: currentRealmName,
         selectedLocale: 'nl',
@@ -475,7 +475,7 @@ describe('Realms', () => {
       expect(texts.theKey).to.be.eq('value');
     });
 
-    it.skip('should delete localization for specified locale key', async () => {
+    it('should delete localization for specified locale key', async () => {
       await kcAdminClient.realms.deleteRealmLocalizationTexts({
         realm: currentRealmName,
         selectedLocale: 'nl',
@@ -490,7 +490,7 @@ describe('Realms', () => {
       expect(texts).to.be.deep.eq({});
     });
 
-    it.skip('should delete localization for specified locale', async () => {
+    it('should delete localization for specified locale', async () => {
       await kcAdminClient.realms.deleteRealmLocalizationTexts({
         realm: currentRealmName,
         selectedLocale: 'nl',

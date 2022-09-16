@@ -83,7 +83,7 @@ describe('Client Scopes', () => {
     expect(scope).to.be.ok;
     expect(scope.name).to.equal(currentClientScopeName);
   });
-  
+
   it('create client scope and return id', async () => {
     // ensure that the scope does not exist
     try {
@@ -135,7 +135,7 @@ describe('Client Scopes', () => {
     expect(scope).to.be.undefined;
   });
 
-  it.skip('update client scope', async () => {
+  it('update client scope', async () => {
     const {id, description: oldDescription} = currentClientScope;
     const description = 'This scope is totally awesome.';
 

@@ -92,7 +92,7 @@ describe('Group user integration', () => {
   /**
    * Authorization permissions
    */
-  describe.skip('authorization permissions', () => {
+  describe('authorization permissions', () => {
     before(async () => {
       const clients = await kcAdminClient.clients.find();
       managementClient = clients.find(client => client.clientId === 'master-realm')!;

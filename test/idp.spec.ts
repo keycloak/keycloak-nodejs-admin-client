@@ -164,7 +164,7 @@ describe('Identity providers', () => {
     );
   });
 
-  it.skip('Enable fine grained permissions', async () => {
+  it('Enable fine grained permissions', async () => {
     const permission = await kcAdminClient.identityProviders.updatePermission(
       {alias: currentIdpAlias},
       {enabled: true},
@@ -174,7 +174,7 @@ describe('Identity providers', () => {
     });
   });
 
-  it.skip('list permissions', async () => {
+  it('list permissions', async () => {
     const permissions = await kcAdminClient.identityProviders.listPermissions({
       alias: currentIdpAlias,
     });
