@@ -114,7 +114,7 @@ describe('Client Scopes', () => {
     expect(scope).to.be.undefined;
   });
 
-  it('update client scope', async () => {
+  it.skip('update client scope', async () => {
     const {id, description: oldDescription} = currentClientScope;
     const description = 'This scope is totally awesome.';
 
