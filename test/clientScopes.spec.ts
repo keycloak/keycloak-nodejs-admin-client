@@ -83,6 +83,27 @@ describe('Client Scopes', () => {
     expect(scope).to.be.ok;
     expect(scope.name).to.equal(currentClientScopeName);
   });
+  
+  it('create client scope and return id', async () => {
+    // ensure that the scope does not exist
+    try {
+      await kcAdminClient.clientScopes.delByName({
+        name: currentClientScopeName,
+      });
+    } catch (e) {
+      // ignore
+    }
+
+    const {id} = await kcAdminClient.clientScopes.create({
+      name: currentClientScopeName,
+    });
+
+    const scope = (await kcAdminClient.clientScopes.findOne({
+      id,
+    }))!;
+    expect(scope).to.be.ok;
+    expect(scope.name).to.equal(currentClientScopeName);
+  });
 
   it('find scope by id', async () => {
     const scope = await kcAdminClient.clientScopes.findOne({
