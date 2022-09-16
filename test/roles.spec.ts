@@ -104,7 +104,7 @@ describe('Roles', () => {
     expect(users).to.be.an('array');
   });
 
-  it('Enable fine grained permissions', async () => {
+  it.skip('Enable fine grained permissions', async () => {
     const permission = await client.roles.updatePermission(
       {id: currentRole.id!},
       {enabled: true},
@@ -114,7 +114,7 @@ describe('Roles', () => {
     });
   });
 
-  it('List fine grained permissions for this role', async () => {
+  it.skip('List fine grained permissions for this role', async () => {
     const permissions = (await client.roles.listPermissions({
       id: currentRole.id!,
     }))!;

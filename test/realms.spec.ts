@@ -324,7 +324,7 @@ describe('Realms', () => {
       expect(managementPermissions).to.be.ok;
     });
 
-    it('enable users management permissions', async () => {
+    it.skip('enable users management permissions', async () => {
       const managementPermissions =
         await kcAdminClient.realms.updateUsersManagementPermissions({
           realm: currentRealmName,

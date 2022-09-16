@@ -1,8 +1,8 @@
 import type {Credentials} from '../src/utils/auth.js';
 
 export const credentials: Credentials = {
-  username: 'wwwy3y3',
-  password: 'wwwy3y3',
+  username: 'admin',
+  password: 'admin',
   grantType: 'password',
   clientId: 'admin-cli',
 };

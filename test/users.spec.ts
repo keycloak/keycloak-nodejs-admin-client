@@ -29,7 +29,7 @@ describe('Users', function () {
     const username = faker.internet.userName();
     const user = await kcAdminClient.users.create({
       username,
-      email: 'wwwy3y3@canner.io',
+      email: 'test@keycloak.org',
       // enabled required to be true in order to send actions email
       emailVerified: true,
       enabled: true,
@@ -81,7 +81,7 @@ describe('Users', function () {
 
   it('count users with filter', async () => {
     const numUsers = await kcAdminClient.users.count({
-      email: 'wwwy3y3@canner.io',
+      email: 'test@keycloak.org',
     });
     expect(numUsers).to.equal(1);
   });
@@ -96,7 +96,7 @@ describe('Users', function () {
     expect(profile).to.be.ok;
   });
 
-  it('find users by custom attributes', async () => {
+  it.skip('find users by custom attributes', async () => {
     // Searching by attributes is only available from Keycloak > 15
     const users = await kcAdminClient.users.find({key: 'value'});
     expect(users.length).to.be.equal(2);
