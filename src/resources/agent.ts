@@ -1,9 +1,9 @@
+import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
+import {isUndefined, last, omit, pick} from 'lodash-es';
 import urlJoin from 'url-join';
 import {parseTemplate} from 'url-template';
-import axios, {AxiosRequestConfig, AxiosRequestHeaders, Method} from 'axios';
-import querystring from 'query-string';
-import {pick, omit, isUndefined, last} from 'lodash-es';
 import type {KeycloakAdminClient} from '../client.js';
+import {stringifyQueryParams} from '../utils/stringifyQueryParams.js';
 
 // constants
 const SLASH = '/';
@@ -183,7 +183,7 @@ export class Agent {
 
     // Prepare request config
     const requestConfig: AxiosRequestConfig = {
-      paramsSerializer: (params) => querystring.stringify(params),
+      paramsSerializer: (params) => stringifyQueryParams(params),
       ...(this.client.getRequestConfig() || {}),
       method,
       url,
