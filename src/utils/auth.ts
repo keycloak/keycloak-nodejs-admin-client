@@ -1,7 +1,7 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 import camelize from 'camelize-ts';
-import querystring from 'query-string';
 import {defaultBaseUrl, defaultRealm} from './constants.js';
+import {stringifyQueryParams} from './stringifyQueryParams.js';
 
 export type GrantTypes = 'client_credentials' | 'password' | 'refresh_token';
 
@@ -54,7 +54,7 @@ export const getToken = async (settings: Settings): Promise<TokenResponse> => {
   // Prepare credentials for openid-connect token request
   // ref: http://openid.net/specs/openid-connect-core-1_0.html#TokenEndpoint
   const credentials = settings.credentials || ({} as any);
-  const payload = querystring.stringify({
+  const payload = stringifyQueryParams({
     username: credentials.username,
     password: credentials.password,
     grant_type: credentials.grantType,
