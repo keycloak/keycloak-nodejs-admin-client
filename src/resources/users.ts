@@ -310,6 +310,12 @@ export class Users extends Resource<{realm?: string}> {
     payloadKey: 'credential',
   });
 
+  public getUserStorageCredentialTypes = this.makeRequest<{id: string}, string[]>({
+    method: 'GET',
+    path: '/{id}/configured-user-storage-credential-types',
+    urlParamKeys: ['id'],
+  })
+
   /**
    * get user credentials
    */

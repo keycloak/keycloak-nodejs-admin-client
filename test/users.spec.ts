@@ -175,6 +175,15 @@ describe('Users', function () {
     expect(result.map(c => c.type)).to.include('password');
   });
 
+  it('get configured user storage credential types', async () => {
+    const userId = currentUser.id;
+    const result = await kcAdminClient.users.getUserStorageCredentialTypes({
+      id: userId!,
+    });
+
+    expect(result).to.be.deep.eq([]);
+  });
+
   /**
    * delete user credentials
    */
