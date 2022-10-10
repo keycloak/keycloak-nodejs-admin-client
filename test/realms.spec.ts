@@ -220,6 +220,16 @@ describe('Realms', () => {
       expect(defaultGroups[0].id).to.be.eq(currentGroup.id);
     });
 
+    it('get a group by its path name', async () => {
+      const queriedGroup = await kcAdminClient.realms.getGroupByPath({
+        realm: currentRealmName,
+        path: groupName,
+      })
+
+      expect(queriedGroup).to.be.ok;
+      expect(queriedGroup.id).to.be.eq(currentGroup.id);
+    });
+
     it('remove group from default groups', async () => {
       await kcAdminClient.realms.removeDefaultGroup({
         id: currentGroup.id!,

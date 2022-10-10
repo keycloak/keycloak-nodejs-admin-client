@@ -144,7 +144,7 @@ Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/
 - Update client policies policies (`PUT /{realm}/client-policies/policies`)
 - Get client policies profiles (`GET /{realm}/client-policies/profiles`)
 - Update client policies profiles (`PUT /{realm}/client-policies/profiles`)
-
+- Get a group by path (`GET /{realm}/group-by-path/{path}`)
 ### [Role](https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_roles_resource)
 
 Demo code: https://github.com/keycloak/keycloak-nodejs-admin-client/blob/master/test/roles.spec.ts
