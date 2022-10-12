@@ -47,7 +47,7 @@ export default interface RealmRepresentation {
   defaultOptionalClientScopes?: string[];
   defaultRoles?: string[];
   defaultRole?: RoleRepresentation;
-  defaultSignatureAlgorithm: string;
+  defaultSignatureAlgorithm?: string;
   directGrantFlow?: string;
   displayName?: string;
   displayNameHtml?: string;
@@ -106,7 +106,11 @@ export default interface RealmRepresentation {
   smtpServer?: Record<string, any>;
   sslRequired?: string;
   ssoSessionIdleTimeout?: number;
+  ssoSessionIdleTimeoutRememberMe?: number;
   ssoSessionMaxLifespan?: number;
+  ssoSessionMaxLifespanRememberMe?: number;
+  clientSessionIdleTimeout?: number;
+  clientSessionMaxLifespan?: number;
   supportedLocales?: string[];
   // UserFederationMapperRepresentation
   userFederationMappers?: any[];
