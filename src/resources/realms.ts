@@ -106,6 +106,15 @@ export class Realms extends Resource {
     urlParamKeys: ['realm', 'id'],
   });
 
+  public getGroupByPath = this.makeRequest<
+    { path: string, realm: string }, 
+    GroupRepresentation
+  >({
+    method: 'GET',
+    path: '/{realm}/group-by-path/{path}',
+    urlParamKeys: ['realm', 'path']
+  });
+
   /**
    * Get events Returns all events, or filters them based on URL query parameters listed here
    */
