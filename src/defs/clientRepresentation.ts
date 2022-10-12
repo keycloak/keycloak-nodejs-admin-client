@@ -21,6 +21,7 @@ export default interface ClientRepresentation {
   description?: string;
   directAccessGrantsEnabled?: boolean;
   enabled?: boolean;
+  alwaysDisplayInConsole?: boolean;
   frontchannelLogout?: boolean;
   fullScopeAllowed?: boolean;
   id?: string;
