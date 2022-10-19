@@ -42,7 +42,7 @@ export class KeycloakAdminClient {
   public clientScopes: ClientScopes;
   public clientPolicies: ClientPolicies;
   public identityProviders: IdentityProviders;
-	public clientRegistrationPolicies : ClientRegistrationPolicies;
+  public clientRegistrationPolicies: ClientRegistrationPolicies;
   public components: Components;
   public serverInfo: ServerInfo;
   public whoAmI: WhoAmI;
