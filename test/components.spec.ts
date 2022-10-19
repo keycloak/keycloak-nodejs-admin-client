@@ -73,6 +73,14 @@ describe('User federation using component api', () => {
     expect(list).to.be.ok;
   });
 
+  it('get client registration policies', async () => {
+    const list = await kcAdminClient.components.listClientRegistrationPolicies({
+      type: 'org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy',
+    });
+
+    expect(list).to.be.ok;
+  });
+
   it('update a user federation', async () => {
     await kcAdminClient.components.update(
       {id: currentUserFed.id!},

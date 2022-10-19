@@ -60,6 +60,14 @@ export class Components extends Resource<{realm?: string}> {
     queryParamKeys: ['type'],
   });
 
+  public listClientRegistrationPolicies = this.makeRequest<
+    {type: string},
+    ComponentRepresentation[]
+  >({
+    method: 'GET',
+    queryParamKeys: ['type'],
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: '/admin/realms/{realm}/components',
