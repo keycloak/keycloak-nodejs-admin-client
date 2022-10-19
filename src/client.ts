@@ -79,7 +79,7 @@ export class KeycloakAdminClient {
     this.clientScopes = new ClientScopes(this);
     this.clientPolicies = new ClientPolicies(this);
     this.identityProviders = new IdentityProviders(this);
-		this.clientRegistrationPolicies = new ClientRegistrationPolicies(this);
+    this.clientRegistrationPolicies = new ClientRegistrationPolicies(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
     this.serverInfo = new ServerInfo(this);
