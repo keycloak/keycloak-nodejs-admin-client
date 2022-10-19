@@ -6,6 +6,7 @@ import {Cache} from './resources/cache.js';
 import {ClientPolicies} from './resources/clientPolicies.js';
 import {Clients} from './resources/clients.js';
 import {ClientScopes} from './resources/clientScopes.js';
+import {ClientRegistrationPolicies} from './resources/clientRegistrationPolicies.js';
 import {Components} from './resources/components.js';
 import {Groups} from './resources/groups.js';
 import {IdentityProviders} from './resources/identityProviders.js';
@@ -41,6 +42,7 @@ export class KeycloakAdminClient {
   public clientScopes: ClientScopes;
   public clientPolicies: ClientPolicies;
   public identityProviders: IdentityProviders;
+	public clientRegistrationPolicies : ClientRegistrationPolicies;
   public components: Components;
   public serverInfo: ServerInfo;
   public whoAmI: WhoAmI;
@@ -77,6 +79,7 @@ export class KeycloakAdminClient {
     this.clientScopes = new ClientScopes(this);
     this.clientPolicies = new ClientPolicies(this);
     this.identityProviders = new IdentityProviders(this);
+		this.clientRegistrationPolicies = new ClientRegistrationPolicies(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
     this.serverInfo = new ServerInfo(this);
