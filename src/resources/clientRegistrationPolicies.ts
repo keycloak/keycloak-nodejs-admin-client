@@ -10,7 +10,7 @@ export class ClientRegistrationPolicies extends Resource<{realm?: string}> {
 
   public find = this.makeRequest<{}, ComponentTypeRepresentation[]>({
     method: 'GET',
-		path:'/client-registration-policy/providers'
+    path:'/client-registration-policy/providers'
   });
 
   constructor(client: KeycloakAdminClient) {
