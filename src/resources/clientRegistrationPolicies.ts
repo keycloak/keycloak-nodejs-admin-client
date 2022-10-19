@@ -8,7 +8,7 @@ export class ClientRegistrationPolicies extends Resource<{realm?: string}> {
    * https://www.keycloak.org/docs-api/15.0/rest-api/index.html#_client_registration_policy_resource
    */
 
-	 public find = this.makeRequest<{}, ComponentTypeRepresentation[]>({
+  public find = this.makeRequest<{}, ComponentTypeRepresentation[]>({
     method: 'GET',
 		path:'/client-registration-policy/providers'
   });
