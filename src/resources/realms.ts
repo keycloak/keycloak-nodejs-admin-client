@@ -13,6 +13,7 @@ import type {RealmEventsConfigRepresentation} from '../defs/realmEventsConfigRep
 import type GlobalRequestResult from '../defs/globalRequestResult.js';
 import type GroupRepresentation from '../defs/groupRepresentation.js';
 import type {ManagementPermissionReference} from '../defs/managementPermissionReference.js';
+import type ComponentTypeRepresentation from '../defs/componentTypeRepresentation.js';
 
 export class Realms extends Resource {
   /**
@@ -176,6 +177,12 @@ export class Realms extends Resource {
     method: 'DELETE',
     path: '/{realm}/admin-events',
     urlParamKeys: ['realm'],
+  });
+
+  public getClientRegistrationPolicyProviders = this.makeRequest<{realm: string}, ComponentTypeRepresentation[]>({
+    method: 'GET',
+    path:'/{realm}/client-registration-policy/providers',
+    urlParamKeys: ['realm']
   });
 
   public getClientsInitialAccess = this.makeRequest<
