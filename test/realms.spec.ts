@@ -126,6 +126,12 @@ describe('Realms', () => {
     });
   });
 
+  it('client registration policy providers', async () => {
+    const list = await kcAdminClient.realms.getClientRegistrationPolicyProviders({realm: currentRealmName});
+    
+    expect(list).to.be.ok;
+  });
+
   it('delete a realm', async () => {
     await kcAdminClient.realms.del({realm: currentRealmName});
     const realm = await kcAdminClient.realms.findOne({
