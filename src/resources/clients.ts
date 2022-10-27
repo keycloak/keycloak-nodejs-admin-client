@@ -613,7 +613,7 @@ export class Clients extends Resource<{realm?: string}> {
   /**
    * Policy
    */
-  public listPolicies = this.makeRequest<PolicyQuery, PolicyRepresentation[]>({
+  public listPolicies = this.makeRequest<PolicyQuery, PolicyRepresentation[] | "">({
     method: 'GET',
     path: '{id}/authz/resource-server/policy',
     urlParamKeys: ['id'],
