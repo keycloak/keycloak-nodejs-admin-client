@@ -1,5 +1,8 @@
 ## Keycloak Admin Client
 
+> **Warning**
+> The Admin Client has been moved to the [Keycloak UI mono-repo](https://github.com/keycloak/keycloak-ui). Please open any new issues and PRs on that repository.
+
 [![Github Actions](https://github.com/keycloak/keycloak-nodejs-admin-client/workflows/CI/badge.svg)](https://github.com/keycloak/keycloak-nodejs-admin-client/actions/workflows/main.yaml)
 [![npm version](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client.svg)](https://badge.fury.io/js/%40keycloak%2Fkeycloak-admin-client)
 
