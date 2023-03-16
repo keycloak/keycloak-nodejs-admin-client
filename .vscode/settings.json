@@ -1,8 +1,0 @@
-{
-  "prettier.tslintIntegration": true,
-  "editor.formatOnSave": true,
-  "javascript.format.enable": false,
-  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-}

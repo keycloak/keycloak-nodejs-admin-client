@@ -1,8 +1,0 @@
-node_modules
-coverage
-npm-debug.log
-lib
-yarn.lock
-yarn-error.log
-.DS_Store
-server/
